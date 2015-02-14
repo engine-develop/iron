@@ -50,8 +50,8 @@ enum ArchType
 
 enum Connectivity
 {
-    Disconnected = 0x1,
-    Connected    = 0x0
+    Disconnected = 0x0,
+    Connected    = 0x1
 };
 
 } // engine

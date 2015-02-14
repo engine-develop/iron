@@ -33,42 +33,31 @@ namespace engine
 //
 
 template< template< int > class D >
-struct BDevice< D, CPU >
+struct Device< D, CPU > : BDevice< D >
 {
-    typedef TDevice< D > traits_t;
+    typedef serial::Serial port_t;
 
     //------
     //
 
-    EN_INLINE BDevice();
+    EN_INLINE Device();
 
-    EN_INLINE ~BDevice();
+    EN_INLINE ~Device();
 
-    //------
-    //
-
-    template< class T >
-    EN_INLINE size_t write( const T& value );
-
-    template< class T >
-    EN_INLINE size_t write( const T* buffer,
-                            size_t size );
-
-    template< class T >
-    EN_INLINE void read( T& value );
-
-    template< class T >
-    EN_INLINE void read( T* buffer,
-                         size_t size );
+    EN_INLINE void setup( uint32_t baudrate );
 
     //------
     //
 
-    uint8_t state;
-    uint8_t id;
-    uint32_t baudrate;
+    EN_INLINE void setPort( port_t* port );
 
-    serial::Serial* port;
+    EN_INLINE port_t* port();
+
+    //------
+    //
+
+    port_t* m_port;
+
 };
 
 } // engine

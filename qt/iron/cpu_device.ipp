@@ -8,11 +8,8 @@ namespace engine
 //
 
 template< template< int > class D >
-EN_INLINE BDevice< D, CPU >::BDevice()
-    : state( Disconnected )
-    , id( 0 )
-    , baudrate( 9600 )
-    , port( 0x0 )
+EN_INLINE Device< D, CPU >::Device()
+    : m_port( 0x0 )
 {
 }
 
@@ -20,7 +17,7 @@ EN_INLINE BDevice< D, CPU >::BDevice()
 //
 
 template< template< int > class D >
-EN_INLINE BDevice< D, CPU >::~BDevice()
+EN_INLINE Device< D, CPU >::~Device()
 {
 }
 
@@ -28,42 +25,29 @@ EN_INLINE BDevice< D, CPU >::~BDevice()
 //
 
 template< template< int > class D >
-    template< class T >
-size_t BDevice< D, CPU >::write( const T& value )
+EN_INLINE void Device< D, CPU >::setup( uint32_t baudrate )
 {
-    return port->write( value );
+    this->baudrate = baudrate;
+
+    if ( m_port ) m_port->setBaudrate( this->baudrate );
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< template< int > class D >
-    template< class T >
-size_t BDevice< D, CPU >::write( const T* buffer,
-                                 size_t size )
+EN_INLINE void Device< D, CPU >::setPort( port_t* port )
 {
-    return port->write( buffer, size );
+    m_port = port;
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< template< int > class D >
-    template< class T >
-void BDevice< D, CPU >::read( T& value )
+EN_INLINE typename Device< D, CPU >::port_t* Device< D, CPU >::port()
 {
-    port->read( value );
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D >
-    template< class T >
-void BDevice< D, CPU >::read( T* buffer,
-                              size_t size )
-{
-    port->read( buffer, size );
+    return m_port;
 }
 
 } // engine

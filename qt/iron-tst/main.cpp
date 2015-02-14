@@ -18,10 +18,10 @@ namespace engine
 
 // Define attributes
 //
-EN_DEFINE_DEVICE( Camera, 3 );
-EN_DEFINE_ATTRIBUTE( Camera, 0, id,          uint8_t,  0 );
-EN_DEFINE_ATTRIBUTE( Camera, 1, resolutionX, uint16_t, 0 );
-EN_DEFINE_ATTRIBUTE( Camera, 2, model,       uint32_t, 0 );
+EN_DEFINE_DEVICE( Camera, 0xB0, 0x7B, 0xA6, 3 );
+EN_DEFINE_ATTRIBUTE( Camera, 0, id,          uint8_t,  0x4D );
+EN_DEFINE_ATTRIBUTE( Camera, 1, resolutionX, uint16_t, 1920 );
+EN_DEFINE_ATTRIBUTE( Camera, 2, model,       uint32_t, 2389221 );
 
 // Define device
 //
@@ -65,13 +65,30 @@ bool testAttributes()
     static_assert( FAttributeRange< Camera, 2 >::begin == 3, "incorrect range" );
     static_assert( FAttributeRange< Camera, 2 >::end == 7, "incorrect range" );
 
-    // Test container
+    // Test device
     //
     Camera< CPU > cam;
 
+    // Test attribute defaults
+    //
+    cam.setDefaults();
+
+    uint8_t id = 0;
+    uint16_t resolutionX = 0;
+    uint32_t model = 0;
+
+    cam.get< 0 >( id );
+    assert( id == 0x4D );
+
+    cam.get< 1 >( resolutionX );
+    assert( resolutionX == 1920 );
+
+    cam.get< 2 >( model );
+    assert( model == 2389221 );
+
     // Test set/get 'id'
     //
-    uint8_t id = 0xB0;
+    id = 0xB0;
     cam.set< 0 >( id );
 
     id = 0;
@@ -80,7 +97,7 @@ bool testAttributes()
 
     // Test set/get 'resolutionX'
     //
-    uint16_t resolutionX = 640;
+    resolutionX = 640;
     cam.set< 1 >( resolutionX );
 
     resolutionX = 0;
@@ -89,7 +106,7 @@ bool testAttributes()
 
     // Test set/get 'model'
     //
-    uint32_t model = 2390123;
+    model = 2390123;
     cam.set< 2 >( model );
 
     model = 0;
@@ -130,6 +147,8 @@ bool testBus()
 
 int main()
 {
+    std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
+
     assert( testAttributes() );
     assert( testBus() );
 

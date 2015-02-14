@@ -31,13 +31,11 @@
 #include <stdio.h>
 #endif
 
-// Engine
-#include "types.hpp"
-
 //------------------------------------------------------------------------------
 //
 
-#define EN_PP_STRINGIZE( A ) #A
+#define EN_STRINGIZE( A ) #A
+#define EN_STRING( A ) EN_STRINGIZE( A )
 
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )

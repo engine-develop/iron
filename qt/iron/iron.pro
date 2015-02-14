@@ -67,27 +67,24 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 SOURCES +=
 
 HEADERS += \
+    iron.hpp \
     i2c.hpp \
     utility.hpp \
-    iron.hpp \
     types.hpp \
-    i2c.hpp \
-    cpu_utility.hpp \
-    cpu_bus.hpp \
-    cpu_bus.ipp \
-    mcu_utility.hpp \
-    bus.hpp \
-    bus.ipp \
-    irbus.hpp \
-    irbus.ipp \
-    mcu_pins.hpp \
     attribute.hpp \
     attribute.ipp \
     device.hpp \
+    device.ipp \
+    cpu_utility.hpp \
+    cpu_bus.hpp \
+    cpu_bus.ipp \
     cpu_device.hpp \
     cpu_device.ipp \
     mcu_device.hpp \
-    mcu_device.ipp
+    mcu_device.ipp \
+    mcu_utility.hpp \
+    mcu_pins.hpp \
+    version.hpp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS

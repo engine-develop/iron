@@ -28,7 +28,6 @@
 
 // Engine
 #include "device.hpp"
-#include "bus.hpp"
 
 namespace engine
 {

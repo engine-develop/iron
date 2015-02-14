@@ -36,13 +36,27 @@
     { \
         static EN_INLINE const char* name(); \
         typedef TYPE type_t; \
-        static const type_t dvalue = DVALUE; \
+        static const type_t defaultValue = DVALUE; \
     }; \
     \
-    EN_INLINE const char* TAttribute< CNAME, I >::name() { return EN_PP_STRINGIZE( NAME ); } \
+    EN_INLINE const char* TAttribute< CNAME, I >::name() { return EN_STRINGIZE( NAME ); } \
 
 namespace engine
 {
+
+//------------------------------------------------------------------------------
+//
+
+template< class T >
+EN_INLINE void setAttribute( uint8_t* buffer,
+                             const T& value );
+
+//------------------------------------------------------------------------------
+//
+
+template< class T >
+EN_INLINE void getAttribute( const uint8_t* buffer,
+                             T& value );
 
 //------------------------------------------------------------------------------
 //
@@ -58,7 +72,7 @@ struct TAttribute
 {
     static EN_INLINE const char* name();
     typedef int type_t;
-    static const type_t dvalue = type_t();
+    static const type_t defaultValue = type_t();
 };
 
 template< template< int > class D, int A >
@@ -121,48 +135,30 @@ struct FAttributeRange
 //------------------------------------------------------------------------------
 //
 
-template< class T >
-EN_INLINE void setAttribute( const T& value,
-                             uint8_t* buffer );
+template< template< int > class D, int A, bool E = true >
+struct IFAttributesSetDefaults
+{
+    static EN_INLINE void eval( uint8_t* buffer )
+    {
+    }
+};
 
-//------------------------------------------------------------------------------
-//
+template< template< int > class D, int A >
+struct IFAttributesSetDefaults< D, A, false >
+{
+    static EN_INLINE void eval( uint8_t* buffer )
+    {
+        setAttribute( buffer + FAttributeRange< D, A >::begin,
+                      TAttribute< D, A >::defaultValue );
 
-template< class T >
-EN_INLINE void getAttribute( const uint8_t* buffer,
-                             T& value );
-
-//------------------------------------------------------------------------------
-//
+        IFAttributesSetDefaults< D, A+1, A+1 == TDevice< D >::numAttributes >::eval( buffer );
+    }
+};
 
 template< template< int > class D >
-struct AttributeContainer
+struct FAttributesSetDefaults
+    : IFAttributesSetDefaults< D, 0, 0 == TDevice< D >::numAttributes >
 {
-    static const uint32_t nbytes = FAttributesBytes< D >::value;
-
-    //------
-    //
-
-    EN_INLINE AttributeContainer();
-
-    EN_INLINE ~AttributeContainer();
-
-    //------
-    //
-
-    template< int A, class T >
-    EN_INLINE void set( const T& value );
-
-    template< int A, class T >
-    EN_INLINE void get( T& value ) const;
-
-    //EN_INLINE void write();
-
-    //------
-    //
-
-    uint8_t m_buffer[ nbytes ];
-
 };
 
 } // engine

@@ -55,18 +55,18 @@ EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
         D< CPU > device;
-        device.port = new serial::Serial( it->port,
-                                          9600,
-                                          serial::Timeout::simpleTimeout( 1000 ) );
+        device.setPort( new serial::Serial( it->port,
+                                            9600,
+                                            serial::Timeout::simpleTimeout( 1000 ) ) );
 
         // Failed to open port
         //
-        if ( !device.port->isOpen() )
+        if ( !device.port()->isOpen() )
         {
             EN_DEBUG( "-- Failed to open port\n" );
 
-            delete device.port;
-            device.port = 0x0;
+            delete device.port();
+            device.setPort( 0x0 );
 
             continue;
         }
@@ -74,13 +74,13 @@ EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
         // Request ID
         //
         uint8_t signal = traits_t::ID;
-        device.port->write( &signal, 1 );
+        device.port()->write( &signal, 1 );
         delay( 100 );
 
         // Read ID
         //
         signal = 0;
-        device.port->read( &signal, 1 );
+        device.port()->read( &signal, 1 );
 
         if ( signal == traits_t::ID )
         {
@@ -108,18 +108,18 @@ EN_INLINE std::vector< D< CPU > >& Bus< D >::devices()
 template< template< int > class D >
 EN_INLINE Status Bus< D >::connect( D< CPU >& device )
 {
-    if ( !device.port->isOpen() )
+    if ( !device.port()->isOpen() )
     {
-        device.port->open();
+        device.port()->open();
     }
 
-    device.port->setBaudrate( device.baudrate );
+    device.port()->setBaudrate( device.baudrate );
 
     device.state = Connected;
     uint8_t signal = traits_t::Connect;
-    device.port->write( &signal, 1 );
+    device.port()->write( &signal, 1 );
 
-    EN_DEBUG( "Connected: %s\n", device.port->getPort().c_str() );
+    EN_DEBUG( "Connected: %s\n", device.port()->getPort().c_str() );
 
     return Status_Ok;
 }
@@ -130,18 +130,18 @@ EN_INLINE Status Bus< D >::connect( D< CPU >& device )
 template< template< int > class D >
 EN_INLINE Status Bus< D >::disconnect( D< CPU >& device )
 {
-    if ( !device.port->isOpen() )
+    if ( !device.port()->isOpen() )
     {
         return Status_Error;
     }
 
     device.state = Disconnected;
     uint8_t signal = traits_t::Disconnect;
-    device.port->write( &signal, 1 );
+    device.port()->write( &signal, 1 );
 
-    device.port->close();
+    device.port()->close();
 
-    EN_DEBUG( "Disconnected: %s\n", device.port->getPort().c_str() );
+    EN_DEBUG( "Disconnected: %s\n", device.port()->getPort().c_str() );
 
     return Status_Ok;
 }

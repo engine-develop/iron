@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef VERSION_HPP
+#define VERSION_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -17,20 +17,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// Engine
+#include "utility.hpp"
+
 //------------------------------------------------------------------------------
 //
 
-// Engine
-#include "utility.hpp"
-#include "device.hpp"
+#define IRON_API_VERSION_MAJOR 1
+#define IRON_API_VERSION_MINOR 0
+#define IRON_API_VERSION_PATCH 0
+
+#define IRON_API_VERSION_S \
+    EN_STRING( IRON_API_VERSION_MAJOR )"."EN_STRING( IRON_API_VERSION_MINOR )"."EN_STRING( IRON_API_VERSION_PATCH )
 
 namespace engine
 {
-} // engine
 
 //------------------------------------------------------------------------------
 //
 
-#include "bus.ipp"
+EN_INLINE const char* getAPIVersion()
+{
+    return IRON_API_VERSION_S;
+}
 
-#endif // BUS_HPP
+} // engine
+
+#endif // VERSION_HPP
