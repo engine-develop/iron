@@ -1,5 +1,5 @@
-#ifndef MCU_BUS_IPP
-#define MCU_BUS_IPP
+#ifndef MCU_DEVICE_IPP
+#define MCU_DEVICE_IPP
 
 namespace engine
 {
@@ -124,4 +124,4 @@ void BDevice< P, MCU >::read( T* buffer,
 
 } // engine
 
-#endif // MCU_BUS_IPP
+#endif // MCU_DEVICE_IPP

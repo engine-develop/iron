@@ -48,10 +48,14 @@ avr-gcc {
 } else {
 }
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/ext/serial/include
 LIBS += -L$$ENGINE_PROJ_DIR/build/ext/serial/lib -lserial
 
-LIBS += -lsetupapi
+win32 {
+    LIBS += -lsetupapi
+}
 
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/variants/standard)
@@ -72,15 +76,18 @@ HEADERS += \
     cpu_bus.hpp \
     cpu_bus.ipp \
     mcu_utility.hpp \
-    mcu_bus.hpp \
-    mcu_bus.ipp \
     bus.hpp \
     bus.ipp \
     irbus.hpp \
     irbus.ipp \
     mcu_pins.hpp \
     attribute.hpp \
-    attribute.ipp
+    attribute.ipp \
+    device.hpp \
+    cpu_device.hpp \
+    cpu_device.ipp \
+    mcu_device.hpp \
+    mcu_device.ipp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS

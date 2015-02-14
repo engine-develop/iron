@@ -1,5 +1,5 @@
-#ifndef MCU_BUS_HPP
-#define MCU_BUS_HPP
+#ifndef MCU_DEVICE_HPP
+#define MCU_DEVICE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -24,7 +24,7 @@
 #include <Arduino.h>
 
 // Engine
-#include "bus.hpp"
+#include "device.hpp"
 
 namespace engine
 {
@@ -46,6 +46,9 @@ struct BDevice< P, MCU >
 
     EN_INLINE void setup( uint8_t i_id,
                           uint32_t i_baudrate );
+
+    //------
+    //
 
     EN_INLINE bool waitConnect();
 
@@ -81,6 +84,6 @@ struct BDevice< P, MCU >
 //------------------------------------------------------------------------------
 //
 
-#include "mcu_bus.ipp"
+#include "mcu_device.ipp"
 
-#endif // MCU_BUS_HPP
+#endif // MCU_DEVICE_HPP

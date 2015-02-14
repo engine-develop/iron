@@ -23,6 +23,12 @@ EN_DEFINE_ATTRIBUTE( Camera, 0, id,          uint8_t,  0 );
 EN_DEFINE_ATTRIBUTE( Camera, 1, resolutionX, uint16_t, 0 );
 EN_DEFINE_ATTRIBUTE( Camera, 2, model,       uint32_t, 0 );
 
+// Define device
+//
+EN_DEVICE_CLASS( Camera )
+{
+};
+
 } // engine
 
 //------------------------------------------------------------------------------
@@ -61,33 +67,33 @@ bool testAttributes()
 
     // Test container
     //
-    AttributeContainer< Camera > attrc;
+    Camera< IR, CPU > cam;
 
     // Test set/get 'id'
     //
     uint8_t id = 0xB0;
-    attrc.set< 0 >( id );
+    cam.set< 0 >( id );
 
     id = 0;
-    attrc.get< 0 >( id );
+    cam.get< 0 >( id );
     assert( id == 0xB0 );
 
     // Test set/get 'resolutionX'
     //
     uint16_t resolutionX = 640;
-    attrc.set< 1 >( resolutionX );
+    cam.set< 1 >( resolutionX );
 
     resolutionX = 0;
-    attrc.get< 1 >( resolutionX );
+    cam.get< 1 >( resolutionX );
     assert( resolutionX == 640 );
 
     // Test set/get 'model'
     //
     uint32_t model = 2390123;
-    attrc.set< 2 >( model );
+    cam.set< 2 >( model );
 
     model = 0;
-    attrc.get< 2 >( model );
+    cam.get< 2 >( model );
     assert( model == 2390123 );
 
     return true;

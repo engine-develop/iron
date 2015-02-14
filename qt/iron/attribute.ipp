@@ -7,28 +7,28 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class V >
-EN_INLINE void setAttribute( const V& value,
+template< class T >
+EN_INLINE void setAttribute( const T& value,
                              uint8_t* buffer )
 {
-    memcpy( buffer, &value, sizeof( V ) );
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< class V >
-EN_INLINE void getAttribute( const uint8_t* buffer,
-                             V& value )
-{
-    memcpy( &value, buffer, sizeof( V ) );
+    memcpy( buffer, &value, sizeof( T ) );
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< class T >
-EN_INLINE AttributeContainer< T >::AttributeContainer()
+EN_INLINE void getAttribute( const uint8_t* buffer,
+                             T& value )
+{
+    memcpy( &value, buffer, sizeof( T ) );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< class, int > class D, int NA >
+EN_INLINE BAttributeContainer< D, NA >::BAttributeContainer()
 {
     memset( m_buffer, 0, nbytes );
 }
@@ -36,30 +36,30 @@ EN_INLINE AttributeContainer< T >::AttributeContainer()
 //------------------------------------------------------------------------------
 //
 
-template< class T >
-EN_INLINE AttributeContainer< T >::~AttributeContainer()
+template< template< class, int > class D, int NA >
+EN_INLINE BAttributeContainer< D, NA >::~BAttributeContainer()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< class T >
-    template< int A, class V >
-EN_INLINE void AttributeContainer< T >::set( const V& value )
+template< template< class, int > class D, int NA >
+    template< int A, class T >
+EN_INLINE void BAttributeContainer< D, NA >::set( const T& value )
 {
     setAttribute( value,
-                  m_buffer + FAttributeRange< T, A >::begin );
+                  m_buffer + FAttributeRange< D, A >::begin );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< class T >
-    template< int A, class V >
-EN_INLINE void AttributeContainer< T >::get( V& value ) const
+template< template< class, int > class D, int NA >
+    template< int A, class T >
+EN_INLINE void BAttributeContainer< D, NA >::get( T& value ) const
 {
-    getAttribute( m_buffer + FAttributeRange< T, A >::begin,
+    getAttribute( m_buffer + FAttributeRange< D, A >::begin,
                   value );
 }
 

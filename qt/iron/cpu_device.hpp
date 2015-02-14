@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef CPU_DEVICE_HPP
+#define CPU_DEVICE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,26 +20,11 @@
 //------------------------------------------------------------------------------
 //
 
+// Serial
+#include <serial/serial.h>
+
 // Engine
-#include "utility.hpp"
 #include "device.hpp"
-
-//------------------------------------------------------------------------------
-//
-
-#define EN_DEFINE_BUS_PROTOCOL( NAME, S_ID, S_CONN, S_DCONN ) \
-    struct NAME; \
-    \
-    template<> \
-    struct TBus< NAME > \
-    { \
-        enum Signal \
-        { \
-            ID         = S_ID, \
-            Connect    = S_CONN, \
-            Disconnect = S_DCONN \
-        }; \
-    }; \
 
 namespace engine
 {
@@ -48,14 +33,42 @@ namespace engine
 //
 
 template< class P >
-struct TBus
+struct BDevice< P, CPU >
 {
-    enum Signal
-    {
-        ID         = 0x0,
-        Connect    = 0x0,
-        Disconnect = 0x0
-    };
+    typedef TBus< P > traits_t;
+
+    //------
+    //
+
+    EN_INLINE BDevice();
+
+    EN_INLINE ~BDevice();
+
+    //------
+    //
+
+    template< class T >
+    EN_INLINE size_t write( const T& value );
+
+    template< class T >
+    EN_INLINE size_t write( const T* buffer,
+                            size_t size );
+
+    template< class T >
+    EN_INLINE void read( T& value );
+
+    template< class T >
+    EN_INLINE void read( T* buffer,
+                         size_t size );
+
+    //------
+    //
+
+    uint8_t state;
+    uint8_t id;
+    uint32_t baudrate;
+
+    serial::Serial* port;
 };
 
 } // engine
@@ -63,6 +76,6 @@ struct TBus
 //------------------------------------------------------------------------------
 //
 
-#include "bus.ipp"
+#include "cpu_device.ipp"
 
-#endif // BUS_HPP
+#endif // CPU_DEVICE_HPP

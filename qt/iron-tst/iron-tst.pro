@@ -5,12 +5,14 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/ext/serial/include
 LIBS += -L$$ENGINE_PROJ_DIR/build/ext/serial/lib -lserial
 
-LIBS += -lsetupapi
-
-QMAKE_CXXFLAGS += -std=c++0x
+win32 {
+    LIBS += -lsetupapi
+}
 
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
 

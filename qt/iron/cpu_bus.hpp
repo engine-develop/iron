@@ -24,52 +24,11 @@
 #include <serial/serial.h>
 
 // Engine
+#include "device.hpp"
 #include "bus.hpp"
 
 namespace engine
 {
-
-//------------------------------------------------------------------------------
-//
-
-template< class P >
-struct BDevice< P, CPU >
-{
-    typedef TBus< P > traits_t;
-
-    //------
-    //
-
-    EN_INLINE BDevice();
-
-    EN_INLINE ~BDevice();
-
-    //------
-    //
-
-    template< class T >
-    EN_INLINE size_t write( const T& value );
-
-    template< class T >
-    EN_INLINE size_t write( const T* buffer,
-                            size_t size );
-
-    template< class T >
-    EN_INLINE void read( T& value );
-
-    template< class T >
-    EN_INLINE void read( T* buffer,
-                         size_t size );
-
-    //------
-    //
-
-    uint8_t state;
-    uint8_t id;
-    uint32_t baudrate;
-
-    serial::Serial* port;
-};
 
 //------------------------------------------------------------------------------
 //

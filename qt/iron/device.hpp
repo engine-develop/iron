@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef DEVICE_HPP
+#define DEVICE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -22,24 +22,15 @@
 
 // Engine
 #include "utility.hpp"
-#include "device.hpp"
+#include "attribute.hpp"
 
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_BUS_PROTOCOL( NAME, S_ID, S_CONN, S_DCONN ) \
-    struct NAME; \
-    \
-    template<> \
-    struct TBus< NAME > \
-    { \
-        enum Signal \
-        { \
-            ID         = S_ID, \
-            Connect    = S_CONN, \
-            Disconnect = S_DCONN \
-        }; \
-    }; \
+#define EN_DEVICE_CLASS( CNAME ) \
+    template< class P, int A > \
+    struct CNAME : BDevice< P, A > \
+            , AttributeContainer< CNAME > \
 
 namespace engine
 {
@@ -47,22 +38,19 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-struct TBus
+template< class P, int A = CPU >
+struct BDevice
 {
-    enum Signal
-    {
-        ID         = 0x0,
-        Connect    = 0x0,
-        Disconnect = 0x0
-    };
 };
-
-} // engine
 
 //------------------------------------------------------------------------------
 //
 
-#include "bus.ipp"
+template< class P, int A = CPU >
+struct Device : BDevice< P, A >
+{
+};
 
-#endif // BUS_HPP
+} // engine
+
+#endif // DEVICE_HPP
