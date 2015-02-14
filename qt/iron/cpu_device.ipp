@@ -7,8 +7,8 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE BDevice< P, CPU >::BDevice()
+template< template< int > class D >
+EN_INLINE BDevice< D, CPU >::BDevice()
     : state( Disconnected )
     , id( 0 )
     , baudrate( 9600 )
@@ -19,17 +19,17 @@ EN_INLINE BDevice< P, CPU >::BDevice()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE BDevice< P, CPU >::~BDevice()
+template< template< int > class D >
+EN_INLINE BDevice< D, CPU >::~BDevice()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-size_t BDevice< P, CPU >::write( const T& value )
+size_t BDevice< D, CPU >::write( const T& value )
 {
     return port->write( value );
 }
@@ -37,9 +37,9 @@ size_t BDevice< P, CPU >::write( const T& value )
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-size_t BDevice< P, CPU >::write( const T* buffer,
+size_t BDevice< D, CPU >::write( const T* buffer,
                                  size_t size )
 {
     return port->write( buffer, size );
@@ -48,9 +48,9 @@ size_t BDevice< P, CPU >::write( const T* buffer,
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-void BDevice< P, CPU >::read( T& value )
+void BDevice< D, CPU >::read( T& value )
 {
     port->read( value );
 }
@@ -58,9 +58,9 @@ void BDevice< P, CPU >::read( T& value )
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-void BDevice< P, CPU >::read( T* buffer,
+void BDevice< D, CPU >::read( T* buffer,
                               size_t size )
 {
     port->read( buffer, size );

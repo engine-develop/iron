@@ -7,8 +7,8 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE Bus< P >::~Bus()
+template< template< int > class D >
+EN_INLINE Bus< D >::~Bus()
 {
     release();
 }
@@ -16,10 +16,10 @@ EN_INLINE Bus< P >::~Bus()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE Bus< P >& Bus< P >::get()
+template< template< int > class D >
+EN_INLINE Bus< D >& Bus< D >::get()
 {
-    static Bus< P > b;
+    static Bus< D > b;
 
     return b;
 }
@@ -27,10 +27,10 @@ EN_INLINE Bus< P >& Bus< P >::get()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE void Bus< P >::release()
+template< template< int > class D >
+EN_INLINE void Bus< D >::release()
 {
-    for ( typename std::vector< Device< P, CPU > >::iterator it
+    for ( typename std::vector< D< CPU > >::iterator it
             = devices().begin(); it != devices().end(); ++it )
     {
         disconnect( *it );
@@ -42,8 +42,8 @@ EN_INLINE void Bus< P >::release()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE std::vector< Device< P, CPU > >& Bus< P >::scan()
+template< template< int > class D >
+EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
 {
     release();
 
@@ -54,7 +54,7 @@ EN_INLINE std::vector< Device< P, CPU > >& Bus< P >::scan()
     {
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
-        Device< P, CPU > device;
+        D< CPU > device;
         device.port = new serial::Serial( it->port,
                                           9600,
                                           serial::Timeout::simpleTimeout( 1000 ) );
@@ -96,8 +96,8 @@ EN_INLINE std::vector< Device< P, CPU > >& Bus< P >::scan()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE std::vector< Device< P, CPU > >& Bus< P >::devices()
+template< template< int > class D >
+EN_INLINE std::vector< D< CPU > >& Bus< D >::devices()
 {
     return m_devices;
 }
@@ -105,8 +105,8 @@ EN_INLINE std::vector< Device< P, CPU > >& Bus< P >::devices()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE Status Bus< P >::connect( Device< P, CPU >& device )
+template< template< int > class D >
+EN_INLINE Status Bus< D >::connect( D< CPU >& device )
 {
     if ( !device.port->isOpen() )
     {
@@ -127,8 +127,8 @@ EN_INLINE Status Bus< P >::connect( Device< P, CPU >& device )
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE Status Bus< P >::disconnect( Device< P, CPU >& device )
+template< template< int > class D >
+EN_INLINE Status Bus< D >::disconnect( D< CPU >& device )
 {
     if ( !device.port->isOpen() )
     {

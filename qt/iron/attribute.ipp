@@ -27,8 +27,8 @@ EN_INLINE void getAttribute( const uint8_t* buffer,
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int NA >
-EN_INLINE BAttributeContainer< D, NA >::BAttributeContainer()
+template< template< int > class D >
+EN_INLINE AttributeContainer< D >::AttributeContainer()
 {
     memset( m_buffer, 0, nbytes );
 }
@@ -36,17 +36,17 @@ EN_INLINE BAttributeContainer< D, NA >::BAttributeContainer()
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int NA >
-EN_INLINE BAttributeContainer< D, NA >::~BAttributeContainer()
+template< template< int > class D >
+EN_INLINE AttributeContainer< D >::~AttributeContainer()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int NA >
+template< template< int > class D >
     template< int A, class T >
-EN_INLINE void BAttributeContainer< D, NA >::set( const T& value )
+EN_INLINE void AttributeContainer< D >::set( const T& value )
 {
     setAttribute( value,
                   m_buffer + FAttributeRange< D, A >::begin );
@@ -55,9 +55,9 @@ EN_INLINE void BAttributeContainer< D, NA >::set( const T& value )
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int NA >
+template< template< int > class D >
     template< int A, class T >
-EN_INLINE void BAttributeContainer< D, NA >::get( T& value ) const
+EN_INLINE void AttributeContainer< D >::get( T& value ) const
 {
     getAttribute( m_buffer + FAttributeRange< D, A >::begin,
                   value );

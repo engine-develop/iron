@@ -20,6 +20,9 @@
 //------------------------------------------------------------------------------
 //
 
+// STD
+#include <vector>
+
 // Serial
 #include <serial/serial.h>
 
@@ -33,29 +36,29 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
 class Bus
 {
 
 public:
 
+    typedef TDevice< D > traits_t;
+
     //------
     //
-
-    typedef TBus< P > traits_t;
 
     static EN_INLINE Bus& get();
 
     //------
     //
 
-    EN_INLINE std::vector< Device< P, CPU > >& scan();
+    EN_INLINE std::vector< D< CPU > >& scan();
 
-    EN_INLINE std::vector< Device< P, CPU > >& devices();
+    EN_INLINE std::vector< D< CPU > >& devices();
 
-    EN_INLINE Status connect( Device< P, CPU >& device );
+    EN_INLINE Status connect( D< CPU >& device );
 
-    EN_INLINE Status disconnect( Device< P, CPU >& device );
+    EN_INLINE Status disconnect( D< CPU >& device );
 
 protected:
 
@@ -66,7 +69,7 @@ protected:
 
     EN_INLINE void release();
 
-    std::vector< Device< P, CPU > > m_devices;
+    std::vector< D< CPU > > m_devices;
 
 };
 

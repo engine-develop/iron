@@ -29,16 +29,6 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_ATTRIBUTES( CNAME, NUM ) \
-    template< class P, int A > \
-    struct CNAME; \
-    \
-    template<> \
-    struct TAttributes< CNAME > \
-    { \
-        static const uint8_t num = NUM; \
-    }; \
-
 #define EN_DEFINE_ATTRIBUTE( CNAME, I, NAME, TYPE, DVALUE ) \
     \
     template<> \
@@ -57,10 +47,13 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+template< template< int A > class D >
+struct TDevice;
+
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int A >
+template< template< int > class D, int A >
 struct TAttribute
 {
     static EN_INLINE const char* name();
@@ -68,61 +61,48 @@ struct TAttribute
     static const type_t dvalue = type_t();
 };
 
-template< template< class, int > class D, int A >
+template< template< int > class D, int A >
 EN_INLINE const char* TAttribute< D, A >::name() { return ""; }
 
 //------------------------------------------------------------------------------
 //
 
-enum AttributeNames
-{
-};
-
-template< template< class, int > class D >
-struct TAttributes
-{
-    static const uint16_t num = 0;
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< template< class, int > class D, int A, bool E = true >
+template< template< int > class D, int A, bool E = true >
 struct IFAttributesBytes
 {
     static const uint16_t value = 0;
 };
 
-template< template< class, int > class D, int A >
+template< template< int > class D, int A >
 struct IFAttributesBytes< D, A, false >
 {
     static const uint16_t value = sizeof( typename TAttribute< D, A >::type_t )
-        + IFAttributesBytes< D, A+1, A+1 == TAttributes< D >::num >::value;
+        + IFAttributesBytes< D, A+1, A+1 == TDevice< D >::numAttributes >::value;
 };
 
-template< template< class, int > class D >
+template< template< int > class D >
 struct FAttributesBytes
-    : IFAttributesBytes< D, 0, 0 == TAttributes< D >::num >
+    : IFAttributesBytes< D, 0, 0 == TDevice< D >::numAttributes >
 {
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int A, int I, bool E = true >
+template< template< int > class D, int A, int I, bool E = true >
 struct IFAttributeOffset
 {
     static const uint16_t value = 0;
 };
 
-template< template< class, int > class D, int A, int I >
+template< template< int > class D, int A, int I >
 struct IFAttributeOffset< D, A, I, false >
 {
     static const uint16_t value = sizeof( typename TAttribute< D, I >::type_t )
-        + IFAttributeOffset< D, A, I+1, I+1 == A || I+1 == TAttributes< D >::num >::value;
+        + IFAttributeOffset< D, A, I+1, I+1 == A || I+1 == TDevice< D >::numAttributes >::value;
 };
 
-template< template< class, int > class D, int A >
+template< template< int > class D, int A >
 struct FAttributeOffset
     : IFAttributeOffset< D, A, 0, 0 == A >
 {
@@ -131,7 +111,7 @@ struct FAttributeOffset
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int A >
+template< template< int > class D, int A >
 struct FAttributeRange
 {
     static const uint16_t begin = FAttributeOffset< D, A >::value;
@@ -155,18 +135,17 @@ EN_INLINE void getAttribute( const uint8_t* buffer,
 //------------------------------------------------------------------------------
 //
 
-template< template< class, int > class D, int NA >
-struct BAttributeContainer
+template< template< int > class D >
+struct AttributeContainer
 {
-    typedef TAttributes< D > traits_t;
     static const uint32_t nbytes = FAttributesBytes< D >::value;
 
     //------
     //
 
-    EN_INLINE BAttributeContainer();
+    EN_INLINE AttributeContainer();
 
-    EN_INLINE ~BAttributeContainer();
+    EN_INLINE ~AttributeContainer();
 
     //------
     //
@@ -184,23 +163,6 @@ struct BAttributeContainer
 
     uint8_t m_buffer[ nbytes ];
 
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< template< class, int > class D >
-struct BAttributeContainer< D, 0 >
-{
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< template< class, int > class D >
-struct AttributeContainer
-    : BAttributeContainer< D, TAttributes< D >::num >
-{
 };
 
 } // engine

@@ -24,40 +24,8 @@
 #include "utility.hpp"
 #include "device.hpp"
 
-//------------------------------------------------------------------------------
-//
-
-#define EN_DEFINE_BUS_PROTOCOL( NAME, S_ID, S_CONN, S_DCONN ) \
-    struct NAME; \
-    \
-    template<> \
-    struct TBus< NAME > \
-    { \
-        enum Signal \
-        { \
-            ID         = S_ID, \
-            Connect    = S_CONN, \
-            Disconnect = S_DCONN \
-        }; \
-    }; \
-
 namespace engine
 {
-
-//------------------------------------------------------------------------------
-//
-
-template< class P >
-struct TBus
-{
-    enum Signal
-    {
-        ID         = 0x0,
-        Connect    = 0x0,
-        Disconnect = 0x0
-    };
-};
-
 } // engine
 
 //------------------------------------------------------------------------------

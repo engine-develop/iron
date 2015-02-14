@@ -7,8 +7,8 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE BDevice< P, MCU >::BDevice()
+template< template< int > class D >
+EN_INLINE BDevice< D, MCU >::BDevice()
     : state( Disconnected )
     , id( 0 )
     , baudrate( 9600 )
@@ -18,16 +18,16 @@ EN_INLINE BDevice< P, MCU >::BDevice()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE BDevice< P, MCU >::~BDevice()
+template< template< int > class D >
+EN_INLINE BDevice< D, MCU >::~BDevice()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE void BDevice< P, MCU >::setup( uint8_t id,
+template< template< int > class D >
+EN_INLINE void BDevice< D, MCU >::setup( uint8_t id,
                                          uint32_t baudrate )
 {
     this->id = id;
@@ -41,8 +41,8 @@ EN_INLINE void BDevice< P, MCU >::setup( uint8_t id,
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE bool BDevice< P, MCU >::waitConnect()
+template< template< int > class D >
+EN_INLINE bool BDevice< D, MCU >::waitConnect()
 {
     switch ( Serial.read() )
     {
@@ -62,8 +62,8 @@ EN_INLINE bool BDevice< P, MCU >::waitConnect()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-EN_INLINE bool BDevice< P, MCU >::waitDisconnect()
+template< template< int > class D >
+EN_INLINE bool BDevice< D, MCU >::waitDisconnect()
 {
     switch ( Serial.read() )
     {
@@ -83,9 +83,9 @@ EN_INLINE bool BDevice< P, MCU >::waitDisconnect()
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-size_t BDevice< P, MCU >::write( const T& value )
+size_t BDevice< D, MCU >::write( const T& value )
 {
     return Serial.write( value );
 }
@@ -93,9 +93,9 @@ size_t BDevice< P, MCU >::write( const T& value )
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-size_t BDevice< P, MCU >::write( const T* buffer,
+size_t BDevice< D, MCU >::write( const T* buffer,
                                  size_t size )
 {
     return Serial.write( buffer, size );
@@ -104,9 +104,9 @@ size_t BDevice< P, MCU >::write( const T* buffer,
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-void BDevice< P, MCU >::read( T& value )
+void BDevice< D, MCU >::read( T& value )
 {
     value = Serial.read();
 }
@@ -114,9 +114,9 @@ void BDevice< P, MCU >::read( T& value )
 //------------------------------------------------------------------------------
 //
 
-template< class P >
+template< template< int > class D >
     template< class T >
-void BDevice< P, MCU >::read( T* buffer,
+void BDevice< D, MCU >::read( T* buffer,
                               size_t size )
 {
     Serial.read( buffer, size );

@@ -18,7 +18,7 @@ namespace engine
 
 // Define attributes
 //
-EN_DEFINE_ATTRIBUTES( Camera, 3 );
+EN_DEFINE_DEVICE( Camera, 3 );
 EN_DEFINE_ATTRIBUTE( Camera, 0, id,          uint8_t,  0 );
 EN_DEFINE_ATTRIBUTE( Camera, 1, resolutionX, uint16_t, 0 );
 EN_DEFINE_ATTRIBUTE( Camera, 2, model,       uint32_t, 0 );
@@ -38,7 +38,7 @@ bool testAttributes()
 {
     int status_i = 1;
 
-    static_assert( TAttributes< Camera >::num == 3, "incorrect size" );
+    static_assert( TDevice< Camera >::numAttributes == 3, "incorrect size" );
     static_assert( FAttributesBytes< Camera >::value == 7, "incorrect size" );
 
     // Test 'id'
@@ -67,7 +67,7 @@ bool testAttributes()
 
     // Test container
     //
-    Camera< IR, CPU > cam;
+    Camera< CPU > cam;
 
     // Test set/get 'id'
     //
@@ -104,11 +104,11 @@ bool testAttributes()
 
 bool testBus()
 {
-    std::vector< Device< IR, CPU > >& devices = Bus< IR >::get().scan();
+    std::vector< Camera< CPU > >& devices = Bus< Camera >::get().scan();
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< IR >::get().connect( devices[ i ] );
+        Bus< Camera >::get().connect( devices[ i ] );
         assert( devices[ i ].state == Connected );
         sleep( 2 );
     }
@@ -117,7 +117,7 @@ bool testBus()
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< IR >::get().disconnect( devices[ i ] );
+        Bus< Camera >::get().disconnect( devices[ i ] );
         assert( devices[ i ].state == Disconnected );
         sleep( 2 );
     }
@@ -131,7 +131,7 @@ bool testBus()
 int main()
 {
     assert( testAttributes() );
-    //assert( testBus() );
+    assert( testBus() );
 
     return 0;
 }

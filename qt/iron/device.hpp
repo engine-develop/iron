@@ -27,9 +27,25 @@
 //------------------------------------------------------------------------------
 //
 
+#define EN_DEFINE_DEVICE( CNAME, NA ) \
+    template< int A > class CNAME; \
+    \
+    template<> \
+    struct TDevice< CNAME > \
+    { \
+        enum Signal \
+        { \
+            ID         = 0x0, \
+            Connect    = 0x0, \
+            Disconnect = 0x0 \
+        }; \
+    \
+        static const uint16_t numAttributes = NA; \
+    }; \
+
 #define EN_DEVICE_CLASS( CNAME ) \
-    template< class P, int A > \
-    struct CNAME : BDevice< P, A > \
+    template< int A > \
+    struct CNAME : BDevice< CNAME, A > \
             , AttributeContainer< CNAME > \
 
 namespace engine
@@ -38,16 +54,24 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P, int A = CPU >
-struct BDevice
+template< template< int A > class D >
+struct TDevice
 {
+    enum Signal
+    {
+        ID         = 0x0,
+        Connect    = 0x0,
+        Disconnect = 0x0
+    };
+
+    static const uint16_t numAttributes = 0;
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< class P, int A = CPU >
-struct Device : BDevice< P, A >
+template< template< int A > class D, int A = CPU >
+struct BDevice
 {
 };
 

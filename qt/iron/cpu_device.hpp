@@ -32,10 +32,10 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< class P >
-struct BDevice< P, CPU >
+template< template< int > class D >
+struct BDevice< D, CPU >
 {
-    typedef TBus< P > traits_t;
+    typedef TDevice< D > traits_t;
 
     //------
     //
