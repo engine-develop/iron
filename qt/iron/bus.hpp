@@ -20,28 +20,23 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-//#include <cstring>
-
 // Engine
 #include "utility.hpp"
 
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_BUS_PROTOCOL( NAME, HS, S_DEV_READY, S_HOST_CONN, S_HOST_DCONN ) \
+#define EN_DEFINE_BUS_PROTOCOL( NAME, S_ID, S_CONN, S_DCONN ) \
     struct NAME; \
     \
     template<> \
     struct TBus< NAME > \
     { \
-        static const uint8_t headerSize = HS; \
-    \
         enum Signal \
         { \
-            Device_Ready    = S_DEV_READY, \
-            Host_Connect    = S_HOST_CONN, \
-            Host_Disconnect = S_HOST_DCONN \
+            ID         = S_ID, \
+            Connect    = S_CONN, \
+            Disconnect = S_DCONN \
         }; \
     }; \
 
@@ -51,12 +46,17 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-enum Bus_Status
+template< class P, int A >
+struct BDevice
 {
-    Bus_Status_Error        = 0,
-    Bus_Status_Ok           = 1,
-    Bus_Status_Connected    = 2,
-    Bus_Status_Disconnected = 3
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< class P, int A >
+struct Device : BDevice< P, A >
+{
 };
 
 //------------------------------------------------------------------------------
@@ -65,86 +65,12 @@ enum Bus_Status
 template< class P >
 struct TBus
 {
-    static const uint8_t headerSize = 16;
-
     enum Signal
     {
-        Device_Ready    = 0x0,
-        Host_Connect    = 0x0,
-        Host_Disconnect = 0x0
+        ID         = 0x0,
+        Connect    = 0x0,
+        Disconnect = 0x0
     };
-};
-
-//------------------------------------------------------------------------------
-//
-#if 0
-template< class P >
-struct BusHeader
-{
-    typedef TBus< P > traits_t;
-
-    EN_INLINE BusHeader();
-
-    EN_INLINE ~BusHeader();
-
-    //------
-
-    EN_INLINE unsigned char* data();
-
-    EN_INLINE void reset();
-
-    EN_INLINE bool set( char* header );
-
-    EN_INLINE bool set( char* begin,
-                        char* end );
-
-    //------
-
-    EN_INLINE void setResolution( const uint16_t& rx,
-                                  const uint16_t& ry );
-
-    EN_INLINE uint16_t resolutionX();
-
-    EN_INLINE uint16_t resolutionY();
-
-    //------
-
-    unsigned char m_data[ traits_t::headerSize ];
-};
-#endif
-//------------------------------------------------------------------------------
-//
-
-template< class P, int A >
-struct BBusDevice
-{
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< class P, int A >
-struct BusDevice : BBusDevice< P, A >
-{
-};
-
-//------------------------------------------------------------------------------
-//
-
-struct BBus
-{
-    static EN_INLINE Bus_Status status();
-
-    static Bus_Status s_status;
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< class P, int A >
-struct Bus : BBus
-{
-    typedef TBus< P > traits_t;
 };
 
 } // engine

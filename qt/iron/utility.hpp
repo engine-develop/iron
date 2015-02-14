@@ -20,11 +20,24 @@
 //------------------------------------------------------------------------------
 //
 
+// STD
+#ifndef __AVR__
+#ifdef LINUX
+#include <unistd.h>
+#endif
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <stdio.h>
+#endif
+
 // Engine
 #include "types.hpp"
 
 //------------------------------------------------------------------------------
 //
+
+#define EN_PP_STRINGIZE( A ) #A
 
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )
@@ -37,8 +50,35 @@
 #define byteHigh( X ) ( (uint8_t) ( (X) >> 8 ) )
 #define bytesJoin( H, L ) ( ( (H) << 8 ) | (L) )
 
+#ifdef NDEBUG
+#define EN_DEBUG( ... )
+#else
+#ifdef __AVR__
+#define EN_DEBUG( ... ) Serial.printf( __VA_ARGS__ );
+#else
+#define EN_DEBUG( ... ) printf( __VA_ARGS__ );
+#endif // __AVR__
+#endif // NDEBUG
+
 namespace engine
 {
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE void delay( size_t ms )
+{
+#ifdef __AVR__
+    ::delay( ms );
+#endif
+#ifdef LINUX
+    usleep( ms * 1000U );
+#endif
+#ifdef _WIN32
+    Sleep( ms );
+#endif
+}
+
 } // engine
 
 #endif // UTILITY_HPP

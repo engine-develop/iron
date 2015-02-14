@@ -24,7 +24,7 @@
 #include <serial/serial.h>
 
 // Engine
-#include "../bus.hpp"
+#include "bus.hpp"
 
 namespace engine
 {
@@ -33,25 +33,82 @@ namespace engine
 //
 
 template< class P >
-struct BBusDevice< P, CPU >
+struct BDevice< P, CPU >
 {
-    serial::Serial port;
+    typedef TBus< P > traits_t;
+
+    //------
+    //
+
+    EN_INLINE BDevice();
+
+    EN_INLINE ~BDevice();
+
+    //------
+    //
+
+    template< class T >
+    EN_INLINE size_t write( const T& value );
+
+    template< class T >
+    EN_INLINE size_t write( const T* buffer,
+                            size_t size );
+
+    template< class T >
+    EN_INLINE void read( T& value );
+
+    template< class T >
+    EN_INLINE void read( T* buffer,
+                         size_t size );
+
+    //------
+    //
+
+    uint8_t state;
+    uint8_t id;
+    uint32_t baudrate;
+
+    serial::Serial* port;
 };
 
 //------------------------------------------------------------------------------
 //
 
 template< class P >
-struct Bus< P, CPU > : BBus
+class Bus
 {
+
+public:
+
+    //------
+    //
+
     typedef TBus< P > traits_t;
 
-    static EN_INLINE std::vector< BusDevice< P, CPU > > listDevices();
+    static EN_INLINE Bus& get();
 
-    static EN_INLINE Bus_Status connect( const BusDevice< P, CPU >& device,
-                                         const uint16_t& baudRate = 9600 );
+    //------
+    //
 
-    static EN_INLINE Bus_Status disconnect( const BusDevice< P, CPU >& device );
+    EN_INLINE std::vector< Device< P, CPU > >& scan();
+
+    EN_INLINE std::vector< Device< P, CPU > >& devices();
+
+    EN_INLINE Status connect( Device< P, CPU >& device );
+
+    EN_INLINE Status disconnect( Device< P, CPU >& device );
+
+protected:
+
+    EN_INLINE Bus() {}
+    EN_INLINE ~Bus();
+    EN_INLINE Bus( const Bus& ) {}
+    EN_INLINE Bus& operator=( const Bus& ) {}
+
+    EN_INLINE void release();
+
+    std::vector< Device< P, CPU > > m_devices;
+
 };
 
 } // engine

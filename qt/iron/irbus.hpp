@@ -68,73 +68,113 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-enum Bus_I
+enum IR_I
 {
-    Bus_I_ID      = 0,
-    Bus_I_Config  = 1,
-    Bus_I_Device  = 2,
-    Bus_I_Channel = 3,
-    Bus_I_ClrSep  = 4,
-    Bus_I_Stereo  = 5,
-    Bus_I_ResXL   = 6,
-    Bus_I_ResXH   = 7,
-    Bus_I_ResYL   = 8,
-    Bus_I_ResYH   = 9
+    IR_I_ID      = 0,
+    IR_I_Config  = 1,
+    IR_I_Device  = 2,
+    IR_I_Channel = 3,
+    IR_I_ClrSep  = 4,
+    IR_I_Stereo  = 5,
+    IR_I_ResXL   = 6,
+    IR_I_ResXH   = 7,
+    IR_I_ResYL   = 8,
+    IR_I_ResYH   = 9
 };
 
 //------------------------------------------------------------------------------
 //
 
-enum Bus_Config
+enum IR_Config
 {
-    Bus_Config_Version_Mask = 0xF,
-    Bus_Config_Version_1    = 1
+    IR_Config_Version_Mask = 0xF,
+    IR_Config_Version_1    = 1
 };
 
 //------------------------------------------------------------------------------
 //
 
-enum Bus_Channel
+enum IR_Channel
 {
-    Bus_Channel_Type_Mask     = 0xF,
-    Bus_Channel_Type_RGB      = 0x0,
-    Bus_Channel_Type_Scalar   = 0x1,
+    IR_Channel_Type_Mask     = 0xF,
+    IR_Channel_Type_RGB      = 0x0,
+    IR_Channel_Type_Scalar   = 0x1,
 
-    Bus_Channel_Stride_Mask   = 0xF0,
-    Bus_Channel_Stride_Shift  = 4,
-    Bus_Channel_Stride_RGB    = 3,
-    Bus_Channel_Stride_Scalar = 1
+    IR_Channel_Stride_Mask   = 0xF0,
+    IR_Channel_Stride_Shift  = 4,
+    IR_Channel_Stride_RGB    = 3,
+    IR_Channel_Stride_Scalar = 1
 };
 
 //------------------------------------------------------------------------------
 //
 
-enum Bus_ColorSeparation
+enum IR_ColorSeparation
 {
-    Bus_ColorSeparation_Type_Mask  = 0xF,
-    Bus_ColorSeparation_Type_Bayer = 0x0
+    IR_ColorSeparation_Type_Mask  = 0xF,
+    IR_ColorSeparation_Type_Bayer = 0x0
 };
 
 //------------------------------------------------------------------------------
 //
 
-enum Bus_Stereo
+enum IR_Stereo
 {
-    Bus_Stereo_Enable_Mask = 0x1,
-    Bus_Stereo_Enable_Off  = 0x0,
-    Bus_Stereo_Enable_On   = 0x1,
+    IR_Stereo_Enable_Mask = 0x1,
+    IR_Stereo_Enable_Off  = 0x0,
+    IR_Stereo_Enable_On   = 0x1,
 
-    Bus_Stereo_Layout_Mask        = 0xE,
-    Bus_Stereo_Layout_Shift       = 1,
-    Bus_Stereo_Layout_Interleaved = 0x0,
-    Bus_Stereo_Layout_Serial      = 0x1
+    IR_Stereo_Layout_Mask        = 0xE,
+    IR_Stereo_Layout_Shift       = 1,
+    IR_Stereo_Layout_Interleaved = 0x0,
+    IR_Stereo_Layout_Serial      = 0x1
 };
 
 //------------------------------------------------------------------------------
 //
 
-EN_DEFINE_BUS_PROTOCOL( IR, 16, 0xB0, 0x7B, 0xA6 )
+EN_DEFINE_BUS_PROTOCOL( IR, 0xB0, 0x7B, 0xA6 )
+
+//------------------------------------------------------------------------------
+//
+#if 0
+struct IRHeader
+{
+    EN_INLINE IRHeader();
+
+    EN_INLINE ~IRHeader();
+
+    //------
+
+    EN_INLINE unsigned char* data();
+
+    EN_INLINE void reset();
+
+    EN_INLINE bool set( char* header );
+
+    EN_INLINE bool set( char* begin,
+                        char* end );
+
+    //------
+
+    EN_INLINE void setResolution( const uint16_t& rx,
+                                  const uint16_t& ry );
+
+    EN_INLINE uint16_t resolutionX();
+
+    EN_INLINE uint16_t resolutionY();
+
+    //------
+
+    unsigned char m_data[ 16 ];
+};
+#endif
 
 } // engine
+
+//------------------------------------------------------------------------------
+//
+
+#include "irbus.ipp"
 
 #endif // IRBUS_HPP

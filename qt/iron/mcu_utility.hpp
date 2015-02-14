@@ -1,5 +1,5 @@
-#ifndef CPU_UTILITY_HPP
-#define CPU_UTILITY_HPP
+#ifndef MCU_UTILITY_HPP
+#define MCU_UTILITY_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,17 +20,36 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-#include <unistd.h>
+// Arduino
+#include <Arduino.h>
+
+// AVR
+#include <util/delay.h>
 
 // Engine
-#include "../types.hpp"
+#include "utility.hpp"
 
 //------------------------------------------------------------------------------
 //
 
 namespace engine
 {
+
+//------------------------------------------------------------------------------
+//
+
+static EN_INLINE void errorLED()
+{
+    DDRB |= B00100000; // Set as output
+
+    // Wait for reset
+    while ( 1 )
+    {
+        PORTB ^= B00100000; // Toggle LED
+        _delay_ms( 100 );
+    }
+}
+
 } // engine
 
-#endif // CPU_UTILITY_HPP
+#endif // MCU_UTILITY_HPP

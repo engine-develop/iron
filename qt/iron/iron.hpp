@@ -10,14 +10,15 @@
 #include "bus.hpp"
 #include "irbus.hpp"
 #include "i2c.hpp"
-#include "ov7670.hpp"
+#include "attribute.hpp"
 
 #ifdef __AVR__
-#include "mcu/mcu_utility.hpp"
-#include "mcu/mcu_bus.hpp"
+#include "mcu_utility.hpp"
+#include "mcu_pins.hpp"
+#include "mcu_bus.hpp"
 #else
-#include "cpu/cpu_utility.hpp"
-#include "cpu/cpu_bus.hpp"
+#include "cpu_utility.hpp"
+#include "cpu_bus.hpp"
 #endif // __AVR__
 
 #endif // IRON_HPP

@@ -10,7 +10,8 @@ LIBS += -L$$ENGINE_PROJ_DIR/build/ext/serial/lib -lserial
 
 LIBS += -lsetupapi
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
-LIBS += -L$$ENGINE_PROJ_DIR/build/iron/lib -liron
 
 SOURCES += main.cpp

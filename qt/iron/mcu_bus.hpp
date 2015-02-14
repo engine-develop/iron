@@ -20,8 +20,11 @@
 //------------------------------------------------------------------------------
 //
 
+// Arduino
+#include <Arduino.h>
+
 // Engine
-#include "../bus.hpp"
+#include "bus.hpp"
 
 namespace engine
 {
@@ -30,18 +33,47 @@ namespace engine
 //
 
 template< class P >
-struct BBusDevice< P, MCU >
-{
-    //EN_INLINE void signal();
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< class P >
-struct Bus< P, MCU > : BBus
+struct BDevice< P, MCU >
 {
     typedef TBus< P > traits_t;
+
+    //------
+    //
+
+    EN_INLINE BDevice();
+
+    EN_INLINE ~BDevice();
+
+    EN_INLINE void setup( uint8_t i_id,
+                          uint32_t i_baudrate );
+
+    EN_INLINE bool waitConnect();
+
+    EN_INLINE bool waitDisconnect();
+
+    //------
+    //
+
+    template< class T >
+    EN_INLINE size_t write( const T& value );
+
+    template< class T >
+    EN_INLINE size_t write( const T* buffer,
+                            size_t size );
+
+    template< class T >
+    EN_INLINE void read( T& value );
+
+    template< class T >
+    EN_INLINE void read( T* buffer,
+                         size_t size );
+
+    //------
+    //
+
+    uint8_t state;
+    uint8_t id;
+    uint32_t baudrate;
 };
 
 } // engine
