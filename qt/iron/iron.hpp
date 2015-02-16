@@ -29,13 +29,13 @@
 #include "i2c.hpp"
 
 #ifdef __AVR__
-#include "mcu_utility.hpp"
-#include "mcu_pins.hpp"
-#include "mcu_device.hpp"
+#include "utility_mcu.hpp"
+#include "pins_mcu.hpp"
+#include "device_mcu.hpp"
 #else
-#include "cpu_utility.hpp"
-#include "cpu_device.hpp"
-#include "cpu_bus.hpp"
+#include "utility_cpu.hpp"
+#include "device_cpu.hpp"
+#include "bus_cpu.hpp"
 #endif // __AVR__
 
 #endif // IRON_HPP

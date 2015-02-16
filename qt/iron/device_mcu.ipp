@@ -1,5 +1,5 @@
-#ifndef MCU_DEVICE_IPP
-#define MCU_DEVICE_IPP
+#ifndef DEVICE_MCU_IPP
+#define DEVICE_MCU_IPP
 
 namespace engine
 {
@@ -84,4 +84,4 @@ EN_INLINE bool Device< D, MCU >::waitDisconnect()
 
 } // engine
 
-#endif // MCU_DEVICE_IPP
+#endif // DEVICE_MCU_IPP

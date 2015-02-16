@@ -1,5 +1,5 @@
-#ifndef CPU_DEVICE_IPP
-#define CPU_DEVICE_IPP
+#ifndef DEVICE_CPU_IPP
+#define DEVICE_CPU_IPP
 
 namespace engine
 {
@@ -52,4 +52,4 @@ EN_INLINE typename Device< D, CPU >::port_t* Device< D, CPU >::port()
 
 } // engine
 
-#endif // CPU_DEVICE_IPP
+#endif // DEVICE_CPU_IPP

@@ -1,5 +1,5 @@
-#ifndef CPU_BUS_IPP
-#define CPU_BUS_IPP
+#ifndef BUS_CPU_IPP
+#define BUS_CPU_IPP
 
 namespace engine
 {
@@ -121,7 +121,7 @@ EN_INLINE Status Bus< D >::connect( D< CPU >& device )
 
     EN_DEBUG( "Connected: %s\n", device.port()->getPort().c_str() );
 
-    return Status_Ok;
+    return Success;
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ EN_INLINE Status Bus< D >::disconnect( D< CPU >& device )
 {
     if ( !device.port()->isOpen() )
     {
-        return Status_Error;
+        return Error;
     }
 
     device.state = Disconnected;
@@ -143,9 +143,9 @@ EN_INLINE Status Bus< D >::disconnect( D< CPU >& device )
 
     EN_DEBUG( "Disconnected: %s\n", device.port()->getPort().c_str() );
 
-    return Status_Ok;
+    return Success;
 }
 
 } // engine
 
-#endif // CPU_BUS_IPP
+#endif // BUS_CPU_IPP

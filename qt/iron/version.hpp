@@ -23,12 +23,12 @@
 //------------------------------------------------------------------------------
 //
 
-#define IRON_API_VERSION_MAJOR 1
-#define IRON_API_VERSION_MINOR 0
+#define IRON_API_VERSION_MAJOR 0
+#define IRON_API_VERSION_MINOR 1
 #define IRON_API_VERSION_PATCH 0
 
 #define IRON_API_VERSION_S \
-    EN_STRING( IRON_API_VERSION_MAJOR )"."EN_STRING( IRON_API_VERSION_MINOR )"."EN_STRING( IRON_API_VERSION_PATCH )
+    EN_STRING( IRON_API_VERSION_MAJOR ) "." EN_STRING( IRON_API_VERSION_MINOR ) "." EN_STRING( IRON_API_VERSION_PATCH )
 
 namespace engine
 {

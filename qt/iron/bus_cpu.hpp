@@ -1,5 +1,5 @@
-#ifndef MCU_DEVICE_HPP
-#define MCU_DEVICE_HPP
+#ifndef BUS_CPU_HPP
+#define BUS_CPU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,8 +20,11 @@
 //------------------------------------------------------------------------------
 //
 
-// Arduino
-#include <Arduino.h>
+// STD
+#include <vector>
+
+// Serial
+#include <serial/serial.h>
 
 // Engine
 #include "device.hpp"
@@ -33,27 +36,39 @@ namespace engine
 //
 
 template< template< int > class D >
-struct Device< D, MCU > : BDevice< D >
+class Bus
 {
-    typedef HardwareSerial port_t;
+
+public:
+
+    typedef TDevice< D > traits_t;
 
     //------
     //
 
-    EN_INLINE Device();
-
-    EN_INLINE ~Device();
-
-    EN_INLINE void setup( uint32_t baudrate );
-
-    EN_INLINE port_t& port();
+    static EN_INLINE Bus& get();
 
     //------
     //
 
-    EN_INLINE bool waitConnect();
+    EN_INLINE std::vector< D< CPU > >& scan();
 
-    EN_INLINE bool waitDisconnect();
+    EN_INLINE std::vector< D< CPU > >& devices();
+
+    EN_INLINE Status connect( D< CPU >& device );
+
+    EN_INLINE Status disconnect( D< CPU >& device );
+
+protected:
+
+    EN_INLINE Bus() {}
+    EN_INLINE ~Bus();
+    EN_INLINE Bus( const Bus& ) {}
+    EN_INLINE Bus& operator=( const Bus& ) {}
+
+    EN_INLINE void release();
+
+    std::vector< D< CPU > > m_devices;
 
 };
 
@@ -62,6 +77,6 @@ struct Device< D, MCU > : BDevice< D >
 //------------------------------------------------------------------------------
 //
 
-#include "mcu_device.ipp"
+#include "bus_cpu.ipp"
 
-#endif // MCU_DEVICE_HPP
+#endif // BUS_CPU_HPP

@@ -25,24 +25,43 @@
 
 // Engine
 #include "utility.hpp"
+#ifdef __AVR__
+#include "pins_mcu.hpp"
+#endif // __AVR__
 
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_ATTRIBUTE( CNAME, I, NAME, TYPE, DVALUE ) \
+#define EN_DEFINE_ATTRIBUTE( CNAME, MODE, I, NAME, TYPE, DVALUE, PIN ) \
+    template< int A > class CNAME; \
     \
     template<> \
     struct TAttribute< CNAME, I > \
     { \
+        static const bool valid = true; \
+        enum { Mode = MODE }; \
         static EN_INLINE const char* name(); \
         typedef TYPE type_t; \
         static const type_t defaultValue = DVALUE; \
+        static const uint8_t pin = PIN; \
+        \
     }; \
     \
     EN_INLINE const char* TAttribute< CNAME, I >::name() { return EN_STRINGIZE( NAME ); } \
 
 namespace engine
 {
+
+//------------------------------------------------------------------------------
+//
+
+enum AttributeMode
+{
+    Input       = 0x0,
+    Output      = 0x1,
+    InputOutput = 0x2,
+    Internal    = 0x3
+};
 
 //------------------------------------------------------------------------------
 //
@@ -70,13 +89,38 @@ struct TDevice;
 template< template< int > class D, int A >
 struct TAttribute
 {
+    static const bool valid = false;
+    enum { Mode = Input };
     static EN_INLINE const char* name();
     typedef int type_t;
     static const type_t defaultValue = type_t();
+    static const uint8_t pin = None;
 };
 
 template< template< int > class D, int A >
 EN_INLINE const char* TAttribute< D, A >::name() { return ""; }
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A, bool E = false >
+struct IFAttributesCount
+{
+    static const uint16_t value = 0;
+};
+
+template< template< int > class D, int A >
+struct IFAttributesCount< D, A, true >
+{
+    static const uint16_t value = 1
+        + IFAttributesCount< D, A+1, TAttribute< D, A+1 >::valid >::value;
+};
+
+template< template< int > class D >
+struct FAttributesCount
+    : IFAttributesCount< D, 0, TAttribute< D, 0+1 >::valid >
+{
+};
 
 //------------------------------------------------------------------------------
 //
@@ -160,6 +204,90 @@ struct FAttributesSetDefaults
     : IFAttributesSetDefaults< D, 0, 0 == TDevice< D >::numAttributes >
 {
 };
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+template< int N, bool AN, bool IN = true >
+struct IFAttributeSetPin
+{
+    template< class T >
+    static EN_INLINE void eval( const T& value )
+    {
+    }
+};
+
+template< int N >
+struct IFAttributeSetPin< N, true, false >
+{
+    template< class T >
+    static EN_INLINE void eval( const T& value )
+    {
+        value = setAnalog< N >();
+    }
+};
+
+template< int N >
+struct IFAttributeSetPin< N, false, false >
+{
+    template< int V >
+    static EN_INLINE void eval()
+    {
+        value = setDigital< N, V >();
+    }
+};
+
+template< template< int > class D, int A >
+struct FAttributeSetPin
+    : IFAttributeSetPin< TAttribute< D, A >::pin,
+                         TPin< TAttribute< D, A >::pin >::analog,
+                         TAttribute< D, A >::Mode == Internal
+                            || TAttribute< D, A >::pin == None >
+{
+};
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+template< int N, bool AN, bool IN = true >
+struct IFAttributeGetPin
+{
+    template< class T >
+    static EN_INLINE void eval( T& value )
+    {
+    }
+};
+
+template< int N >
+struct IFAttributeGetPin< N, true, false >
+{
+    template< class T >
+    static EN_INLINE void eval( T& value )
+    {
+        value = getAnalog< N >();
+    }
+};
+
+template< int N >
+struct IFAttributeGetPin< N, false, false >
+{
+    template< class T >
+    static EN_INLINE void eval( T& value )
+    {
+        value = getDigital< N >();
+    }
+};
+
+template< template< int > class D, int A >
+struct FAttributeGetPin
+    : IFAttributeGetPin< TAttribute< D, A >::pin,
+                         TPin< TAttribute< D, A >::pin >::analog,
+                         TAttribute< D, A >::Mode == Internal
+                            || TAttribute< D, A >::pin == None >
+{
+};
+#endif // __AVR__
 
 } // engine
 

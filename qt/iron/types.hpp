@@ -31,9 +31,9 @@ namespace engine
 
 enum Status
 {
-    Status_Error      = 0,
-    Status_Ok         = 1,
-    Status_InvalidArg = 2
+    Error      = 0,
+    Success    = 1,
+    InvalidArg = 2
 };
 
 //------------------------------------------------------------------------------
@@ -41,8 +41,26 @@ enum Status
 
 enum ArchType
 {
-    CPU = 0,
-    MCU = 1
+    CPU = 0x0,
+    MCU = 0x1
+};
+
+//------------------------------------------------------------------------------
+//
+
+enum LogicLevel
+{
+    Low  = 0x0,
+    High = 0x1
+};
+
+//------------------------------------------------------------------------------
+//
+
+enum Selection
+{
+    Any  = 0x0,
+    None = 0xFF
 };
 
 //------------------------------------------------------------------------------
@@ -52,6 +70,18 @@ enum Connectivity
 {
     Disconnected = 0x0,
     Connected    = 0x1
+};
+
+//------------------------------------------------------------------------------
+//
+
+enum Signal
+{
+    ID         = 0x0,
+    Connect    = 0x1,
+    Disconnect = 0x2,
+    Write      = 0x3,
+    Read       = 0x4
 };
 
 } // engine

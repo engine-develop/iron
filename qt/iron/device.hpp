@@ -27,21 +27,35 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_DEVICE( CNAME, S_ID, S_CONN, S_DCONN, NA ) \
+#define EN_DEFINE_DEVICE( CNAME, DESC, ID_0, ID_1, ID_2, ID_3, NATTR ) \
     template< int A > class CNAME; \
     \
     template<> \
     struct TDevice< CNAME > \
     { \
+        static EN_INLINE const char* name(); \
+        static EN_INLINE const char* description(); \
+        static EN_INLINE const uint8_t* id(); \
+        \
         enum Signal \
         { \
-            ID         = S_ID, \
-            Connect    = S_CONN, \
-            Disconnect = S_DCONN \
+            ID         = ID_0, \
+            Connect    = ID_1, \
+            Disconnect = ID_2 \
         }; \
-    \
-        static const uint16_t numAttributes = NA; \
+        \
+        static const uint16_t numAttributes = NATTR; \
     }; \
+    \
+    EN_INLINE const char* TDevice< CNAME >::name() { return EN_STRINGIZE( CNAME ); } \
+    \
+    EN_INLINE const char* TDevice< CNAME >::description() { return DESC; } \
+    \
+    EN_INLINE const uint8_t* TDevice< CNAME >::id() \
+    { \
+        static const uint8_t s_id[] = { ID_0, ID_1, ID_2, ID_3 }; \
+        return s_id; \
+    } \
 
 #define EN_DEVICE_CLASS( CNAME ) \
     template< int A > \
@@ -56,6 +70,10 @@ namespace engine
 template< template< int A > class D >
 struct TDevice
 {
+    static EN_INLINE const char* name();
+    static EN_INLINE const char* description();
+    static EN_INLINE const uint8_t* id();
+
     enum Signal
     {
         ID         = 0x0,
@@ -66,6 +84,19 @@ struct TDevice
     static const uint16_t numAttributes = 0;
 };
 
+template< template< int > class D >
+EN_INLINE const char* TDevice< D >::name() { return ""; }
+
+template< template< int > class D >
+EN_INLINE const char* TDevice< D >::description() { return ""; }
+
+template< template< int > class D >
+EN_INLINE const uint8_t* TDevice< D >::id()
+{
+    static const uint8_t s_id[] = { 0x0, 0x0, 0x0, 0x0 };
+    return s_id;
+}
+
 //------------------------------------------------------------------------------
 //
 
@@ -73,7 +104,7 @@ template< template< int A > class D >
 struct BDevice
 {
     typedef TDevice< D > traits_t;
-    static const size_t nbytes = FAttributesBytes< D >::value;
+    static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
 
     //------
     //
@@ -91,11 +122,18 @@ struct BDevice
 
     EN_INLINE void setDefaults();
 
+    template< int A, int V >
+    EN_INLINE void set();
+
     template< int A, class T >
     EN_INLINE void set( const T& value );
 
     template< int A, class T >
     EN_INLINE void get( T& value ) const;
+
+    //------
+    // Stream modifiers
+    //
 
     EN_INLINE Status write() const;
 
@@ -108,7 +146,7 @@ struct BDevice
     uint8_t id;
     uint32_t baudrate;
 
-    uint8_t buffer[ nbytes ];
+    uint8_t attributes[ nAttrBytes ];
 
 };
 

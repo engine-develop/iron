@@ -16,14 +16,17 @@ using namespace engine;
 namespace engine
 {
 
+// Define device
+//
+EN_DEFINE_DEVICE( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43, 3 );
+
 // Define attributes
 //
-EN_DEFINE_DEVICE( Camera, 0xB0, 0x7B, 0xA6, 3 );
-EN_DEFINE_ATTRIBUTE( Camera, 0, id,          uint8_t,  0x4D );
-EN_DEFINE_ATTRIBUTE( Camera, 1, resolutionX, uint16_t, 1920 );
-EN_DEFINE_ATTRIBUTE( Camera, 2, model,       uint32_t, 2389221 );
+EN_DEFINE_ATTRIBUTE( Camera, Input,    0, shutter, uint8_t,  Low,     None );
+EN_DEFINE_ATTRIBUTE( Camera, Internal, 1, model,   uint32_t, 2389221, None );
+EN_DEFINE_ATTRIBUTE( Camera, Output,   2, led,     uint8_t,  Low,     13   );
 
-// Define device
+// Define device class
 //
 EN_DEVICE_CLASS( Camera )
 {
@@ -38,32 +41,42 @@ bool testAttributes()
 {
     int status_i = 1;
 
-    static_assert( TDevice< Camera >::numAttributes == 3, "incorrect size" );
-    static_assert( FAttributesBytes< Camera >::value == 7, "incorrect size" );
-
-    // Test 'id'
+    // Test static info
     //
-    status_i = strcmp( TAttribute< Camera, 0 >::name(), "id" );
+    status_i = strcmp( TDevice< Camera >::name(), "Camera" );
+    assert( status_i == 0 );
+    status_i = strcmp( TDevice< Camera >::description(), "Example camera device" );
+    assert( status_i == 0 );
+    assert( TDevice< Camera >::id()[ 0 ] == 0xB0 );
+    assert( TDevice< Camera >::id()[ 1 ] == 0x7B );
+    assert( TDevice< Camera >::id()[ 2 ] == 0xA6 );
+    assert( TDevice< Camera >::id()[ 3 ] == 0x43 );
+    static_assert( TDevice< Camera >::numAttributes == 3, "incorrect number" );
+    static_assert( FAttributesBytes< Camera >::value == 6, "incorrect size" );
+
+    // Test 'shutter'
+    //
+    status_i = strcmp( TAttribute< Camera, 0 >::name(), "shutter" );
     assert( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 0 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 0 >::begin == 0, "incorrect range" );
     static_assert( FAttributeRange< Camera, 0 >::end == 1, "incorrect range" );
 
-    // Test 'resolutionX'
-    //
-    status_i = strcmp( TAttribute< Camera, 1 >::name(), "resolutionX" );
-    assert( status_i == 0 );
-    static_assert( sizeof( TAttribute< Camera, 1 >::type_t ) == 2, "incorrect size" );
-    static_assert( FAttributeRange< Camera, 1 >::begin == 1, "incorrect range" );
-    static_assert( FAttributeRange< Camera, 1 >::end == 3, "incorrect range" );
-
     // Test 'model'
     //
-    status_i = strcmp( TAttribute< Camera, 2 >::name(), "model" );
+    status_i = strcmp( TAttribute< Camera, 1 >::name(), "model" );
     assert( status_i == 0 );
-    static_assert( sizeof( TAttribute< Camera, 2 >::type_t ) == 4, "incorrect size" );
-    static_assert( FAttributeRange< Camera, 2 >::begin == 3, "incorrect range" );
-    static_assert( FAttributeRange< Camera, 2 >::end == 7, "incorrect range" );
+    static_assert( sizeof( TAttribute< Camera, 1 >::type_t ) == 4, "incorrect size" );
+    static_assert( FAttributeRange< Camera, 1 >::begin == 1, "incorrect range" );
+    static_assert( FAttributeRange< Camera, 1 >::end == 5, "incorrect range" );
+
+    // Test 'led'
+    //
+    status_i = strcmp( TAttribute< Camera, 2 >::name(), "led" );
+    assert( status_i == 0 );
+    static_assert( sizeof( TAttribute< Camera, 2 >::type_t ) == 1, "incorrect size" );
+    static_assert( FAttributeRange< Camera, 2 >::begin == 5, "incorrect range" );
+    static_assert( FAttributeRange< Camera, 2 >::end == 6, "incorrect range" );
 
     // Test device
     //
@@ -73,45 +86,38 @@ bool testAttributes()
     //
     cam.setDefaults();
 
-    uint8_t id = 0;
-    uint16_t resolutionX = 0;
+    uint8_t shutter = High;
     uint32_t model = 0;
+    uint8_t led = High;
 
-    cam.get< 0 >( id );
-    assert( id == 0x4D );
+    cam.get< 0 >( shutter );
+    assert( shutter == Low );
 
-    cam.get< 1 >( resolutionX );
-    assert( resolutionX == 1920 );
-
-    cam.get< 2 >( model );
+    cam.get< 1 >( model );
     assert( model == 2389221 );
 
-    // Test set/get 'id'
+    cam.get< 2 >( led );
+    assert( led == Low );
+
+    // Test get 'shutter'
     //
-    id = 0xB0;
-    cam.set< 0 >( id );
-
-    id = 0;
-    cam.get< 0 >( id );
-    assert( id == 0xB0 );
-
-    // Test set/get 'resolutionX'
-    //
-    resolutionX = 640;
-    cam.set< 1 >( resolutionX );
-
-    resolutionX = 0;
-    cam.get< 1 >( resolutionX );
-    assert( resolutionX == 640 );
+    shutter = High;
+    cam.get< 0 >( shutter );
+    assert( shutter == Low );
 
     // Test set/get 'model'
     //
     model = 2390123;
-    cam.set< 2 >( model );
+    cam.set< 1 >( model );
 
     model = 0;
-    cam.get< 2 >( model );
+    cam.get< 1 >( model );
     assert( model == 2390123 );
+
+    // Test set 'led'
+    //
+    led = High;
+    cam.set< 0 >( led );
 
     return true;
 }

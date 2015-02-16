@@ -1,5 +1,5 @@
-#ifndef CPU_UTILITY_HPP
-#define CPU_UTILITY_HPP
+#ifndef DEVICE_CPU_HPP
+#define DEVICE_CPU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,17 +20,51 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-#include <unistd.h>
+// Serial
+#include <serial/serial.h>
 
 // Engine
-#include "types.hpp"
+#include "device.hpp"
+
+namespace engine
+{
 
 //------------------------------------------------------------------------------
 //
 
-namespace engine
+template< template< int > class D >
+struct Device< D, CPU > : BDevice< D >
 {
+    typedef serial::Serial port_t;
+
+    //------
+    //
+
+    EN_INLINE Device();
+
+    EN_INLINE ~Device();
+
+    EN_INLINE void setup( uint32_t baudrate );
+
+    //------
+    //
+
+    EN_INLINE void setPort( port_t* port );
+
+    EN_INLINE port_t* port();
+
+    //------
+    //
+
+    port_t* m_port;
+
+};
+
 } // engine
 
-#endif // CPU_UTILITY_HPP
+//------------------------------------------------------------------------------
+//
+
+#include "device_cpu.ipp"
+
+#endif // DEVICE_CPU_HPP

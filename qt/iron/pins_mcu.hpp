@@ -1,5 +1,5 @@
-#ifndef MCU_PINS_HPP
-#define MCU_PINS_HPP
+#ifndef PINS_MCU_HPP
+#define PINS_MCU_HPP
 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -28,12 +28,13 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_PIN( N, P, BIT, PWM ) \
+#define EN_DEFINE_PIN( N, P, BIT, PWM, ANALOG ) \
     template<> \
     struct TPin< N > \
     { \
         static const uint8_t bit = BIT; \
         static const bool pwm    = PWM; \
+        static const bool analog = ANALOG; \
     }; \
     \
     template<> \
@@ -54,7 +55,7 @@
     }; \
     \
     template<> \
-    struct FPinSet< N, HIGH > \
+    struct FPinSetDigital< N, HIGH > \
     { \
         static EN_INLINE void eval() \
         { \
@@ -63,7 +64,7 @@
     }; \
     \
     template<> \
-    struct FPinSet< N, LOW > \
+    struct FPinSetDigital< N, LOW > \
     { \
         static EN_INLINE void eval() \
         { \
@@ -72,7 +73,7 @@
     }; \
     \
     template<> \
-    struct FPinGet< N > \
+    struct FPinGetDigital< N > \
     { \
         static EN_INLINE uint8_t eval() \
         { \
@@ -82,7 +83,7 @@
 
 #define EN_DEFINE_PIN_PWM( N, TCCR, COM, OCR ) \
     template<> \
-    struct FPinSetA< N > \
+    struct FPinSetAnalog< N > \
     { \
         static EN_INLINE void eval( const int16_t& value ) \
         { \
@@ -100,8 +101,9 @@ namespace engine
 template< int N >
 struct TPin
 {
-    static const uint8_t bit = 0;
-    static const bool pwm    = false;
+    static const uint8_t bit    = 0;
+    static const bool    pwm    = false;
+    static const bool    analog = false;
 };
 
 //------------------------------------------------------------------------------
@@ -119,7 +121,7 @@ struct FPinSetMode
 //
 
 template< int N, int V >
-struct FPinSet
+struct FPinSetDigital
 {
     static EN_INLINE void eval()
     {
@@ -130,20 +132,7 @@ struct FPinSet
 //
 
 template< int N >
-struct FPinSetA
-{
-    //static_assert( TPin< N >::pwm, "pin must support PWM" );
-
-    static EN_INLINE void eval( const int16_t& value )
-    {
-    }
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< int N >
-struct FPinGet
+struct FPinGetDigital
 {
     static EN_INLINE uint8_t eval()
     {
@@ -155,11 +144,25 @@ struct FPinGet
 //
 
 template< int N >
-struct FPinGetA
+struct FPinSetAnalog
+{
+    static_assert( TPin< N >::pwm, "pin must support PWM" );
+
+    static EN_INLINE void eval( const int16_t& value )
+    {
+    }
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< int N >
+struct FPinGetAnalog
 {
     static EN_INLINE int16_t eval()
     {
-        return int16_t();
+        // Delegate to standard function
+        return analogRead( N );
     }
 };
 
@@ -176,39 +179,36 @@ EN_INLINE void setMode()
 //
 
 template< int N, int V >
-EN_INLINE void set()
+EN_INLINE void setDigital()
 {
-    FPinSet< N, V >::eval();
+    FPinSetDigital< N, V >::eval();
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< int N >
-EN_INLINE void seta( const int16_t& value )
+EN_INLINE uint8_t getDigital()
 {
-    FPinSetA< N >::eval( value );
+    return FPinGetDigital< N >::eval();
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< int N >
-EN_INLINE uint8_t get()
+EN_INLINE void setAnalog( const int16_t& value )
 {
-    return FPinGet< N >::eval();
+    FPinSetAnalog< N >::eval( value );
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< int N >
-EN_INLINE int16_t geta()
+EN_INLINE int16_t getAnalog()
 {
-    //return FPinGetA< N >::eval();
-
-    // Delegate to standard function
-    return analogRead( N );
+    return FPinGetAnalog< N >::eval();
 }
 
 //------------------------------------------------------------------------------
@@ -220,35 +220,35 @@ EN_INLINE int16_t geta()
 
 // Port B
 //
-EN_DEFINE_PIN( 8,  B, 0, false )
-EN_DEFINE_PIN( 9,  B, 1, true  )
-EN_DEFINE_PIN( 10, B, 2, true  )
-EN_DEFINE_PIN( 11, B, 3, true  )
-EN_DEFINE_PIN( 12, B, 4, false )
-EN_DEFINE_PIN( 13, B, 5, false )
+EN_DEFINE_PIN( 8,  B, 0, false, false )
+EN_DEFINE_PIN( 9,  B, 1, true,  false )
+EN_DEFINE_PIN( 10, B, 2, true,  false )
+EN_DEFINE_PIN( 11, B, 3, true,  false )
+EN_DEFINE_PIN( 12, B, 4, false, false )
+EN_DEFINE_PIN( 13, B, 5, false, false )
 EN_DEFINE_PIN_PWM( 9,  TCCR1A, COM1A1, OCR1A )
 EN_DEFINE_PIN_PWM( 10, TCCR1A, COM1B1, OCR1B )
 EN_DEFINE_PIN_PWM( 11, TCCR2A, COM2A1, OCR2A )
 
 // Port C
 //
-EN_DEFINE_PIN( A0, C, 0, false )
-EN_DEFINE_PIN( A1, C, 1, false )
-EN_DEFINE_PIN( A2, C, 2, false )
-EN_DEFINE_PIN( A3, C, 3, false )
-EN_DEFINE_PIN( A4, C, 4, false )
-EN_DEFINE_PIN( A5, C, 5, false )
+EN_DEFINE_PIN( A0, C, 0, false, true )
+EN_DEFINE_PIN( A1, C, 1, false, true )
+EN_DEFINE_PIN( A2, C, 2, false, true )
+EN_DEFINE_PIN( A3, C, 3, false, true )
+EN_DEFINE_PIN( A4, C, 4, false, true )
+EN_DEFINE_PIN( A5, C, 5, false, true )
 
 // Port D
 //
-EN_DEFINE_PIN( 0, D, 0, false )
-EN_DEFINE_PIN( 1, D, 1, false )
-EN_DEFINE_PIN( 2, D, 2, false )
-EN_DEFINE_PIN( 3, D, 3, true  )
-EN_DEFINE_PIN( 4, D, 4, false )
-EN_DEFINE_PIN( 5, D, 5, true  )
-EN_DEFINE_PIN( 6, D, 6, true  )
-EN_DEFINE_PIN( 7, D, 7, false )
+EN_DEFINE_PIN( 0, D, 0, false, false )
+EN_DEFINE_PIN( 1, D, 1, false, false )
+EN_DEFINE_PIN( 2, D, 2, false, false )
+EN_DEFINE_PIN( 3, D, 3, true,  false )
+EN_DEFINE_PIN( 4, D, 4, false, false )
+EN_DEFINE_PIN( 5, D, 5, true,  false )
+EN_DEFINE_PIN( 6, D, 6, true,  false )
+EN_DEFINE_PIN( 7, D, 7, false, false )
 EN_DEFINE_PIN_PWM( 3, TCCR2A, COM2B1, OCR2B )
 EN_DEFINE_PIN_PWM( 5, TCCR0A, COM0B1, OCR0B )
 EN_DEFINE_PIN_PWM( 6, TCCR0A, COM0A1, OCR0A )
@@ -257,4 +257,4 @@ EN_DEFINE_PIN_PWM( 6, TCCR0A, COM0A1, OCR0A )
 
 } // engine
 
-#endif // MCU_PINS_HPP
+#endif // PINS_MCU_HPP

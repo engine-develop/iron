@@ -1,5 +1,5 @@
-#ifndef CPU_BUS_HPP
-#define CPU_BUS_HPP
+#ifndef UTILITY_MCU_HPP
+#define UTILITY_MCU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,14 +20,17 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-#include <vector>
+// Arduino
+#include <Arduino.h>
 
-// Serial
-#include <serial/serial.h>
+// AVR
+#include <util/delay.h>
 
 // Engine
-#include "device.hpp"
+#include "utility.hpp"
+
+//------------------------------------------------------------------------------
+//
 
 namespace engine
 {
@@ -35,48 +38,18 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-class Bus
+static EN_INLINE void errorLED()
 {
+    DDRB |= B00100000; // Set as output
 
-public:
-
-    typedef TDevice< D > traits_t;
-
-    //------
-    //
-
-    static EN_INLINE Bus& get();
-
-    //------
-    //
-
-    EN_INLINE std::vector< D< CPU > >& scan();
-
-    EN_INLINE std::vector< D< CPU > >& devices();
-
-    EN_INLINE Status connect( D< CPU >& device );
-
-    EN_INLINE Status disconnect( D< CPU >& device );
-
-protected:
-
-    EN_INLINE Bus() {}
-    EN_INLINE ~Bus();
-    EN_INLINE Bus( const Bus& ) {}
-    EN_INLINE Bus& operator=( const Bus& ) {}
-
-    EN_INLINE void release();
-
-    std::vector< D< CPU > > m_devices;
-
-};
+    // Wait for reset
+    while ( 1 )
+    {
+        PORTB ^= B00100000; // Toggle LED
+        _delay_ms( 100 );
+    }
+}
 
 } // engine
 
-//------------------------------------------------------------------------------
-//
-
-#include "cpu_bus.ipp"
-
-#endif // CPU_BUS_HPP
+#endif // UTILITY_MCU_HPP

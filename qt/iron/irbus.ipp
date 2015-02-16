@@ -3,7 +3,6 @@
 
 namespace engine
 {
-
 #if 0
 //------------------------------------------------------------------------------
 //
@@ -108,7 +107,6 @@ EN_INLINE uint16_t BusHeader::resolutionY()
                                 m_data[ IRBus_I_ResYL ] ) );
 }
 #endif
-
 } // engine
 
 #endif // IRBUS_IPP

@@ -31,7 +31,7 @@ template< template< int > class D >
     template< int A >
 EN_INLINE void BDevice< D >::setDefault()
 {
-    setAttribute( buffer + FAttributeRange< D, A >::begin,
+    setAttribute( attributes + FAttributeRange< D, A >::begin,
                   TAttribute< D, A >::defaultValue );
 }
 
@@ -41,7 +41,22 @@ EN_INLINE void BDevice< D >::setDefault()
 template< template< int > class D >
 EN_INLINE void BDevice< D >::setDefaults()
 {
-    FAttributesSetDefaults< D >::eval( buffer );
+    FAttributesSetDefaults< D >::eval( attributes );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+    template< int A, int V >
+EN_INLINE void BDevice< D >::set()
+{
+#ifdef __AVR__
+    FAttributeSetPin< D, A >::eval< V >();
+#endif // __AVR__
+
+    setAttribute( attributes + FAttributeRange< D, A >::begin,
+                  TAttribute< D, A >::type_t( V ) );
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +66,11 @@ template< template< int > class D >
     template< int A, class T >
 EN_INLINE void BDevice< D >::set( const T& value )
 {
-    setAttribute( buffer + FAttributeRange< D, A >::begin,
+#ifdef __AVR__
+    FAttributeSetPin< D, A >::eval( value );
+#endif // __AVR__
+
+    setAttribute( attributes + FAttributeRange< D, A >::begin,
                   value );
 }
 
@@ -62,7 +81,14 @@ template< template< int > class D >
     template< int A, class T >
 EN_INLINE void BDevice< D >::get( T& value ) const
 {
-    getAttribute( buffer + FAttributeRange< D, A >::begin,
+#ifdef __AVR__
+    FAttributeGetPin< D, A >::eval( value );
+
+    setAttribute( attributes + FAttributeRange< D, A >::begin,
+                  value );
+#endif // __AVR__
+
+    getAttribute( attributes + FAttributeRange< D, A >::begin,
                   value );
 }
 
@@ -72,7 +98,7 @@ EN_INLINE void BDevice< D >::get( T& value ) const
 template< template< int > class D >
 EN_INLINE Status BDevice< D >::write() const
 {
-    return Status_Ok;
+    return Success;
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +107,7 @@ EN_INLINE Status BDevice< D >::write() const
 template< template< int > class D >
 EN_INLINE Status BDevice< D >::read()
 {
-    return Status_Ok;
+    return Success;
 }
 
 } // engine

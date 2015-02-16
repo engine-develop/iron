@@ -1,5 +1,5 @@
-#ifndef CPU_DEVICE_HPP
-#define CPU_DEVICE_HPP
+#ifndef DEVICE_MCU_HPP
+#define DEVICE_MCU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,8 +20,8 @@
 //------------------------------------------------------------------------------
 //
 
-// Serial
-#include <serial/serial.h>
+// Arduino
+#include <Arduino.h>
 
 // Engine
 #include "device.hpp"
@@ -33,9 +33,9 @@ namespace engine
 //
 
 template< template< int > class D >
-struct Device< D, CPU > : BDevice< D >
+struct Device< D, MCU > : BDevice< D >
 {
-    typedef serial::Serial port_t;
+    typedef HardwareSerial port_t;
 
     //------
     //
@@ -46,17 +46,14 @@ struct Device< D, CPU > : BDevice< D >
 
     EN_INLINE void setup( uint32_t baudrate );
 
-    //------
-    //
-
-    EN_INLINE void setPort( port_t* port );
-
-    EN_INLINE port_t* port();
+    EN_INLINE port_t& port();
 
     //------
     //
 
-    port_t* m_port;
+    EN_INLINE bool waitConnect();
+
+    EN_INLINE bool waitDisconnect();
 
 };
 
@@ -65,6 +62,6 @@ struct Device< D, CPU > : BDevice< D >
 //------------------------------------------------------------------------------
 //
 
-#include "cpu_device.ipp"
+#include "device_mcu.ipp"
 
-#endif // CPU_DEVICE_HPP
+#endif // DEVICE_MCU_HPP
