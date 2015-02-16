@@ -56,7 +56,7 @@ EN_INLINE void BDevice< D >::set()
 #endif // __AVR__
 
     setAttribute( attributes + FAttributeRange< D, A >::begin,
-                  TAttribute< D, A >::type_t( V ) );
+                  typename TAttribute< D, A >::type_t( V ) );
 }
 
 //------------------------------------------------------------------------------

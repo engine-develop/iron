@@ -114,10 +114,13 @@ bool testAttributes()
     cam.get< 1 >( model );
     assert( model == 2390123 );
 
-    // Test set 'led'
+    // Test set/get 'led'
     //
-    led = High;
-    cam.set< 0 >( led );
+    cam.set< 2, High >();
+
+    led = Low;
+    cam.get< 2 >( led );
+    assert( led == High );
 
     return true;
 }
