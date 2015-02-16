@@ -16,4 +16,5 @@ win32 {
 
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
 
-SOURCES += main.cpp
+SOURCES += \
+    ../tst/main.cpp

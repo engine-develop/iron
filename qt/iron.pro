@@ -67,24 +67,26 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 SOURCES +=
 
 HEADERS += \
-    attribute.hpp \
-    attribute.ipp \
-    bus_cpu.hpp \
-    bus_cpu.ipp \
-    device.hpp \
-    device.ipp \
-    device_cpu.hpp \
-    device_cpu.ipp \
-    device_mcu.hpp \
-    device_mcu.ipp \
-    i2c.hpp \
-    iron.hpp \
-    pins_mcu.hpp \
-    types.hpp \
-    utility.hpp \
-    utility_cpu.hpp \
-    utility_mcu.hpp \
-    version.hpp
+    ../src/attribute.hpp \
+    ../src/attribute.ipp \
+    ../src/bus_cpu.hpp \
+    ../src/bus_cpu.ipp \
+    ../src/device.hpp \
+    ../src/device.ipp \
+    ../src/device_cpu.hpp \
+    ../src/device_cpu.ipp \
+    ../src/device_mcu.hpp \
+    ../src/device_mcu.ipp \
+    ../src/i2c.hpp \
+    ../src/irbus.hpp \
+    ../src/irbus.ipp \
+    ../src/iron.hpp \
+    ../src/pins_mcu.hpp \
+    ../src/types.hpp \
+    ../src/utility.hpp \
+    ../src/utility_cpu.hpp \
+    ../src/utility_mcu.hpp \
+    ../src/version.hpp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS
