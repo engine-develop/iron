@@ -75,7 +75,7 @@ EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
         //
         uint8_t signal = traits_t::ID;
         device.port()->write( &signal, 1 );
-        delay( 100 );
+        delay_ms( 100 );
 
         // Read ID
         //

@@ -24,18 +24,16 @@ EN_INLINE Device< D, MCU >::~Device()
 //
 
 template< template< int > class D >
-EN_INLINE void Device< D, MCU >::setup( uint32_t baudrate )
+EN_INLINE void Device< D, MCU >::setup()
 {
-    this->baudrate = baudrate;
-
-    Serial.begin( this->baudrate );
+    FAttributesSetPinModes< D >::eval();
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< template< int > class D >
-EN_INLINE port_t& Device< D, MCU >::port()
+EN_INLINE typename Device< D, MCU >::port_t& Device< D, MCU >::port()
 {
     return Serial;
 }
@@ -48,17 +46,17 @@ EN_INLINE bool Device< D, MCU >::waitConnect()
 {
     switch ( Serial.read() )
     {
-        case traits_t::ID:
-            Serial.write( traits_t::ID );
+        case Device< D, MCU >::traits_t::ID:
+            Serial.write( Device< D, MCU >::traits_t::ID );
             break;
-        case traits_t::Connect:
-            state = Connected;
+        case Device< D, MCU >::traits_t::Connect:
+            this->state = Connected;
             break;
         default:
             break;
     }
 
-    return ( state != Connected );
+    return ( this->state != Connected );
 }
 
 //------------------------------------------------------------------------------
@@ -69,17 +67,17 @@ EN_INLINE bool Device< D, MCU >::waitDisconnect()
 {
     switch ( Serial.read() )
     {
-        case traits_t::ID:
-            Serial.write( traits_t::ID );
+        case Device< D, MCU >::traits_t::ID:
+            Serial.write( Device< D, MCU >::traits_t::ID );
             break;
-        case traits_t::Disconnect:
-            state = Disconnected;
+        case Device< D, MCU >::traits_t::Disconnect:
+            this->state = Disconnected;
             break;
         default:
             break;
     }
 
-    return ( state != Disconnected );
+    return ( this->state != Disconnected );
 }
 
 } // engine

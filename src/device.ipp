@@ -7,8 +7,8 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE BDevice< D >::BDevice()
+template< template< int > class D, int A >
+EN_INLINE BDevice< D, A >::BDevice()
     : state( Disconnected )
     , id( 0 )
     , baudrate( 9600 )
@@ -19,27 +19,28 @@ EN_INLINE BDevice< D >::BDevice()
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE BDevice< D >::~BDevice()
+template< template< int > class D, int A >
+EN_INLINE BDevice< D, A >::~BDevice()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-    template< int A >
-EN_INLINE void BDevice< D >::setDefault()
+template< template< int > class D, int A >
+    template< int AT >
+EN_INLINE void BDevice< D, A >::setDefault()
 {
-    setAttribute( attributes + FAttributeRange< D, A >::begin,
-                  TAttribute< D, A >::defaultValue );
+    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+
+    FSetAttribute< D, AT >::eval( attributes, TAttribute< D, AT >::defaultValue );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE void BDevice< D >::setDefaults()
+template< template< int > class D, int A >
+EN_INLINE void BDevice< D, A >::setDefaults()
 {
     FAttributesSetDefaults< D >::eval( attributes );
 }
@@ -47,56 +48,58 @@ EN_INLINE void BDevice< D >::setDefaults()
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-    template< int A, int V >
-EN_INLINE void BDevice< D >::set()
+template< template< int > class D, int A >
+    template< int AT, int V >
+EN_INLINE void BDevice< D, A >::set()
 {
+    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+
 #ifdef __AVR__
-    FAttributeSetPin< D, A >::eval< V >();
+    FAttributeSetPin< D, AT >::template eval< V >();
 #endif // __AVR__
 
-    setAttribute( attributes + FAttributeRange< D, A >::begin,
-                  typename TAttribute< D, A >::type_t( V ) );
+    typename TAttribute< D, AT >::type_t value( V );
+    FSetAttribute< D, AT >::eval( attributes, value );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-    template< int A, class T >
-EN_INLINE void BDevice< D >::set( const T& value )
+template< template< int > class D, int A >
+    template< int AT, class T >
+EN_INLINE void BDevice< D, A >::set( const T& value )
 {
+    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+
 #ifdef __AVR__
-    FAttributeSetPin< D, A >::eval( value );
+    FAttributeSetPin< D, AT >::eval( value );
 #endif // __AVR__
 
-    setAttribute( attributes + FAttributeRange< D, A >::begin,
-                  value );
+    FSetAttribute< D, AT >::eval( attributes, value );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-    template< int A, class T >
-EN_INLINE void BDevice< D >::get( T& value ) const
+template< template< int > class D, int A >
+    template< int AT, class T >
+EN_INLINE void BDevice< D, A >::get( T& value )
 {
-#ifdef __AVR__
-    FAttributeGetPin< D, A >::eval( value );
+    //static_assert( TAttribute< D, AT >::mode != Output, "invalid attribute mode: cannot get outputs" );
+    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
 
-    setAttribute( attributes + FAttributeRange< D, A >::begin,
-                  value );
+#ifdef __AVR__
+    FAttributeGetPin< D, AT >::eval( value, attributes );
 #endif // __AVR__
 
-    getAttribute( attributes + FAttributeRange< D, A >::begin,
-                  value );
+    value = FGetAttribute< D, AT >::template eval< T >( attributes );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status BDevice< D >::write() const
+template< template< int > class D, int A >
+EN_INLINE Status BDevice< D, A >::write() const
 {
     return Success;
 }
@@ -104,8 +107,8 @@ EN_INLINE Status BDevice< D >::write() const
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status BDevice< D >::read()
+template< template< int > class D, int A >
+EN_INLINE Status BDevice< D, A >::read()
 {
     return Success;
 }

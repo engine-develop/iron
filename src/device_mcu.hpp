@@ -33,7 +33,7 @@ namespace engine
 //
 
 template< template< int > class D >
-struct Device< D, MCU > : BDevice< D >
+struct Device< D, MCU > : BDevice< D, MCU >
 {
     typedef HardwareSerial port_t;
 
@@ -44,7 +44,7 @@ struct Device< D, MCU > : BDevice< D >
 
     EN_INLINE ~Device();
 
-    EN_INLINE void setup( uint32_t baudrate );
+    EN_INLINE void setup();
 
     EN_INLINE port_t& port();
 

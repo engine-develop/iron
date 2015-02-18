@@ -5,8 +5,6 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-QMAKE_CXXFLAGS += -std=c++0x
-
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/ext/serial/include
 LIBS += -L$$ENGINE_PROJ_DIR/build/ext/serial/lib -lserial
 
@@ -16,5 +14,7 @@ win32 {
 
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 SOURCES += \
-    ../tst/main.cpp
+    ../tst/iron-tst/main.cpp

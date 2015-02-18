@@ -23,6 +23,8 @@
 // STD
 #include <string.h>
 
+
+
 // Engine
 #include "utility.hpp"
 #ifdef __AVR__
@@ -32,14 +34,16 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_ATTRIBUTE( CNAME, MODE, I, NAME, TYPE, DVALUE, PIN ) \
+#define EN_DEFINE_ATTRIBUTE( CNAME, I, MODE, NAME, TYPE, DVALUE, PIN ) \
+    enum { CNAME ## _ ## NAME = I }; \
+    \
     template< int A > class CNAME; \
     \
     template<> \
     struct TAttribute< CNAME, I > \
     { \
         static const bool valid = true; \
-        enum { Mode = MODE }; \
+        static const uint8_t mode = MODE; \
         static EN_INLINE const char* name(); \
         typedef TYPE type_t; \
         static const type_t defaultValue = DVALUE; \
@@ -59,23 +63,8 @@ enum AttributeMode
 {
     Input       = 0x0,
     Output      = 0x1,
-    InputOutput = 0x2,
-    Internal    = 0x3
+    Internal    = 0x2
 };
-
-//------------------------------------------------------------------------------
-//
-
-template< class T >
-EN_INLINE void setAttribute( uint8_t* buffer,
-                             const T& value );
-
-//------------------------------------------------------------------------------
-//
-
-template< class T >
-EN_INLINE void getAttribute( const uint8_t* buffer,
-                             T& value );
 
 //------------------------------------------------------------------------------
 //
@@ -86,34 +75,34 @@ struct TDevice;
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A >
+template< template< int > class D, int AT >
 struct TAttribute
 {
     static const bool valid = false;
-    enum { Mode = Input };
+    static const uint8_t mode = Input;
     static EN_INLINE const char* name();
-    typedef int type_t;
+    typedef uint8_t type_t;
     static const type_t defaultValue = type_t();
     static const uint8_t pin = None;
 };
 
-template< template< int > class D, int A >
-EN_INLINE const char* TAttribute< D, A >::name() { return ""; }
+template< template< int > class D, int AT >
+EN_INLINE const char* TAttribute< D, AT >::name() { return ""; }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A, bool E = false >
+template< template< int > class D, int AT, bool E = false >
 struct IFAttributesCount
 {
     static const uint16_t value = 0;
 };
 
-template< template< int > class D, int A >
-struct IFAttributesCount< D, A, true >
+template< template< int > class D, int AT >
+struct IFAttributesCount< D, AT, true >
 {
     static const uint16_t value = 1
-        + IFAttributesCount< D, A+1, TAttribute< D, A+1 >::valid >::value;
+        + IFAttributesCount< D, AT+1, TAttribute< D, AT+1 >::valid >::value;
 };
 
 template< template< int > class D >
@@ -125,17 +114,17 @@ struct FAttributesCount
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A, bool E = true >
+template< template< int > class D, int AT, bool E = true >
 struct IFAttributesBytes
 {
-    static const uint16_t value = 0;
+    static const uint32_t value = 0;
 };
 
-template< template< int > class D, int A >
-struct IFAttributesBytes< D, A, false >
+template< template< int > class D, int AT >
+struct IFAttributesBytes< D, AT, false >
 {
-    static const uint16_t value = sizeof( typename TAttribute< D, A >::type_t )
-        + IFAttributesBytes< D, A+1, A+1 == TDevice< D >::numAttributes >::value;
+    static const uint32_t value = sizeof( typename TAttribute< D, AT >::type_t )
+        + IFAttributesBytes< D, AT+1, AT+1 == TDevice< D >::numAttributes >::value;
 };
 
 template< template< int > class D >
@@ -147,39 +136,73 @@ struct FAttributesBytes
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A, int I, bool E = true >
+template< template< int > class D, int AT, int I, bool E = true >
 struct IFAttributeOffset
 {
-    static const uint16_t value = 0;
+    static const uint32_t value = 0;
 };
 
-template< template< int > class D, int A, int I >
-struct IFAttributeOffset< D, A, I, false >
+template< template< int > class D, int AT, int I >
+struct IFAttributeOffset< D, AT, I, false >
 {
-    static const uint16_t value = sizeof( typename TAttribute< D, I >::type_t )
-        + IFAttributeOffset< D, A, I+1, I+1 == A || I+1 == TDevice< D >::numAttributes >::value;
+    static const uint32_t value = sizeof( typename TAttribute< D, I >::type_t )
+        + IFAttributeOffset< D, AT, I+1, I+1 == AT || I+1 == TDevice< D >::numAttributes >::value;
 };
 
-template< template< int > class D, int A >
+template< template< int > class D, int AT >
 struct FAttributeOffset
-    : IFAttributeOffset< D, A, 0, 0 == A >
+    : IFAttributeOffset< D, AT, 0, 0 == AT >
 {
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A >
+template< template< int > class D, int AT >
 struct FAttributeRange
 {
-    static const uint16_t begin = FAttributeOffset< D, A >::value;
-    static const uint16_t end   = begin + sizeof( typename TAttribute< D, A >::type_t );
+    static const uint32_t begin = FAttributeOffset< D, AT >::value;
+    static const uint32_t end   = begin + sizeof( typename TAttribute< D, AT >::type_t );
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D, int A, bool E = true >
+template< template< int > class D, int AT >
+struct FSetAttribute
+{
+    template< class T >
+    static EN_INLINE void eval( uint8_t* buffer,
+                                const T& value )
+    {
+        memcpy( buffer + FAttributeRange< D, AT >::begin,
+                &value,
+                sizeof( typename TAttribute< D, AT >::type_t ) );
+    }
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int AT >
+struct FGetAttribute
+{
+    template< class T >
+    static EN_INLINE T eval( const uint8_t* buffer )
+    {
+        T value = T();
+        memcpy( &value,
+                buffer + FAttributeRange< D, AT >::begin,
+                sizeof( typename TAttribute< D, AT >::type_t ) );
+
+        return value;
+    }
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int AT, bool E = true >
 struct IFAttributesSetDefaults
 {
     static EN_INLINE void eval( uint8_t* buffer )
@@ -187,15 +210,15 @@ struct IFAttributesSetDefaults
     }
 };
 
-template< template< int > class D, int A >
-struct IFAttributesSetDefaults< D, A, false >
+template< template< int > class D, int AT >
+struct IFAttributesSetDefaults< D, AT, false >
 {
     static EN_INLINE void eval( uint8_t* buffer )
     {
-        setAttribute( buffer + FAttributeRange< D, A >::begin,
-                      TAttribute< D, A >::defaultValue );
+        typename TAttribute< D, AT >::type_t value( TAttribute< D, AT >::defaultValue );
+        FSetAttribute< D, AT >::eval( buffer, value );
 
-        IFAttributesSetDefaults< D, A+1, A+1 == TDevice< D >::numAttributes >::eval( buffer );
+        IFAttributesSetDefaults< D, AT+1, AT+1 == TDevice< D >::numAttributes >::eval( buffer );
     }
 };
 
@@ -207,42 +230,91 @@ struct FAttributesSetDefaults
 
 //------------------------------------------------------------------------------
 //
+
+template< int M, int P = None >
+struct IIsAttributePinSettable
+{
+    static const bool value = false;
+};
+
+template< int P >
+struct IIsAttributePinSettable< Output, P >
+{
+    static const bool value = true;
+};
+
+template< template< int > class D, int AT >
+struct IsAttributePinSettable
+    : IIsAttributePinSettable< TAttribute< D, AT >::mode,
+                               TAttribute< D, AT >::pin >
+{
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< int M, int P = None >
+struct IIsAttributePinGettable
+{
+    static const bool value = false;
+};
+
+template< int P >
+struct IIsAttributePinGettable< Input, P >
+{
+    static const bool value = true;
+};
+
+template< template< int > class D, int AT >
+struct IsAttributePinGettable
+    : IIsAttributePinGettable< TAttribute< D, AT >::mode,
+                               TAttribute< D, AT >::pin >
+{
+};
+
+//------------------------------------------------------------------------------
+//
 #ifdef __AVR__
-template< int N, bool AN, bool IN = true >
-struct IFAttributeSetPin
+template< template< int > class D, int AT, bool IN = true >
+struct IFAttributeSetPinMode
 {
-    template< class T >
-    static EN_INLINE void eval( const T& value )
-    {
-    }
-};
-
-template< int N >
-struct IFAttributeSetPin< N, true, false >
-{
-    template< class T >
-    static EN_INLINE void eval( const T& value )
-    {
-        value = setAnalog< N >();
-    }
-};
-
-template< int N >
-struct IFAttributeSetPin< N, false, false >
-{
-    template< int V >
     static EN_INLINE void eval()
     {
-        value = setDigital< N, V >();
     }
 };
 
-template< template< int > class D, int A >
-struct FAttributeSetPin
-    : IFAttributeSetPin< TAttribute< D, A >::pin,
-                         TPin< TAttribute< D, A >::pin >::analog,
-                         TAttribute< D, A >::Mode == Internal
-                            || TAttribute< D, A >::pin == None >
+template< template< int > class D, int AT >
+struct IFAttributeSetPinMode< D, AT, false >
+{
+    static EN_INLINE void eval()
+    {
+        setMode< TAttribute< D, AT >::pin, TAttribute< D, AT >::mode >();
+    }
+};
+
+template< template< int > class D, int AT, bool E = true >
+struct IFAttributesSetPinModes
+{
+    static EN_INLINE void eval()
+    {
+    }
+};
+
+template< template< int > class D, int AT >
+struct IFAttributesSetPinModes< D, AT, false >
+{
+    static EN_INLINE void eval()
+    {
+        IFAttributeSetPinMode< D, AT, TAttribute< D, AT >::mode == Internal
+                                || TAttribute< D, AT >::pin == None >::eval();
+
+        IFAttributesSetPinModes< D, AT+1, AT+1 == TDevice< D >::numAttributes >::eval();
+    }
+};
+
+template< template< int > class D >
+struct FAttributesSetPinModes
+    : IFAttributesSetPinModes< D, 0, 0 == TDevice< D >::numAttributes >
 {
 };
 #endif // __AVR__
@@ -250,50 +322,107 @@ struct FAttributeSetPin
 //------------------------------------------------------------------------------
 //
 #ifdef __AVR__
-template< int N, bool AN, bool IN = true >
+template< int N, bool AN, bool SET = false >
+struct IFAttributeSetPin
+{
+    template< int V >
+    static EN_INLINE void eval()
+    {
+    }
+
+    template< class T >
+    static EN_INLINE void eval( const T& value )
+    {
+    }
+};
+
+template< int N >
+struct IFAttributeSetPin< N, true, true >
+{
+    template< int V >
+    static EN_INLINE void eval()
+    {
+        setAnalog< N >( int16_t( V ) );
+    }
+
+    template< class T >
+    static EN_INLINE void eval( const T& value )
+    {
+        setAnalog< N >( value );
+    }
+};
+
+template< int N >
+struct IFAttributeSetPin< N, false, true >
+{
+    template< int V >
+    static EN_INLINE void eval()
+    {
+        setDigital< N, V >();
+    }
+
+    template< class T >
+    static EN_INLINE void eval( const T& value )
+    {
+        setDigital< N >( value );
+    }
+};
+
+template< template< int > class D, int AT >
+struct FAttributeSetPin
+    : IFAttributeSetPin< TAttribute< D, AT >::pin,
+                         TPin< TAttribute< D, AT >::pin >::analog,
+                         IsAttributePinSettable< D, AT >::value >
+{
+};
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+template< template< int > class D, int AT, int N, bool AN, bool SET = false >
 struct IFAttributeGetPin
 {
     template< class T >
-    static EN_INLINE void eval( T& value )
+    static EN_INLINE void eval( T& value, uint8_t* buffer )
     {
     }
 };
 
-template< int N >
-struct IFAttributeGetPin< N, true, false >
+template< template< int > class D, int AT, int N >
+struct IFAttributeGetPin< D, AT, N, true, true >
 {
     template< class T >
-    static EN_INLINE void eval( T& value )
+    static EN_INLINE void eval( T& value, uint8_t* buffer )
     {
         value = getAnalog< N >();
+
+        FSetAttribute< D, AT >::eval( buffer, value );
     }
 };
 
-template< int N >
-struct IFAttributeGetPin< N, false, false >
+template< template< int > class D, int AT, int N >
+struct IFAttributeGetPin< D, AT, N, false, true >
 {
     template< class T >
-    static EN_INLINE void eval( T& value )
+    static EN_INLINE void eval( T& value, uint8_t* buffer )
     {
         value = getDigital< N >();
+
+        FSetAttribute< D, AT >::eval( buffer, value );
     }
 };
 
-template< template< int > class D, int A >
+template< template< int > class D, int AT >
 struct FAttributeGetPin
-    : IFAttributeGetPin< TAttribute< D, A >::pin,
-                         TPin< TAttribute< D, A >::pin >::analog,
-                         TAttribute< D, A >::Mode == Internal
-                            || TAttribute< D, A >::pin == None >
+    : IFAttributeGetPin< D, AT,
+                         TAttribute< D, AT >::pin,
+                         TPin< TAttribute< D, AT >::pin >::analog,
+                         IsAttributePinGettable< D, AT >::value >
 {
 };
 #endif // __AVR__
 
 } // engine
-
-//------------------------------------------------------------------------------
-//
-
-#include "attribute.ipp"
 
 #endif // ATTRIBUTE_HPP

@@ -59,7 +59,7 @@
 
 #define EN_DEVICE_CLASS( CNAME ) \
     template< int A > \
-    struct CNAME : Device< CNAME > \
+    struct CNAME : Device< CNAME, A > \
 
 namespace engine
 {
@@ -100,9 +100,10 @@ EN_INLINE const uint8_t* TDevice< D >::id()
 //------------------------------------------------------------------------------
 //
 
-template< template< int A > class D >
+template< template< int A > class D, int A = CPU >
 struct BDevice
 {
+    enum { Arch = A };
     typedef TDevice< D > traits_t;
     static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
 
@@ -117,19 +118,21 @@ struct BDevice
     // Attribute accessors & modifiers
     //
 
-    template< int A >
+    EN_INLINE void setup();
+
+    template< int AT >
     EN_INLINE void setDefault();
 
     EN_INLINE void setDefaults();
 
-    template< int A, int V >
+    template< int AT, int V >
     EN_INLINE void set();
 
-    template< int A, class T >
+    template< int AT, class T >
     EN_INLINE void set( const T& value );
 
-    template< int A, class T >
-    EN_INLINE void get( T& value ) const;
+    template< int AT, class T >
+    EN_INLINE void get( T& value );
 
     //------
     // Stream modifiers
@@ -154,7 +157,7 @@ struct BDevice
 //
 
 template< template< int A > class D, int A = CPU >
-struct Device : BDevice< D >
+struct Device : BDevice< D, A >
 {
 };
 

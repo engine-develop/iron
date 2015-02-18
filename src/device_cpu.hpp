@@ -33,7 +33,7 @@ namespace engine
 //
 
 template< template< int > class D >
-struct Device< D, CPU > : BDevice< D >
+struct Device< D, CPU > : BDevice< D, CPU >
 {
     typedef serial::Serial port_t;
 

@@ -38,6 +38,20 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+static void printf( const char *fmt, ... )
+{
+    char buf[ 128 ];
+    va_list args;
+    va_start( args, fmt );
+    vsnprintf( buf, sizeof( buf ), fmt, args );
+    va_end( args );
+    buf[ sizeof( buf ) / sizeof( buf[ 0 ] ) - 1 ] = '\0';
+    Serial.print( buf );
+}
+
+//------------------------------------------------------------------------------
+//
+
 static EN_INLINE void errorLED()
 {
     DDRB |= B00100000; // Set as output

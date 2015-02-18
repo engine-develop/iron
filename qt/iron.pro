@@ -64,11 +64,10 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 
-SOURCES +=
+SOURCES += \
 
 HEADERS += \
     ../src/attribute.hpp \
-    ../src/attribute.ipp \
     ../src/bus_cpu.hpp \
     ../src/bus_cpu.ipp \
     ../src/device.hpp \
@@ -81,7 +80,10 @@ HEADERS += \
     ../src/irbus.hpp \
     ../src/irbus.ipp \
     ../src/iron.hpp \
-    ../src/pins_mcu.hpp \
+    ../src/pins.hpp \
+    ../src/pins_standard.hpp \
+    ../src/sync.hpp \
+    ../src/sync.ipp \
     ../src/types.hpp \
     ../src/utility.hpp \
     ../src/utility_cpu.hpp \

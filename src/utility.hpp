@@ -24,12 +24,12 @@
 #ifndef __AVR__
 #ifdef LINUX
 #include <unistd.h>
-#endif
+#endif // LINUX
 #ifdef _WIN32
 #include <windows.h>
-#endif
+#endif // _WIN32
+#endif // __AVR__
 #include <stdio.h>
-#endif
 
 // Engine
 #include "types.hpp"
@@ -37,8 +37,30 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_STRINGIZE( A ) #A
-#define EN_STRING( A ) EN_STRINGIZE( A )
+#define EN_STRINGIZE( X ) #X
+#define EN_STRING( X ) EN_STRINGIZE( X )
+
+#ifdef __AVR__
+#define EN_PRINT( ... ) engine::printf( __VA_ARGS__ );
+#else
+#define EN_PRINT( ... ) printf( __VA_ARGS__ );
+#endif // __AVR__
+
+#ifdef NDEBUG
+#define EN_DEBUG( ... )
+#else
+#ifdef __AVR__
+#define EN_DEBUG( ... ) EN_PRINT( __VA_ARGS__ );
+#else
+#define EN_DEBUG( ... ) EN_PRINT( __VA_ARGS__ );
+#endif // __AVR__
+#endif // NDEBUG
+
+#define EN_ASSERT( X, ... ) \
+    if ( !(X) ) \
+    { \
+        EN_PRINT( "assertion failed: %s, line %d: %s\n", __FILE__, __LINE__, __VA_ARGS__ ) \
+    } \
 
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )
@@ -51,33 +73,23 @@
 #define byteHigh( X ) ( (uint8_t) ( (X) >> 8 ) )
 #define bytesJoin( H, L ) ( ( (H) << 8 ) | (L) )
 
-#ifdef NDEBUG
-#define EN_DEBUG( ... )
-#else
-#ifdef __AVR__
-#define EN_DEBUG( ... ) Serial.printf( __VA_ARGS__ );
-#else
-#define EN_DEBUG( ... ) printf( __VA_ARGS__ );
-#endif // __AVR__
-#endif // NDEBUG
-
 namespace engine
 {
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void delay( size_t ms )
+EN_INLINE void delay_ms( size_t ms )
 {
 #ifdef __AVR__
-    ::delay( ms );
-#endif
+    delay( ms );
+#endif // __AVR__
 #ifdef LINUX
     usleep( ms * 1000U );
-#endif
+#endif // LINUX
 #ifdef _WIN32
     Sleep( ms );
-#endif
+#endif // _WIN32
 }
 
 } // engine

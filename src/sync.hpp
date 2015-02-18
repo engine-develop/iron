@@ -1,5 +1,5 @@
-#ifndef IRON_HPP
-#define IRON_HPP
+#ifndef SYNC_HPP
+#define SYNC_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -17,25 +17,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+// Engine
+#include "utility.hpp"
+
+namespace engine
+{
+
 //------------------------------------------------------------------------------
 //
 
-// Engine
-#include "version.hpp"
-#include "utility.hpp"
-#include "types.hpp"
-#include "pins.hpp"
-#include "attribute.hpp"
-#include "device.hpp"
-#include "i2c.hpp"
+template< template< int A > class D >
+EN_INLINE Status sync( const D& src );
 
-#ifdef __AVR__
-#include "utility_mcu.hpp"
-#include "device_mcu.hpp"
-#else
-#include "utility_cpu.hpp"
-#include "device_cpu.hpp"
-#include "bus_cpu.hpp"
-#endif // __AVR__
+} // engine
 
-#endif // IRON_HPP
+//------------------------------------------------------------------------------
+//
+
+#include "sync.ipp"
+
+#endif // SYNC_HPP
