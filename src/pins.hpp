@@ -235,7 +235,8 @@ EN_INLINE uint16_t getAnalog()
 
 //------------------------------------------------------------------------------
 //
-
-#include "pins_standard.hpp"
+#if defined( __AVR_ATmega328P__ ) || defined( __AVR_ATmega168__ )
+#include "pins_atmega328p.hpp"
+#endif
 
 #endif // PINS_HPP

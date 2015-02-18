@@ -134,13 +134,11 @@ struct BDevice
     template< int AT, class T >
     EN_INLINE void get( T& value );
 
-    //------
-    // Stream modifiers
-    //
+    template< int AT, int V >
+    EN_INLINE bool is();
 
-    EN_INLINE Status write() const;
-
-    EN_INLINE Status read();
+    template< int AT, class T >
+    EN_INLINE bool is( const T& value );
 
     //------
     //

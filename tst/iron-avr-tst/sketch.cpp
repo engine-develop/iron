@@ -20,7 +20,7 @@ EN_DEFINE_DEVICE( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43, 5 )
 
 // Define device attributes
 //
-EN_DEFINE_ATTRIBUTE( Camera, 0, Input,    shutter, uint8_t,  Low,     None )
+EN_DEFINE_ATTRIBUTE( Camera, 0, Input,    shutter, uint8_t,  Low,     2    )
 EN_DEFINE_ATTRIBUTE( Camera, 1, Input,    zoom,    uint16_t, 512,     A0   )
 EN_DEFINE_ATTRIBUTE( Camera, 2, Internal, model,   uint32_t, 2389221, None )
 EN_DEFINE_ATTRIBUTE( Camera, 3, Internal, flash,   bool,     true,    None )
@@ -47,6 +47,8 @@ bool testAttributes()
     //
     g_cam.setDefaults();
 
+    bool state = false;
+
     uint8_t shutter = High;
     uint16_t zoom = 512;
     uint32_t model = 0;
@@ -68,20 +70,14 @@ bool testAttributes()
     g_cam.get< 4 >( led );
     EN_ASSERT( led == Low, "invalid value" );
 
-    // Test set/get 'shutter'
+    // Test get 'shutter'
     //
     shutter = High;
-    g_cam.set< 0 >( shutter );
-
-    shutter = Low;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == High, "invalid value" );
+    EN_ASSERT( shutter == Low, "invalid value" );
 
     // Test get 'zoom'
     //
-    zoom = 990;
-    g_cam.set< 1 >( zoom );
-
     zoom = 0;
     g_cam.get< 1 >( zoom );
     EN_ASSERT( zoom != 0, "invalid value" );
@@ -104,13 +100,14 @@ bool testAttributes()
     g_cam.get< 3 >( flash );
     EN_ASSERT( flash == false, "invalid value" );
 
-    // Test set/get 'led'
+    // Test set 'led'
     //
     g_cam.set< 4, High >();
 
     led = Low;
     g_cam.get< 4 >( led );
     EN_ASSERT( led == High, "invalid value" );
+    EN_ASSERT( state, "invalid value" );
 
     delay_ms( 2000 );
     g_cam.set< 4, Low >();
@@ -139,4 +136,17 @@ void setup()
 
 void loop()
 {
+    // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
+    //
+    // Note: We use attribute aliases rather than indices.
+    //
+    if ( g_cam.is< Camera_shutter, High >() )
+    {
+        g_cam.set< Camera_led, High >();
+    }
+
+    else
+    {
+        g_cam.set< Camera_led, Low >();
+    }
 }

@@ -81,14 +81,14 @@ HEADERS += \
     ../src/irbus.ipp \
     ../src/iron.hpp \
     ../src/pins.hpp \
-    ../src/pins_standard.hpp \
     ../src/sync.hpp \
     ../src/sync.ipp \
     ../src/types.hpp \
     ../src/utility.hpp \
     ../src/utility_cpu.hpp \
     ../src/utility_mcu.hpp \
-    ../src/version.hpp
+    ../src/version.hpp \
+    ../src/pins_atmega328p.hpp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS

@@ -85,7 +85,6 @@ template< template< int > class D, int A >
     template< int AT, class T >
 EN_INLINE void BDevice< D, A >::get( T& value )
 {
-    //static_assert( TAttribute< D, AT >::mode != Output, "invalid attribute mode: cannot get outputs" );
     static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
 
 #ifdef __AVR__
@@ -99,18 +98,26 @@ EN_INLINE void BDevice< D, A >::get( T& value )
 //
 
 template< template< int > class D, int A >
-EN_INLINE Status BDevice< D, A >::write() const
+    template< int AT, int V >
+EN_INLINE bool BDevice< D, A >::is()
 {
-    return Success;
+    typename TAttribute< D, AT >::type_t value;
+    get< AT >( value );
+
+    return ( bool( value ) == bool( V ) );
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< template< int > class D, int A >
-EN_INLINE Status BDevice< D, A >::read()
+    template< int AT, class T >
+EN_INLINE bool BDevice< D, A >::is( const T& value )
 {
-    return Success;
+    typename TAttribute< D, AT >::type_t value_l;
+    get< AT >( value_l );
+
+    return ( value_l == value );
 }
 
 } // engine

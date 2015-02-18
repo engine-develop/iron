@@ -23,19 +23,15 @@
 // STD
 #include <string.h>
 
-
-
 // Engine
 #include "utility.hpp"
-#ifdef __AVR__
-#include "pins_mcu.hpp"
-#endif // __AVR__
+#include "pins.hpp"
 
 //------------------------------------------------------------------------------
 //
 
 #define EN_DEFINE_ATTRIBUTE( CNAME, I, MODE, NAME, TYPE, DVALUE, PIN ) \
-    enum { CNAME ## _ ## NAME = I }; \
+    enum CNAME ## _ ## ATTRIBUTE ## _ ## I { CNAME ## _ ## NAME = I }; \
     \
     template< int A > class CNAME; \
     \

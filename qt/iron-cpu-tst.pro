@@ -15,6 +15,7 @@ win32 {
 INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
 
 QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -D__AVR_ATmega328P__
 
 SOURCES += \
     ../tst/iron-tst/main.cpp
