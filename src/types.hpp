@@ -72,18 +72,6 @@ enum Connectivity
     Connected    = 0x1
 };
 
-//------------------------------------------------------------------------------
-//
-
-enum Signal
-{
-    ID         = 0x0,
-    Connect    = 0x1,
-    Disconnect = 0x2,
-    Write      = 0x3,
-    Read       = 0x4
-};
-
 } // engine
 
 #endif // TYPES_HPP

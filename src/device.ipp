@@ -12,6 +12,7 @@ EN_INLINE BDevice< D, A >::BDevice()
     : state( Disconnected )
     , id( 0 )
     , baudrate( 9600 )
+    , port( 0x0 )
 {
     setDefaults();
 }
@@ -22,6 +23,54 @@ EN_INLINE BDevice< D, A >::BDevice()
 template< template< int > class D, int A >
 EN_INLINE BDevice< D, A >::~BDevice()
 {
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE void BDevice< D, A >::setup()
+{
+#ifdef __AVR__
+    FAttributesSetPinModes< D >::eval();
+#endif // __AVR__
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE Status BDevice< D, A >::evaluate()
+{
+    return Success;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE void BDevice< D, A >::setPort( port_t* p )
+{
+    port = p;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE typename BDevice< D, A >::port_t* BDevice< D, A >::port()
+{
+    return port;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+    template< int S >
+EN_INLINE bool BDevice< D, A >::wait()
+{
+    return wait< D, S >( port, this );
 }
 
 //------------------------------------------------------------------------------

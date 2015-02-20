@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< template< int A > class D >
+template< class D >
 EN_INLINE Status sync( const D& src )
 {
     return Success;

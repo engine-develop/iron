@@ -1,5 +1,5 @@
-#ifndef UTILITY_MCU_HPP
-#define UTILITY_MCU_HPP
+#ifndef PORT_HPP
+#define PORT_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,17 +20,12 @@
 //------------------------------------------------------------------------------
 //
 
-// Arduino
-#include <Arduino.h>
-
-// AVR
-#include <util/delay.h>
-
 // Engine
-#include "utility.hpp"
+#include "types.hpp"
 
-//------------------------------------------------------------------------------
-//
+#ifndef __AVR__
+#include "port_cpu.hpp"
+#endif // __AVR__
 
 namespace engine
 {
@@ -38,32 +33,32 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-static void printf( const char *fmt, ... )
+template< int A >
+struct TPort
 {
-    char buf[ 128 ];
-    va_list args;
-    va_start( args, fmt );
-    vsnprintf( buf, sizeof( buf ), fmt, args );
-    va_end( args );
-    buf[ sizeof( buf ) / sizeof( buf[ 0 ] ) - 1 ] = '\0';
-    Serial.print( buf );
-}
+    typedef int obj_t;
+};
 
 //------------------------------------------------------------------------------
 //
-
-static EN_INLINE void errorLED()
+#ifndef __AVR__
+template<>
+struct TPort< CPU >
 {
-    DDRB |= B00100000; // Set as output
+    typedef Serial obj_t;
+};
+#endif // __AVR__
 
-    // Wait for reset
-    while ( 1 )
-    {
-        PORTB ^= B00100000; // Toggle LED
-        _delay_ms( 100 );
-    }
-}
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+template<>
+struct TPort< MCU >
+{
+    typedef HardwareSerial obj_t;
+};
+#endif // __AVR__
 
 } // engine
 
-#endif // UTILITY_MCU_HPP
+#endif // PORT_HPP

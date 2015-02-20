@@ -1,5 +1,5 @@
-#ifndef UTILITY_CPU_HPP
-#define UTILITY_CPU_HPP
+#ifndef PORT_CPU_UNIX_HPP
+#define PORT_CPU_UNIX_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -16,21 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-
-//------------------------------------------------------------------------------
+// Note: Source code incorporated from 'Serial' library:
+//     https://github.com/wjwwood/serial
+//
+// Copyright (c) 2012 William Woodall, John Harrison
 //
 
-// STD
-#include <unistd.h>
-
-// Engine
-#include "types.hpp"
-
-//------------------------------------------------------------------------------
-//
-
-namespace engine
-{
-} // engine
-
-#endif // UTILITY_CPU_HPP
+#endif // PORT_CPU_UNIX_HPP

@@ -30,6 +30,24 @@ EN_DEFINE_ATTRIBUTE( Camera, 4, Output,   led,     uint8_t,  Low,     13   )
 //
 EN_DEVICE_CLASS( Camera )
 {
+    // Evaluation method
+    //
+    EN_INLINE Status evaluate()
+    {
+        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
+        //
+        if ( this->template is< 0, High >() )
+        {
+            this->template set< 4, High >();
+        }
+
+        else
+        {
+            this->template set< 4, Low >();
+        }
+
+        return Success;
+    }
 };
 
 } // engine
@@ -136,17 +154,5 @@ void setup()
 
 void loop()
 {
-    // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
-    //
-    // Note: We use attribute aliases rather than indices.
-    //
-    if ( g_cam.is< Camera_shutter, High >() )
-    {
-        g_cam.set< Camera_led, High >();
-    }
-
-    else
-    {
-        g_cam.set< Camera_led, Low >();
-    }
+    g_cam.evaluate();
 }

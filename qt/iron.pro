@@ -10,7 +10,6 @@ ARDUINO_DIR     = C:/Program Files (x86)/Arduino
 ARDUINO_MCU     = atmega328p
 ARDUINO_FCPU    = 16000000
 ARDUINO_AVR_DIR = $$ARDUINO_DIR/hardware/tools/avr
-ARDUINO_AVR_BUILD = 0
 
 QT -= core gui
 
@@ -19,7 +18,7 @@ TARGET = $$PROJECT
 TEMPLATE = lib
 CONFIG += staticlib
 
-CONFIG += avr-gcc
+#CONFIG += avr-gcc
 
 avr-gcc {
     TARGET = $$PROJECT-avr
@@ -67,28 +66,6 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 SOURCES += \
 
 HEADERS += \
-    ../src/attribute.hpp \
-    ../src/bus_cpu.hpp \
-    ../src/bus_cpu.ipp \
-    ../src/device.hpp \
-    ../src/device.ipp \
-    ../src/device_cpu.hpp \
-    ../src/device_cpu.ipp \
-    ../src/device_mcu.hpp \
-    ../src/device_mcu.ipp \
-    ../src/i2c.hpp \
-    ../src/irbus.hpp \
-    ../src/irbus.ipp \
-    ../src/iron.hpp \
-    ../src/pins.hpp \
-    ../src/sync.hpp \
-    ../src/sync.ipp \
-    ../src/types.hpp \
-    ../src/utility.hpp \
-    ../src/utility_cpu.hpp \
-    ../src/utility_mcu.hpp \
-    ../src/version.hpp \
-    ../src/pins_atmega328p.hpp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS
@@ -97,5 +74,3 @@ INSTALLS += headers
 #libs.path = $$shell_path($$ENGINE_PROJ_DIR/build/$$PROJECT/lib)
 #libs.files = $$DESTDIR_TARGET
 #INSTALLS += libs
-
-OTHER_FILES +=

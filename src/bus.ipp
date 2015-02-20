@@ -47,44 +47,43 @@ EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
 {
     release();
 
-    std::vector< serial::PortInfo > devices_i = serial::list_ports();
+    std::vector< PortInfo > devices_i = list_ports();
 
-    for ( std::vector< serial::PortInfo >::const_iterator it
+    for ( std::vector< PortInfo >::const_iterator it
             = devices_i.begin(); it != devices_i.end(); ++it )
     {
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
-        D< CPU > device;
-        device.setPort( new serial::Serial( it->port,
-                                            9600,
-                                            serial::Timeout::simpleTimeout( 1000 ) ) );
+        Serial port = new Serial( it->port,
+                                  9600,
+                                  Timeout::simpleTimeout( 1000 ) ) );
 
         // Failed to open port
         //
-        if ( !device.port()->isOpen() )
+        if ( !port->isOpen() )
         {
-            EN_DEBUG( "-- Failed to open port\n" );
+            EN_DEBUG( "Error: Failed to open port\n" );
 
-            delete device.port();
-            device.setPort( 0x0 );
+            delete port;
 
             continue;
         }
 
         // Request ID
         //
-        uint8_t signal = traits_t::ID;
-        device.port()->write( &signal, 1 );
+        signal< D, ID >( port );
         delay_ms( 100 );
 
         // Read ID
         //
-        signal = 0;
-        device.port()->read( &signal, 1 );
+        while ( wait< D, ID >( port ) ) {}
 
         if ( signal == traits_t::ID )
         {
             EN_DEBUG( "-- Found device\n" );
+
+            D< CPU > device;
+            device.setPort( port );
 
             m_devices.push_back( device );
         }

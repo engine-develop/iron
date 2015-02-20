@@ -22,6 +22,7 @@
 
 // Engine
 #include "utility.hpp"
+#include "port.hpp"
 #include "attribute.hpp"
 
 //------------------------------------------------------------------------------
@@ -35,31 +36,18 @@
     { \
         static EN_INLINE const char* name(); \
         static EN_INLINE const char* description(); \
-        static EN_INLINE const uint8_t* id(); \
-        \
-        enum Signal \
-        { \
-            ID         = ID_0, \
-            Connect    = ID_1, \
-            Disconnect = ID_2 \
-        }; \
-        \
+        static const uint32_t id = EN_PACK4( ID_0, ID_1, ID_2, ID_3 ); \
         static const uint16_t numAttributes = NATTR; \
     }; \
     \
     EN_INLINE const char* TDevice< CNAME >::name() { return EN_STRINGIZE( CNAME ); } \
     \
     EN_INLINE const char* TDevice< CNAME >::description() { return DESC; } \
-    \
-    EN_INLINE const uint8_t* TDevice< CNAME >::id() \
-    { \
-        static const uint8_t s_id[] = { ID_0, ID_1, ID_2, ID_3 }; \
-        return s_id; \
-    } \
 
 #define EN_DEVICE_CLASS( CNAME ) \
-    template< int A > \
-    struct CNAME : Device< CNAME, A > \
+    template< int A = CPU > \
+    struct CNAME \
+        : BDevice< CNAME, A > \
 
 namespace engine
 {
@@ -72,15 +60,7 @@ struct TDevice
 {
     static EN_INLINE const char* name();
     static EN_INLINE const char* description();
-    static EN_INLINE const uint8_t* id();
-
-    enum Signal
-    {
-        ID         = 0x0,
-        Connect    = 0x0,
-        Disconnect = 0x0
-    };
-
+    static const uint32_t id = 0;
     static const uint16_t numAttributes = 0;
 };
 
@@ -90,13 +70,6 @@ EN_INLINE const char* TDevice< D >::name() { return ""; }
 template< template< int > class D >
 EN_INLINE const char* TDevice< D >::description() { return ""; }
 
-template< template< int > class D >
-EN_INLINE const uint8_t* TDevice< D >::id()
-{
-    static const uint8_t s_id[] = { 0x0, 0x0, 0x0, 0x0 };
-    return s_id;
-}
-
 //------------------------------------------------------------------------------
 //
 
@@ -105,6 +78,7 @@ struct BDevice
 {
     enum { Arch = A };
     typedef TDevice< D > traits_t;
+    typedef typename TPort< A >::obj_t port_t;
     static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
 
     //------
@@ -115,10 +89,28 @@ struct BDevice
     EN_INLINE ~BDevice();
 
     //------
-    // Attribute accessors & modifiers
+    // Setup
     //
 
     EN_INLINE void setup();
+
+    //------
+    // Evaluation
+    //
+
+    EN_INLINE Status evaluate();
+
+    //------
+    // Port
+    //
+
+    EN_INLINE void setPort( port_t* port );
+
+    EN_INLINE port_t* port();
+
+    //------
+    // Attribute accessors & modifiers
+    //
 
     template< int AT >
     EN_INLINE void setDefault();
@@ -146,17 +138,9 @@ struct BDevice
     Connectivity state;
     uint8_t id;
     uint32_t baudrate;
-
+    port_t* port;
     uint8_t attributes[ nAttrBytes ];
 
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int A > class D, int A = CPU >
-struct Device : BDevice< D, A >
-{
 };
 
 } // engine

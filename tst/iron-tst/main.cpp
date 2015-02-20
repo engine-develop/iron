@@ -53,10 +53,7 @@ bool testAttributes()
     assert( status_i == 0 );
     status_i = strcmp( TDevice< Camera >::description(), "Example camera device" );
     assert( status_i == 0 );
-    assert( TDevice< Camera >::id()[ 0 ] == 0xB0 );
-    assert( TDevice< Camera >::id()[ 1 ] == 0x7B );
-    assert( TDevice< Camera >::id()[ 2 ] == 0xA6 );
-    assert( TDevice< Camera >::id()[ 3 ] == 0x43 );
+    assert( TDevice< Camera >::id == 2960893507 );
     static_assert( TDevice< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
@@ -213,7 +210,7 @@ int main()
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
     assert( testAttributes() );
-    //assert( testBus() );
+    assert( testBus() );
 
     return 0;
 }

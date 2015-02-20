@@ -26,16 +26,15 @@
 #include "types.hpp"
 #include "pins.hpp"
 #include "attribute.hpp"
+#include "port.hpp"
+#include "signal.hpp"
 #include "device.hpp"
-#include "i2c.hpp"
+#include "sync.hpp"
 
 #ifdef __AVR__
-#include "utility_mcu.hpp"
-#include "device_mcu.hpp"
+#include "i2c.hpp"
 #else
-#include "utility_cpu.hpp"
-#include "device_cpu.hpp"
-#include "bus_cpu.hpp"
+#include "bus.hpp"
 #endif // __AVR__
 
 #endif // IRON_HPP

@@ -1,5 +1,5 @@
-#ifndef MCU_I2C_HPP
-#define MCU_I2C_HPP
+#ifndef I2C_HPP
+#define I2C_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -16,8 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-
-#ifdef __AVR__
 
 //------------------------------------------------------------------------------
 //
@@ -81,6 +79,4 @@ EN_INLINE int scanI2CDevices()
 
 } // engine
 
-#endif // __AVR__
-
-#endif // MCU_I2C_HPP
+#endif // I2C_HPP

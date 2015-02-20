@@ -56,6 +56,10 @@
 #endif // __AVR__
 #endif // NDEBUG
 
+#ifndef __AVR__
+#define EN_THROW( EXCLASS, MSG ) throw EXCLASS( __FILE__, __LINE__, (MSG) )
+#endif // __AVR__
+
 #define EN_ASSERT( X, ... ) \
     if ( !(X) ) \
     { \
@@ -64,6 +68,13 @@
 
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )
+
+#define EN_PACK4( A, B, C, D ) ((A) << 24) | ((B) << 16) | ((C) << 8) | ((D) << 0)
+#define EN_UPACK4( X, A, B, C, D ) \
+    (A) = ( (X) >> 24 ) & 0xFF; \
+    (B) = ( (X) >> 16 ) & 0xFF; \
+    (C) = ( (X) >> 8  ) & 0xFF; \
+    (D) = ( (X) >> 0  ) & 0xFF; \
 
 #define setBit( X, N )    (X) |= (1UL << (N));
 #define clearBit( X, N )  (X) &= (1UL << (N));
@@ -91,6 +102,37 @@ EN_INLINE void delay_ms( size_t ms )
     Sleep( ms );
 #endif // _WIN32
 }
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+static void printf( const char *fmt, ... )
+{
+    char buf[ 128 ];
+    va_list args;
+    va_start( args, fmt );
+    vsnprintf( buf, sizeof( buf ), fmt, args );
+    va_end( args );
+    buf[ sizeof( buf ) / sizeof( buf[ 0 ] ) - 1 ] = '\0';
+    Serial.print( buf );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+static EN_INLINE void errorLED()
+{
+    DDRB |= B00100000; // Set as output
+
+    // Wait for reset
+    while ( 1 )
+    {
+        PORTB ^= B00100000; // Toggle LED
+        _delay_ms( 100 );
+    }
+}
+#endif // __AVR__
 
 } // engine
 

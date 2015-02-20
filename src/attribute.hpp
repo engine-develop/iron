@@ -31,8 +31,6 @@
 //
 
 #define EN_DEFINE_ATTRIBUTE( CNAME, I, MODE, NAME, TYPE, DVALUE, PIN ) \
-    enum CNAME ## _ ## ATTRIBUTE ## _ ## I { CNAME ## _ ## NAME = I }; \
-    \
     template< int A > class CNAME; \
     \
     template<> \
