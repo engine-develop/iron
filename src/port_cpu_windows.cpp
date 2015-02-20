@@ -73,11 +73,11 @@ void Serial::SerialImpl::open()
             case ERROR_FILE_NOT_FOUND:
               // Use this->getPort to convert to a std::string
               ss << "Specified port, " << this->getPort() << ", does not exist.";
-              EN_THROW( std::runtime_error, ss.str().c_str() );
+              throw std::runtime_error( ss.str() );
               this->close();
             default:
               ss << "Unknown error opening the serial port: " << errno;
-              EN_THROW( std::runtime_error, ss.str().c_str() );
+              throw std::runtime_error( ss.str() );
               this->close();
         }
     }
@@ -97,7 +97,7 @@ void Serial::SerialImpl::reconfigurePort ()
     if ( fd_ == INVALID_HANDLE_VALUE )
     {
         // Can only operate on a valid file descriptor
-        EN_THROW( std::runtime_error, "Invalid file descriptor, is the serial port open?" );
+        throw std::runtime_error( "Invalid file descriptor, is the serial port open?" );
     }
 
     DCB dcbSerialParams = {0};
@@ -106,7 +106,7 @@ void Serial::SerialImpl::reconfigurePort ()
     if ( !GetCommState( fd_, &dcbSerialParams ) )
     {
         //error getting state
-        EN_THROW( std::runtime_error, "Error getting the serial port state." );
+        throw std::runtime_error( "Error getting the serial port state." );
     }
 
     // setup baud rate
@@ -266,7 +266,7 @@ void Serial::SerialImpl::reconfigurePort ()
     if ( !SetCommState( fd_, &dcbSerialParams ) )
     {
         CloseHandle( fd_ );
-        EN_THROW( std::runtime_error, "Error setting serial port settings." );
+        throw std::runtime_error( "Error setting serial port settings." );
     }
 
     // Setup timeouts
@@ -278,7 +278,7 @@ void Serial::SerialImpl::reconfigurePort ()
     timeouts.WriteTotalTimeoutMultiplier = timeout_.write_timeout_multiplier;
     if ( !SetCommTimeouts(fd_, &timeouts))
     {
-        EN_THROW( std::runtime_error, "Error setting timeouts." );
+        throw std::runtime_error( "Error setting timeouts." );
     }
 }
 
@@ -294,7 +294,7 @@ void Serial::SerialImpl::close()
       if (ret == 0) {
         std::stringstream ss;
         ss << "Error while closing serial port: " << GetLastError();
-        EN_THROW( std::runtime_error, ss.str().c_str() );
+        throw std::runtime_error( ss.str() );
       } else {
         fd_ = INVALID_HANDLE_VALUE;
       }
@@ -324,7 +324,7 @@ size_t Serial::SerialImpl::available()
     {
         std::stringstream ss;
         ss << "Error while checking status of the serial port: " << GetLastError();
-        EN_THROW( std::runtime_error, ss.str().c_str() );
+        throw std::runtime_error( ss.str() );
     }
 
     return static_cast< size_t >( cs.cbInQue );
@@ -335,7 +335,7 @@ size_t Serial::SerialImpl::available()
 
 bool Serial::SerialImpl::waitReadable( uint32_t timeout )
 {
-    EN_THROW( std::runtime_error, "waitReadable is not implemented on Windows." );
+    throw std::runtime_error( "waitReadable is not implemented on Windows." );
 
     return false;
 }
@@ -345,7 +345,7 @@ bool Serial::SerialImpl::waitReadable( uint32_t timeout )
 
 void Serial::SerialImpl::waitByteTimes( size_t count )
 {
-    EN_THROW( std::runtime_error, "waitByteTimes is not implemented on Windows." );
+    throw std::runtime_error( "waitByteTimes is not implemented on Windows." );
 }
 
 //------------------------------------------------------------------------------
@@ -355,7 +355,7 @@ size_t Serial::SerialImpl::read( uint8_t *buf, size_t size )
 {
     if ( !is_open_ )
     {
-        EN_THROW( std::runtime_error, "Serial::read" );
+        throw std::runtime_error( "Serial::read" );
     }
 
     DWORD bytes_read;
@@ -364,7 +364,7 @@ size_t Serial::SerialImpl::read( uint8_t *buf, size_t size )
     {
         std::stringstream ss;
         ss << "Error while reading from the serial port: " << GetLastError();
-        EN_THROW( std::runtime_error, ss.str().c_str());
+        throw std::runtime_error( ss.str());
     }
 
     return (size_t) (bytes_read);
@@ -377,7 +377,7 @@ size_t Serial::SerialImpl::write( const uint8_t *data, size_t length )
 {
     if ( is_open_ == false )
     {
-        EN_THROW( std::runtime_error, "Serial::write" );
+        throw std::runtime_error( "Serial::write" );
     }
 
     DWORD bytes_written;
@@ -386,7 +386,7 @@ size_t Serial::SerialImpl::write( const uint8_t *data, size_t length )
     {
         std::stringstream ss;
         ss << "Error while writing to the serial port: " << GetLastError();
-        EN_THROW( std::runtime_error, ss.str().c_str());
+        throw std::runtime_error( ss.str());
     }
 
     return (size_t) (bytes_written);
@@ -552,7 +552,7 @@ void Serial::SerialImpl::flush()
 
 void Serial::SerialImpl::flushInput()
 {
-  EN_THROW( std::runtime_error, "flushInput is not supported on Windows." );
+  throw std::runtime_error( "flushInput is not supported on Windows." );
 }
 
 //------------------------------------------------------------------------------
@@ -560,7 +560,7 @@ void Serial::SerialImpl::flushInput()
 
 void Serial::SerialImpl::flushOutput ()
 {
-    EN_THROW( std::runtime_error, "flushOutput is not supported on Windows." );
+    throw std::runtime_error( "flushOutput is not supported on Windows." );
 }
 
 //------------------------------------------------------------------------------
@@ -568,7 +568,7 @@ void Serial::SerialImpl::flushOutput ()
 
 void Serial::SerialImpl::sendBreak( int duration )
 {
-    EN_THROW( std::runtime_error, "sendBreak is not supported on Windows." );
+    throw std::runtime_error( "sendBreak is not supported on Windows." );
 }
 
 //------------------------------------------------------------------------------
@@ -679,7 +679,7 @@ bool Serial::SerialImpl::getCTS()
 
     if ( !GetCommModemStatus( fd_, &dwModemStatus ) )
     {
-        EN_THROW( std::runtime_error, "Error getting the status of the CTS line." );
+        throw std::runtime_error( "Error getting the status of the CTS line." );
     }
 
     return ( MS_CTS_ON & dwModemStatus ) != 0;
@@ -699,7 +699,7 @@ bool Serial::SerialImpl::getDSR()
 
     if ( !GetCommModemStatus( fd_, &dwModemStatus ) )
     {
-        EN_THROW( std::runtime_error, "Error getting the status of the DSR line." );
+        throw std::runtime_error( "Error getting the status of the DSR line." );
     }
 
     return ( MS_DSR_ON & dwModemStatus ) != 0;
@@ -719,7 +719,7 @@ bool Serial::SerialImpl::getRI()
 
     if ( !GetCommModemStatus( fd_, &dwModemStatus ) )
     {
-        EN_THROW( std::runtime_error, "Error getting the status of the RI line." );
+        throw std::runtime_error( "Error getting the status of the RI line." );
     }
 
     return ( MS_RING_ON & dwModemStatus ) != 0;
@@ -740,7 +740,7 @@ bool Serial::SerialImpl::getCD()
     if ( !GetCommModemStatus( fd_, &dwModemStatus ) )
     {
         // Error in GetCommModemStatus;
-        EN_THROW( std::runtime_error, "Error getting the status of the CD line." );
+        throw std::runtime_error( "Error getting the status of the CD line." );
     }
 
     return ( MS_RLSD_ON & dwModemStatus ) != 0;
@@ -753,7 +753,7 @@ void Serial::SerialImpl::readLock()
 {
     if ( WaitForSingleObject( read_mutex, INFINITE ) != WAIT_OBJECT_0 )
     {
-        EN_THROW( std::runtime_error, "Error claiming read mutex." );
+        throw std::runtime_error( "Error claiming read mutex." );
     }
 }
 
@@ -764,7 +764,7 @@ void Serial::SerialImpl::readUnlock()
 {
     if ( !ReleaseMutex( read_mutex ) )
     {
-        EN_THROW( std::runtime_error, "Error releasing read mutex." );
+        throw std::runtime_error( "Error releasing read mutex." );
     }
 }
 
@@ -775,7 +775,7 @@ void Serial::SerialImpl::writeLock()
 {
     if ( WaitForSingleObject( write_mutex, INFINITE ) != WAIT_OBJECT_0 )
     {
-        EN_THROW( std::runtime_error, "Error claiming write mutex." );
+        throw std::runtime_error( "Error claiming write mutex." );
     }
 }
 
@@ -786,7 +786,7 @@ void Serial::SerialImpl::writeUnlock()
 {
     if ( !ReleaseMutex( write_mutex ) )
     {
-        EN_THROW( std::runtime_error, "Error releasing write mutex." );
+        throw std::runtime_error( "Error releasing write mutex." );
     }
 }
 
@@ -828,7 +828,7 @@ std::string utf8_encode(const std::wstring &wstr)
 //------------------------------------------------------------------------------
 //
 
-std::vector< PortInfo > list_ports();
+std::vector< PortInfo > list_ports()
 {
     std::vector< PortInfo > devices_found;
 

@@ -56,10 +56,6 @@
 #endif // __AVR__
 #endif // NDEBUG
 
-#ifndef __AVR__
-#define EN_THROW( EXCLASS, MSG ) throw EXCLASS( __FILE__, __LINE__, (MSG) )
-#endif // __AVR__
-
 #define EN_ASSERT( X, ... ) \
     if ( !(X) ) \
     { \

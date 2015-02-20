@@ -25,11 +25,13 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-//#include <sstream>
-
 // Windows
 #include <windows.h>
+#include <setupapi.h>
+#include <initguid.h>
+
+// Engine
+#include "port_cpu.hpp"
 
 namespace engine
 {
