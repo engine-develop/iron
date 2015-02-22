@@ -30,11 +30,16 @@ EN_DEFINE_ATTRIBUTE( Camera, 4, Output,   led,     uint8_t,  Low,     13   )
 //
 EN_DEVICE_CLASS( Camera )
 {
+
+public:
+
     // Evaluation method
     //
     EN_INLINE Status evaluate()
     {
-        if ( !( state() & Connected ) ) return Success;
+        // Return if device is not connected
+        //
+        if ( !( this->state() & Connected ) ) return Success;
 
         // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
         //
@@ -142,13 +147,25 @@ bool testAttributes()
 //------------------------------------------------------------------------------
 //
 
+bool testBus()
+{
+    Bus< MCU >::get().wait< Signal_ID >();
+    Bus< MCU >::get().signal< Signal_ID >();
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+//
+
 void setup()
 {
     Serial.begin( 9600 );
 
     g_cam.setup();
 
-    testAttributes();
+    EN_ASSERT( testAttributes(), "test attributes failed" );
+    EN_ASSERT( testBus(), "test bus failed" );
 }
 
 //------------------------------------------------------------------------------
@@ -156,7 +173,5 @@ void setup()
 
 void loop()
 {
-    g_cam.wait< Signal_ID >();
-
     g_cam.evaluate();
 }

@@ -49,7 +49,8 @@
     class CNAME \
         : public BDevice< CNAME, A > \
 
-#define EN_REGISTER_DEVICE( CNAME )
+#define EN_REGISTER_DEVICE( CNAME ) \
+    TypeStore< Types_Device >::get().registerType( new DeviceType< CNAME >() ); \
 
 namespace engine
 {
@@ -109,12 +110,6 @@ public:
     EN_INLINE void setup();
 
     EN_INLINE Status evaluate();
-
-    template< int S >
-    EN_INLINE void signal();
-
-    template< int S >
-    EN_INLINE Status wait();
 
     //------
     // Attributes

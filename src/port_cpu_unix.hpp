@@ -1,5 +1,5 @@
-#ifndef PORT_CPU_WINDOWS_HPP
-#define PORT_CPU_WINDOWS_HPP
+#ifndef PORT_CPU_UNIX_HPP
+#define PORT_CPU_UNIX_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -25,10 +25,8 @@
 //------------------------------------------------------------------------------
 //
 
-// Windows
-#include <windows.h>
-#include <setupapi.h>
-#include <devguid.h>
+// STD
+#include <pthread.h>
 
 #include "port_cpu.hpp"
 
@@ -38,19 +36,39 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+using std::size_t;
+using std::string;
+using std::invalid_argument;
+
+//------------------------------------------------------------------------------
+//
+
+class MillisecondTimer {
+public:
+  MillisecondTimer(const uint32_t millis);
+  int64_t remaining();
+
+private:
+  static timespec timespec_now();
+  timespec expiry;
+};
+
+//------------------------------------------------------------------------------
+//
+
 class Serial::SerialImpl
 {
 
 public:
 
-    SerialImpl( const std::string &port,
+    SerialImpl( const string &port,
                 unsigned long baudrate,
                 bytesize_t bytesize,
                 parity_t parity,
                 stopbits_t stopbits,
                 flowcontrol_t flowcontrol );
 
-    ~SerialImpl();
+    virtual ~SerialImpl();
 
     void open();
 
@@ -92,9 +110,9 @@ public:
 
     bool getCD();
 
-    void setPort( const std::string &port );
+    void setPort( const string &port );
 
-    std::string getPort() const;
+    string getPort() const;
 
     void setTimeout( Timeout &timeout );
 
@@ -134,13 +152,16 @@ protected:
 
 private:
 
-    std::wstring port_;               // Path to the file descriptor
-    HANDLE fd_;
+    string port_;               // Path to the file descriptor
+    int fd_;                    // The current file descriptor
 
     bool is_open_;
+    bool xonxoff_;
+    bool rtscts_;
 
     Timeout timeout_;           // Timeout for read operations
     unsigned long baudrate_;    // Baudrate
+    uint32_t byte_time_ns_;     // Nanoseconds to transmit/receive a single byte
 
     parity_t parity_;           // Parity
     bytesize_t bytesize_;       // Size of the bytes
@@ -148,12 +169,11 @@ private:
     flowcontrol_t flowcontrol_; // Flow Control
 
     // Mutex used to lock the read functions
-    HANDLE read_mutex;
+    pthread_mutex_t read_mutex;
     // Mutex used to lock the write functions
-    HANDLE write_mutex;
-
+    pthread_mutex_t write_mutex;
 };
 
 } // engine
 
-#endif // PORT_CPU_WINDOWS_HPP
+#endif // PORT_CPU_UNIX_HPP

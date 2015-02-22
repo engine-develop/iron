@@ -34,17 +34,17 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-enum TypeStoreType
+enum Types
 {
-    TypeStoreType_Device = 0,
-    TypeStoreType_Signal = 1
+    Types_Device = 0,
+    Types_Signal = 1
 };
 
 //------------------------------------------------------------------------------
 //
 
 template< int T >
-struct Type
+class Type
 {
 };
 
@@ -52,30 +52,38 @@ struct Type
 //
 
 template<>
-struct Type< TypeStoreType_Device >
+class Type< Types_Device >
 {
-    typedef void* (*create_fn_t)();
-    typedef void (*evaluate_fn_t)();
 
-    Type( std::string name_ = "",
-          std::string description_ = "",
-          uint32_t id_ = 0,
-          create_fn_t create_fn_ = 0x0,
-          evaluate_fn_t evaluate_fn_ = 0x0 )
-        : name( name_ )
-        , description( description_ )
-        , id( id_ )
-        , create_fn( create_fn_ )
-        , evaluate_fn( evaluate_fn_ )
-    {
-    }
+public:
+    virtual ~Type();
 
-    std::string name;
-    std::string description;
-    uint32_t id;
-    //std::vector<> attributes;
-    create_fn_t create_fn;
-    evaluate_fn_t evaluate_fn;
+    virtual std::string name() = 0;
+    virtual std::string description() = 0;
+    virtual uint32_t id() = 0;
+    virtual void* create() = 0;
+    virtual void remove( void* obj ) = 0;
+    virtual void evaluate( void* obj ) = 0;
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int A > class D >
+class DeviceType
+    : public Type< Types_Device >
+{
+
+public:
+
+    typedef TDevice< D > traits_t;
+
+    virtual EN_INLINE std::string name();
+    virtual EN_INLINE std::string description();
+    virtual EN_INLINE uint32_t id();
+    virtual EN_INLINE void* create();
+    virtual EN_INLINE void remove( void* obj );
+    virtual EN_INLINE void evaluate( void* obj );
 };
 
 //------------------------------------------------------------------------------
@@ -87,7 +95,8 @@ class TypeStore
 
 public:
 
-    typedef std::map< uint32_t, Type< T > > registry_t;
+    typedef std::map< uint32_t, Type< T >* > registry_t;
+    typedef typename registry_t::iterator iterator_t;
 
     //------
     //
@@ -97,18 +106,18 @@ public:
     //------
     //
 
-    EN_INLINE Status registerType( Type< T > type );
+    EN_INLINE Status registerType( Type< T >* type );
 
-    EN_INLINE typename registry_t::iterator begin();
+    EN_INLINE iterator_t begin();
 
-    EN_INLINE typename registry_t::iterator end();
+    EN_INLINE iterator_t end();
 
 protected:
 
-    EN_INLINE TypeStore() {}
+    EN_INLINE TypeStore();
     EN_INLINE ~TypeStore();
     EN_INLINE TypeStore( const TypeStore& ) {}
-    EN_INLINE TypeStore& operator=( const TypeStore& ) {}
+    EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
 
     EN_INLINE void release();
 
@@ -116,12 +125,11 @@ protected:
 
 };
 
+} // engine
+
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE void registerDeviceType();
-
-} // engine
+#include "typestore.ipp"
 
 #endif // TYPESTORE_HPP

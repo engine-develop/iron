@@ -7,15 +7,14 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template<>
 EN_INLINE Bus< MCU >::Bus()
 {
+    setPort( &Serial );
 }
 
 //------------------------------------------------------------------------------
 //
 
-template<>
 EN_INLINE Bus< MCU >::~Bus()
 {
     release();
@@ -24,8 +23,7 @@ EN_INLINE Bus< MCU >::~Bus()
 //------------------------------------------------------------------------------
 //
 
-template<>
-EN_INLINE Bus& Bus< MCU >::get()
+EN_INLINE Bus< MCU >& Bus< MCU >::get()
 {
     static Bus< MCU > obj;
 
@@ -35,7 +33,6 @@ EN_INLINE Bus& Bus< MCU >::get()
 //------------------------------------------------------------------------------
 //
 
-template<>
 EN_INLINE void Bus< MCU >::release()
 {
 }

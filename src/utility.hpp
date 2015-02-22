@@ -30,7 +30,7 @@
 #endif // _WIN32
 #include <cassert>
 #endif // __AVR__
-#include <cstdio>
+#include <stdio.h>
 
 // Arduino
 #ifdef __AVR__
@@ -72,7 +72,12 @@
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )
 
-#define EN_PACK4( A, B, C, D ) ((A) << 24) | ((B) << 16) | ((C) << 8) | ((D) << 0)
+#define EN_PACK4( A, B, C, D ) \
+    ((uint32_t)(A) << 24) \
+  | ((uint32_t)(B) << 16) \
+  | ((uint32_t)(C) <<  8) \
+  | ((uint32_t)(D) <<  0) \
+
 #define EN_UPACK4( X, A, B, C, D ) \
     (A) = ( (X) >> 24 ) & 0xFF; \
     (B) = ( (X) >> 16 ) & 0xFF; \

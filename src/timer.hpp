@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef TIMER_HPP
+#define TIMER_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,11 +20,13 @@
 //------------------------------------------------------------------------------
 //
 
+// STD
+#ifndef __AVR__
+#include <chrono>
+#endif // __AVR__
+
 // Engine
-#include "timer.hpp"
-#include "signal.hpp"
-#include "port.hpp"
-#include "device.hpp"
+#include "utility.hpp"
 
 namespace engine
 {
@@ -32,53 +34,22 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-class BBus
+struct Timer
 {
+#ifdef __AVR__
+    typedef uint32_t time_t;
+#else
+    typedef std::chrono::high_resolution_clock hr_clock_t;
+    typedef hr_clock_t::time_point time_t;
+#endif // __AVR__
 
-public:
+    EN_INLINE Timer( bool start = false );
 
-    EN_INLINE BBus();
+    EN_INLINE void reset();
 
-    EN_INLINE ~BBus();
+    EN_INLINE uint32_t elapsed();
 
-    //------
-    // Fields
-    //
-
-    EN_INLINE void setPort( port_obj_t* port );
-
-    EN_INLINE port_obj_t* port();
-
-    //------
-    // Signals
-    //
-
-    template< class S >
-    EN_INLINE Status signal( port_obj_t* port );
-
-    template< class S >
-    EN_INLINE Status wait( port_obj_t* port,
-                           uint32_t timeout = uint32_t()-1 );
-
-    template< class S >
-    EN_INLINE Status signal();
-
-    template< class S >
-    EN_INLINE Status wait( uint32_t timeout = uint32_t()-1 );
-
-protected:
-
-    port_obj_t* m_port;
-
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< int A >
-class Bus
-    : public BBus
-{
+    time_t start;
 };
 
 } // engine
@@ -86,12 +57,6 @@ class Bus
 //------------------------------------------------------------------------------
 //
 
-#include "bus.ipp"
+#include "timer.ipp"
 
-#ifdef __AVR__
-#include "bus_mcu.hpp"
-#else
-#include "bus_cpu.hpp"
-#endif // __AVR__
-
-#endif // BUS_HPP
+#endif // TIMER_HPP

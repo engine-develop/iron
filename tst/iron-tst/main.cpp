@@ -35,11 +35,31 @@ EN_DEVICE_CLASS( Camera )
 {
 };
 
+// Register device
+//
+//EN_REGISTER_DEVICE( Camera )
+
 } // engine
 
 // Global device object, CPU view
 //
 Camera< CPU > g_cam;
+
+//------------------------------------------------------------------------------
+//
+
+bool testTypestore()
+{
+    typedef TypeStore< Types_Device > typestore_t;
+
+    for ( typename typestore_t::iterator_t it = typestore_t::get().begin();
+          it != typestore_t::get().end(); ++it )
+    {
+        std::cout << it->first << std::endl;
+    }
+
+    return true;
+}
 
 //------------------------------------------------------------------------------
 //
@@ -240,6 +260,7 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
+    assert( testTypestore() );
     assert( testDevice() );
     assert( testDeviceAttributes() );
     assert( testBus() );

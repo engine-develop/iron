@@ -74,26 +74,6 @@ EN_INLINE Status BDevice< D, A >::evaluate()
 //
 
 template< template< int > class D, int A >
-    template< int S >
-EN_INLINE void BDevice< D, A >::signal()
-{
-    signal< S >( m_port );
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-    template< int S >
-EN_INLINE Status BDevice< D, A >::wait()
-{
-    return wait< S >( m_port );
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
     template< int AT >
 EN_INLINE void BDevice< D, A >::setDefault()
 {

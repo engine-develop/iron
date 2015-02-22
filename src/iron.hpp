@@ -20,10 +20,18 @@
 //------------------------------------------------------------------------------
 //
 
+#if __cplusplus < 201103L
+#error library requires C++11 support
+#endif
+
+//------------------------------------------------------------------------------
+//
+
 // Engine
 #include "version.hpp"
 #include "utility.hpp"
 #include "types.hpp"
+#include "timer.hpp"
 #include "pins.hpp"
 #include "attribute.hpp"
 #include "port.hpp"

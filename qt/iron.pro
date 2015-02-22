@@ -31,7 +31,8 @@ win32 {
 
 SOURCES += \
     ../src/port_cpu.cpp \
-    ../src/port_cpu_windows.cpp
+    ../src/port_cpu_windows.cpp \
+    ../src/port_cpu_unix.cpp
 
 HEADERS += \
     ../src/attribute.hpp \
@@ -56,7 +57,11 @@ HEADERS += \
     ../src/utility.hpp \
     ../src/version.hpp \
     ../src/port_cpu.hpp \
-    ../src/port_cpu_windows.hpp
+    ../src/port_cpu_windows.hpp \
+    ../src/typestore.ipp \
+    ../src/port_cpu_unix.hpp \
+    ../src/timer.hpp \
+    ../src/timer.ipp
 
 CONFIG( debug, debug|release ) {
     DEST_DIR = debug

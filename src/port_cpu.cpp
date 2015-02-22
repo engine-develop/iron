@@ -14,11 +14,12 @@
 
 #include "port_cpu.hpp"
 
-#ifdef _WIN32
+#if defined( _WIN32 )
 #include "port_cpu_windows.hpp"
-#else
+#endif
+#if defined( __linux__ ) || defined( __APPLE__ )
 #include "port_cpu_unix.hpp"
-#endif // _WIN32
+#endif // __linux__ || __APPLE__
 
 namespace engine
 {

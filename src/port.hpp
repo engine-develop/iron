@@ -40,23 +40,23 @@ typedef Serial port_obj_t;
 #endif // __AVR__
 
 //------------------------------------------------------------------------------
+// Port adaptor interface
 //
 
-EN_INLINE uint32_t available( port_obj_t* port );
+struct APort
+{
 
-//------------------------------------------------------------------------------
-//
+    static EN_INLINE uint32_t available( port_obj_t* port );
 
-template< class T >
-EN_INLINE void write( port_obj_t* port,
-                      const T& value );
+    template< class T >
+    static EN_INLINE void write( port_obj_t* port,
+                                 const T& value );
 
-//------------------------------------------------------------------------------
-//
+    template< class T >
+    static EN_INLINE void read( port_obj_t* port,
+                                T& value );
 
-template< class T >
-EN_INLINE void read( port_obj_t* port,
-                     T& value );
+};
 
 } // engine
 
