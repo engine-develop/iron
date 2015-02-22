@@ -64,8 +64,6 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 
 SOURCES += \
-    ../src/port_cpu.cpp \
-    ../src/port_cpu_windows.cpp
 
 HEADERS += \
     ../src/attribute.hpp \
@@ -73,20 +71,22 @@ HEADERS += \
     ../src/bus.ipp \
     ../src/device.hpp \
     ../src/device.ipp \
-    ../src/i2c.hpp \
     ../src/iron.hpp \
     ../src/pins.hpp \
     ../src/pins_atmega328p.hpp \
     ../src/port.hpp \
-    ../src/port_cpu.hpp \
-    ../src/port_cpu_unix.hpp \
-    ../src/port_cpu_windows.hpp \
+    ../src/port.ipp \
     ../src/signal.hpp \
     ../src/sync.hpp \
     ../src/sync.ipp \
     ../src/types.hpp \
+    ../src/typestore.hpp \
     ../src/utility.hpp \
-    ../src/version.hpp
+    ../src/version.hpp \
+    ../src/bus_cpu.hpp \
+    ../src/bus_cpu.ipp \
+    ../src/bus_mcu.hpp \
+    ../src/bus_mcu.ipp
 
 headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
 headers.files = $$HEADERS

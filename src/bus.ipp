@@ -1,5 +1,5 @@
-#ifndef BUS_CPU_IPP
-#define BUS_CPU_IPP
+#ifndef BUS_IPP
+#define BUS_IPP
 
 namespace engine
 {
@@ -7,144 +7,108 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Bus< D >::~Bus()
+EN_INLINE BBus::BBus()
+    : m_port( 0x0 )
 {
-    release();
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Bus< D >& Bus< D >::get()
+EN_INLINE BBus::~BBus()
 {
-    static Bus< D > b;
-
-    return b;
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE void Bus< D >::release()
+EN_INLINE void BBus::setPort( port_obj_t* port )
 {
-    for ( typename std::vector< D< CPU > >::iterator it
-            = devices().begin(); it != devices().end(); ++it )
-    {
-        disconnect( *it );
-    }
-
-    m_devices.clear();
+    m_port = port;
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE std::vector< D< CPU > >& Bus< D >::scan()
+EN_INLINE port_obj_t* BBus::port()
 {
-    release();
-
-    std::vector< PortInfo > devices_i = list_ports();
-
-    for ( std::vector< PortInfo >::const_iterator it
-            = devices_i.begin(); it != devices_i.end(); ++it )
-    {
-        EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
-
-        Serial port = new Serial( it->port,
-                                  9600,
-                                  Timeout::simpleTimeout( 1000 ) ) );
-
-        // Failed to open port
-        //
-        if ( !port->isOpen() )
-        {
-            EN_DEBUG( "Error: Failed to open port\n" );
-
-            delete port;
-
-            continue;
-        }
-
-        // Request ID
-        //
-        signal< D, ID >( port );
-        delay_ms( 100 );
-
-        // Read ID
-        //
-        while ( wait< D, ID >( port ) ) {}
-
-        if ( signal == traits_t::ID )
-        {
-            EN_DEBUG( "-- Found device\n" );
-
-            D< CPU > device;
-            device.setPort( port );
-
-            m_devices.push_back( device );
-        }
-    }
-
-    return m_devices;
+    return m_port;
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE std::vector< D< CPU > >& Bus< D >::devices()
+template< class S >
+EN_INLINE Status BBus::signal( port_obj_t* port )
 {
-    return m_devices;
-}
+    if ( !port ) { return Error; }
 
-//------------------------------------------------------------------------------
-//
+    typedef TSignal< S > traits_t;
+    static_assert( traits_t::valid, "signal type not defined" );
 
-template< template< int > class D >
-EN_INLINE Status Bus< D >::connect( D< CPU >& device )
-{
-    if ( !device.port()->isOpen() )
-    {
-        device.port()->open();
-    }
+    // Write signal id
+    //
+    uint8_t id0, id1, id2, id3;
+    EN_UPACK4( traits_t::id, id0, id1, id2, id3 );
 
-    device.port()->setBaudrate( device.baudrate );
-
-    device.state = Connected;
-    uint8_t signal = traits_t::Connect;
-    device.port()->write( &signal, 1 );
-
-    EN_DEBUG( "Connected: %s\n", device.port()->getPort().c_str() );
+    write( port, id0 );
+    write( port, id1 );
+    write( port, id2 );
+    write( port, id3 );
 
     return Success;
 }
 
+
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status Bus< D >::disconnect( D< CPU >& device )
+template< class S >
+EN_INLINE Status BBus::wait( port_obj_t* port )
 {
-    if ( !device.port()->isOpen() )
+    if ( !port ) { return Error; }
+
+    typedef TSignal< S > traits_t;
+    static_assert( traits_t::valid, "signal type not defined" );
+
+    // Read signal id
+    //
+    if ( available( port ) > 0 )
     {
-        return Error;
+        uint8_t id0, id1, id2, id3;
+        read( port, id0 );
+        read( port, id1 );
+        read( port, id2 );
+        read( port, id3 );
+        uint32_t id = EN_PACK4( id0, id1, id2, id3 );
+
+        if ( id == traits_t::id )
+        {
+            return End;
+        }
     }
 
-    device.state = Disconnected;
-    uint8_t signal = traits_t::Disconnect;
-    device.port()->write( &signal, 1 );
+    return Continue;
+}
 
-    device.port()->close();
+//------------------------------------------------------------------------------
+//
 
-    EN_DEBUG( "Disconnected: %s\n", device.port()->getPort().c_str() );
+template< class S >
+EN_INLINE Status BBus::signal()
+{
+    return signal< S >( m_port );
+}
 
-    return Success;
+//------------------------------------------------------------------------------
+//
+
+template< class S >
+EN_INLINE Status BBus::wait()
+{
+    return wait< S >( m_port );
 }
 
 } // engine
 
-#endif // BUS_CPU_IPP
+#endif // BUS_IPP

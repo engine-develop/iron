@@ -2,6 +2,7 @@
 //
 
 // STD
+#include <unistd.h>
 #include <cassert>
 #include <iostream>
 
@@ -36,16 +37,16 @@ EN_DEVICE_CLASS( Camera )
 
 } // engine
 
-// Global device object, CPU architecture
+// Global device object, CPU view
 //
 Camera< CPU > g_cam;
 
 //------------------------------------------------------------------------------
 //
 
-bool testAttributes()
+bool testDevice()
 {
-    int status_i = 1;
+    int status_i = 0;
 
     // Test device static info
     //
@@ -56,6 +57,32 @@ bool testAttributes()
     assert( TDevice< Camera >::id == 2960893507 );
     static_assert( TDevice< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
+
+    g_cam.state() |= Connected;
+    assert( ( g_cam.state() & Connected ) );
+    assert( !( g_cam.state() & Idle ) );
+
+    g_cam.state() |= Idle;
+    assert( ( g_cam.state() & Connected ) );
+    assert( ( g_cam.state() & Idle ) );
+
+    g_cam.state() = 0;
+    assert( !( g_cam.state() & Connected ) );
+    assert( !( g_cam.state() & Idle ) );
+
+    g_cam.state() = Idle | Connected;
+    assert( ( g_cam.state() & Connected ) );
+    assert( ( g_cam.state() & Idle ) );
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+//
+
+bool testDeviceAttributes()
+{
+    int status_i = 0;
 
     // Test 'shutter'
     //
@@ -181,12 +208,12 @@ bool testAttributes()
 
 bool testBus()
 {
-    std::vector< Camera< CPU > >& devices = Bus< Camera >::get().scan();
+    std::vector< Camera< CPU > >& devices = Bus< CPU >::get().scan< Camera >();
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< Camera >::get().connect( devices[ i ] );
-        assert( devices[ i ].state == Connected );
+        Bus< CPU >::get().connect( devices[ i ] );
+        assert( devices[ i ].state() & Connected );
         sleep( 2 );
     }
 
@@ -194,10 +221,13 @@ bool testBus()
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< Camera >::get().disconnect( devices[ i ] );
-        assert( devices[ i ].state == Disconnected );
+        Bus< CPU >::get().disconnect( devices[ i ] );
+        assert( devices[ i ].state() & ~Connected );
         sleep( 2 );
     }
+
+    Bus< CPU >::get().signal< Signal_ID >();
+    while ( Bus< CPU >::get().wait< Signal_ID >() ) {}
 
     return true;
 }
@@ -209,7 +239,8 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    assert( testAttributes() );
+    assert( testDevice() );
+    assert( testDeviceAttributes() );
     assert( testBus() );
 
     return 0;

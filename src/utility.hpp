@@ -28,8 +28,15 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif // _WIN32
+#include <cassert>
 #endif // __AVR__
-#include <stdio.h>
+#include <cstdio>
+
+// Arduino
+#ifdef __AVR__
+#include <Wire/Wire.h>
+#include <wiring_private.h>
+#endif // __AVR__
 
 // Engine
 #include "types.hpp"
@@ -125,8 +132,57 @@ static EN_INLINE void errorLED()
     while ( 1 )
     {
         PORTB ^= B00100000; // Toggle LED
-        _delay_ms( 100 );
+        delay( 100 );
     }
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+EN_INLINE void disableI2CPullups()
+{
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega328P__)
+    // deactivate internal pull-ups for twi
+    // as per note from atmega8 manual pg167
+    cbi( PORTC, 4 );
+    cbi( PORTC, 5 );
+#else
+    // deactivate internal pull-ups for twi
+    // as per note from atmega128 manual pg204
+    cbi( PORTD, 0 );
+    cbi( PORTD, 1 );
+#endif
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifdef __AVR__
+EN_INLINE int scanI2CDevices()
+{
+    Serial.println( "Scanning I2C Devices..." );
+
+    int nDevices = 0;
+
+    for ( uint8_t addr = 1; addr < 127; addr++ )
+    {
+        Wire.beginTransmission( addr );
+
+        if ( Wire.endTransmission() == 0 )
+        {
+            Serial.print( "\tDevice: 0x" );
+            if ( addr < 16 ) Serial.print( "0" );
+            Serial.println( addr, HEX );
+
+            ++nDevices;
+        }
+    }
+
+    Serial.print( nDevices );
+    Serial.println( " devices found\n" );
+
+    return nDevices;
 }
 #endif // __AVR__
 

@@ -33,7 +33,11 @@ enum Status
 {
     Error      = 0,
     Success    = 1,
-    InvalidArg = 2
+    InvalidArg = 2,
+    Timeout    = 3,
+    Begin      = 0,
+    End        = 0,
+    Continue   = 1
 };
 
 //------------------------------------------------------------------------------
@@ -66,10 +70,10 @@ enum Selection
 //------------------------------------------------------------------------------
 //
 
-enum Connectivity
+enum State
 {
-    Disconnected = 0x0,
-    Connected    = 0x1
+    Connected = 0x1,
+    Idle      = 0x2
 };
 
 } // engine

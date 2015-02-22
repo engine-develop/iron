@@ -1,5 +1,5 @@
-#ifndef PORT_CPU_UNIX_HPP
-#define PORT_CPU_UNIX_HPP
+#ifndef BUS_MCU_HPP
+#define BUS_MCU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -16,10 +16,47 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Note: Source code incorporated from 'Serial' library:
-//     https://github.com/wjwwood/serial
-//
-// Copyright (c) 2012 William Woodall, John Harrison
+
+//------------------------------------------------------------------------------
 //
 
-#endif // PORT_CPU_UNIX_HPP
+// Engine
+#include "bus.hpp"
+
+namespace engine
+{
+
+//------------------------------------------------------------------------------
+//
+
+template<>
+class Bus< MCU >
+    : public BBus
+{
+
+public:
+
+    //------
+    //
+
+    static EN_INLINE Bus& get();
+
+protected:
+
+    EN_INLINE Bus();
+    EN_INLINE ~Bus();
+    EN_INLINE Bus( const Bus& ) {}
+    EN_INLINE Bus& operator=( const Bus& ) { return *this; }
+
+    EN_INLINE void release();
+
+};
+
+//------------------------------------------------------------------------------
+//
+
+#include "bus_mcu.ipp"
+
+} // engine
+
+#endif // BUS_MCU_HPP

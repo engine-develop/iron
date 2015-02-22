@@ -30,11 +30,10 @@
 #include "signal.hpp"
 #include "device.hpp"
 #include "sync.hpp"
-
-#ifdef __AVR__
-#include "i2c.hpp"
-#else
 #include "bus.hpp"
+
+#ifndef __AVR__
+#include "typestore.hpp"
 #endif // __AVR__
 
 #endif // IRON_HPP

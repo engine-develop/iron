@@ -17,27 +17,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+//------------------------------------------------------------------------------
+//
+
 // Engine
 #include "utility.hpp"
 
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_SIGNAL( CNAME, NAME, DESC, ID_0, ID_1, ID_2, ID_3 ) \
-    enum CNAME ## _ ## TSIGNAL ## _ ## NAME { NAME = ID_0 }; \
+#define EN_DEFINE_SIGNAL( NAME, ID_0, ID_1, ID_2, ID_3 ) \
+    struct NAME; \
     \
     template<> \
-    struct TSignal< CNAME, NAME > \
+    struct TSignal< NAME > \
     { \
         static const bool valid = true; \
         static EN_INLINE const char* name(); \
-        static EN_INLINE const char* description(); \
         static const uint32_t id = EN_PACK4( ID_0, ID_1, ID_2, ID_3 ); \
     }; \
     \
     EN_INLINE const char* TSignal< NAME >::name() { return EN_STRINGIZE( NAME ); } \
-    \
-    EN_INLINE const char* TSignal< NAME >::description() { return DESC; } \
 
 namespace engine
 {
@@ -45,84 +45,26 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-enum Signal
-{
-    Signal_ID         = EN_PACK4( 0x2B, 0x43, 0x6,  0xD  ),
-    Signal_Connect    = EN_PACK4( 0x3,  0x16, 0x93, 0x63 ),
-    Signal_Disconnect = EN_PACK4( 0x5B, 0x4C, 0x1F, 0x19 ),
-    Signal_Write      = EN_PACK4( 0x3E, 0x3A, 0x59, 0x11 ),
-    Signal_Read       = EN_PACK4( 0x21, 0x31, 0x56, 0x8E )
-};
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int A > class D, int S >
+template< class S >
 struct TSignal
 {
     static const bool valid = false;
     static EN_INLINE const char* name();
-    static EN_INLINE const char* description();
     static const uint32_t id = 0;
 };
 
-template< template< int A > class D, int S >
-EN_INLINE const char* TSignal< D, S >::name() { return ""; }
-
-template< template< int A > class D, int S >
-EN_INLINE const char* TSignal< D, S >::description() { return ""; }
+template< class S >
+EN_INLINE const char* TSignal< S >::name() { return ""; }
 
 //------------------------------------------------------------------------------
+// Define standard signals
 //
 
-template< template< int > class D, int S, class P >
-EN_INLINE void signal( P* port )
-{
-    typedef TSignal< D, S > traits_t;
-
-    static_assert( traits_t::valid, "signal type not defined" );
-
-    // Write signal id, MSB format
-    //
-    uint8_t id0, id1, id2, id3;
-    EN_UPACK4( traits_t::id, id0, id1, id2, id3 );
-
-    port->write( id0 );
-    port->write( id1 );
-    port->write( id2 );
-    port->write( id3 );
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int S, class P >
-EN_INLINE bool wait( P* port )
-{
-    typedef TSignal< D, S > traits_t;
-
-    static_assert( traits_t::valid, "signal type not defined" );
-
-    // Read signal id, MSB format
-    //
-    if ( port->available() )
-    {
-        uint8_t id0 = port->read();
-        uint8_t id1 = port->read();
-        uint8_t id2 = port->read();
-        uint8_t id3 = port->read();
-        uint32_t id = EN_PACK4( id0, id1, id2, id3 );
-
-        if ( id == traits_t::id )
-        {
-            // set status
-
-            return false;
-        }
-    }
-
-    return true;
-}
+EN_DEFINE_SIGNAL( Signal_ID,         0x2B, 0x43, 0x6,  0xD  )
+EN_DEFINE_SIGNAL( Signal_Connect,    0x3,  0x16, 0x93, 0x63 )
+EN_DEFINE_SIGNAL( Signal_Disconnect, 0x5B, 0x4C, 0x1F, 0x19 )
+EN_DEFINE_SIGNAL( Signal_Write,      0x3E, 0x3A, 0x59, 0x11 )
+EN_DEFINE_SIGNAL( Signal_Read,       0x21, 0x31, 0x56, 0x8E )
 
 } // engine
 

@@ -46,8 +46,10 @@
 
 #define EN_DEVICE_CLASS( CNAME ) \
     template< int A = CPU > \
-    struct CNAME \
-        : BDevice< CNAME, A > \
+    class CNAME \
+        : public BDevice< CNAME, A > \
+
+#define EN_REGISTER_DEVICE( CNAME )
 
 namespace engine
 {
@@ -74,11 +76,13 @@ EN_INLINE const char* TDevice< D >::description() { return ""; }
 //
 
 template< template< int A > class D, int A = CPU >
-struct BDevice
+class BDevice
 {
+
+public:
+
     enum { Arch = A };
     typedef TDevice< D > traits_t;
-    typedef typename TPort< A >::obj_t port_t;
     static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
 
     //------
@@ -89,27 +93,31 @@ struct BDevice
     EN_INLINE ~BDevice();
 
     //------
-    // Setup
+    // Fields
     //
 
-    EN_INLINE void setup();
+    uint8_t& state();
+
+    EN_INLINE void setPort( port_obj_t* port );
+
+    EN_INLINE port_obj_t* port();
 
     //------
     // Evaluation
     //
 
+    EN_INLINE void setup();
+
     EN_INLINE Status evaluate();
 
-    //------
-    // Port
-    //
+    template< int S >
+    EN_INLINE void signal();
 
-    EN_INLINE void setPort( port_t* port );
-
-    EN_INLINE port_t* port();
+    template< int S >
+    EN_INLINE Status wait();
 
     //------
-    // Attribute accessors & modifiers
+    // Attributes
     //
 
     template< int AT >
@@ -132,14 +140,14 @@ struct BDevice
     template< int AT, class T >
     EN_INLINE bool is( const T& value );
 
+protected:
+
     //------
     //
 
-    Connectivity state;
-    uint8_t id;
-    uint32_t baudrate;
-    port_t* port;
-    uint8_t attributes[ nAttrBytes ];
+    uint8_t m_state;
+    port_obj_t* m_port;
+    uint8_t m_attributes[ nAttrBytes ];
 
 };
 

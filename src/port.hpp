@@ -20,12 +20,13 @@
 //------------------------------------------------------------------------------
 //
 
-// Engine
-#include "types.hpp"
-
+// Serial
 #ifndef __AVR__
-#include "port_cpu.hpp"
+#include <serial/serial.h>
 #endif // __AVR__
+
+// Engine
+#include "utility.hpp"
 
 namespace engine
 {
@@ -33,32 +34,36 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< int A >
-struct TPort
-{
-    typedef int obj_t;
-};
-
-//------------------------------------------------------------------------------
-//
-#ifndef __AVR__
-template<>
-struct TPort< CPU >
-{
-    typedef Serial obj_t;
-};
-#endif // __AVR__
-
-//------------------------------------------------------------------------------
-//
 #ifdef __AVR__
-template<>
-struct TPort< MCU >
-{
-    typedef HardwareSerial obj_t;
-};
+typedef HardwareSerial port_obj_t;
+#else
+typedef serial::Serial port_obj_t;
 #endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE uint32_t available( port_obj_t* port );
+
+//------------------------------------------------------------------------------
+//
+
+template< class T >
+EN_INLINE void write( port_obj_t* port,
+                      const T& value );
+
+//------------------------------------------------------------------------------
+//
+
+template< class T >
+EN_INLINE void read( port_obj_t* port,
+                     T& value );
 
 } // engine
+
+//------------------------------------------------------------------------------
+//
+
+#include "port.ipp"
 
 #endif // PORT_HPP

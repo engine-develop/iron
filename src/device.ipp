@@ -9,10 +9,8 @@ namespace engine
 
 template< template< int > class D, int A >
 EN_INLINE BDevice< D, A >::BDevice()
-    : state( Disconnected )
-    , id( 0 )
-    , baudrate( 9600 )
-    , port( 0x0 )
+    : m_state( 0 )
+    , m_port( 0x0 )
 {
     setDefaults();
 }
@@ -23,6 +21,33 @@ EN_INLINE BDevice< D, A >::BDevice()
 template< template< int > class D, int A >
 EN_INLINE BDevice< D, A >::~BDevice()
 {
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+uint8_t& BDevice< D, A >::state()
+{
+    return m_state;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE void BDevice< D, A >::setPort( port_obj_t* port )
+{
+    m_port = port;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE port_obj_t* BDevice< D, A >::port()
+{
+    return m_port;
 }
 
 //------------------------------------------------------------------------------
@@ -49,18 +74,10 @@ EN_INLINE Status BDevice< D, A >::evaluate()
 //
 
 template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::setPort( port_t* p )
+    template< int S >
+EN_INLINE void BDevice< D, A >::signal()
 {
-    port = p;
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE typename BDevice< D, A >::port_t* BDevice< D, A >::port()
-{
-    return port;
+    signal< S >( m_port );
 }
 
 //------------------------------------------------------------------------------
@@ -68,9 +85,9 @@ EN_INLINE typename BDevice< D, A >::port_t* BDevice< D, A >::port()
 
 template< template< int > class D, int A >
     template< int S >
-EN_INLINE bool BDevice< D, A >::wait()
+EN_INLINE Status BDevice< D, A >::wait()
 {
-    return wait< D, S >( port, this );
+    return wait< S >( m_port );
 }
 
 //------------------------------------------------------------------------------
@@ -82,7 +99,7 @@ EN_INLINE void BDevice< D, A >::setDefault()
 {
     static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
 
-    FSetAttribute< D, AT >::eval( attributes, TAttribute< D, AT >::defaultValue );
+    FSetAttribute< D, AT >::eval( m_attributes, TAttribute< D, AT >::defaultValue );
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +108,7 @@ EN_INLINE void BDevice< D, A >::setDefault()
 template< template< int > class D, int A >
 EN_INLINE void BDevice< D, A >::setDefaults()
 {
-    FAttributesSetDefaults< D >::eval( attributes );
+    FAttributesSetDefaults< D >::eval( m_attributes );
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +125,7 @@ EN_INLINE void BDevice< D, A >::set()
 #endif // __AVR__
 
     typename TAttribute< D, AT >::type_t value( V );
-    FSetAttribute< D, AT >::eval( attributes, value );
+    FSetAttribute< D, AT >::eval( m_attributes, value );
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +141,7 @@ EN_INLINE void BDevice< D, A >::set( const T& value )
     FAttributeSetPin< D, AT >::eval( value );
 #endif // __AVR__
 
-    FSetAttribute< D, AT >::eval( attributes, value );
+    FSetAttribute< D, AT >::eval( m_attributes, value );
 }
 
 //------------------------------------------------------------------------------
@@ -137,10 +154,10 @@ EN_INLINE void BDevice< D, A >::get( T& value )
     static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
 
 #ifdef __AVR__
-    FAttributeGetPin< D, AT >::eval( value, attributes );
+    FAttributeGetPin< D, AT >::eval( value, m_attributes );
 #endif // __AVR__
 
-    value = FGetAttribute< D, AT >::template eval< T >( attributes );
+    value = FGetAttribute< D, AT >::template eval< T >( m_attributes );
 }
 
 //------------------------------------------------------------------------------

@@ -34,6 +34,8 @@ EN_DEVICE_CLASS( Camera )
     //
     EN_INLINE Status evaluate()
     {
+        if ( !( state() & Connected ) ) return Success;
+
         // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
         //
         if ( this->template is< 0, High >() )
@@ -52,7 +54,7 @@ EN_DEVICE_CLASS( Camera )
 
 } // engine
 
-// Global device object, MCU architecture
+// Global device object, MCU view
 //
 Camera< MCU > g_cam;
 
@@ -154,5 +156,7 @@ void setup()
 
 void loop()
 {
+    g_cam.wait< Signal_ID >();
+
     g_cam.evaluate();
 }

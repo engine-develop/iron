@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef BUS_CPU_HPP
+#define BUS_CPU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,15 +20,8 @@
 //------------------------------------------------------------------------------
 //
 
-// STD
-#include <vector>
-
-// Serial
-#include <serial/serial.h>
-
 // Engine
-#include "signal.hpp"
-#include "device.hpp"
+#include "bus.hpp"
 
 namespace engine
 {
@@ -36,52 +29,48 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-class BBus
+template<>
+class Bus< CPU >
+    : public BBus
 {
 
 public:
 
-    EN_INLINE BBus();
+    //------
+    //
 
-    EN_INLINE ~BBus();
+    static EN_INLINE Bus& get();
 
     //------
     // Fields
     //
 
-    EN_INLINE void setPort( port_obj_t* port );
-
-    EN_INLINE port_obj_t* port();
+    EN_INLINE std::vector< port_obj_t* >& ports();
 
     //------
-    // Signals
+    // Devices
     //
 
-    template< class S >
-    EN_INLINE Status signal( port_obj_t* port );
+    template< template< int > class D >
+    EN_INLINE std::vector< D< CPU > >& scan();
 
-    template< class S >
-    EN_INLINE Status wait( port_obj_t* port );
+    template< template< int > class D >
+    EN_INLINE Status connect( D< CPU >& device );
 
-    template< class S >
-    EN_INLINE Status signal();
-
-    template< class S >
-    EN_INLINE Status wait();
+    template< template< int > class D >
+    EN_INLINE Status disconnect( D< CPU >& device );
 
 protected:
 
-    port_obj_t* m_port;
+    EN_INLINE Bus();
+    EN_INLINE ~Bus();
+    EN_INLINE Bus( const Bus& ) {}
+    EN_INLINE Bus& operator=( const Bus& ) { return *this; }
 
-};
+    EN_INLINE void release();
 
-//------------------------------------------------------------------------------
-//
+    std::vector< port_obj_t* > m_ports;
 
-template< int A >
-class Bus
-    : public BBus
-{
 };
 
 } // engine
@@ -89,12 +78,6 @@ class Bus
 //------------------------------------------------------------------------------
 //
 
-#include "bus.ipp"
+#include "bus_cpu.ipp"
 
-#ifdef __AVR__
-#include "bus_mcu.hpp"
-#else
-#include "bus_cpu.hpp"
-#endif // __AVR__
-
-#endif // BUS_HPP
+#endif // BUS_CPU_HPP
