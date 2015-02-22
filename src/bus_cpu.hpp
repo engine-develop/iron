@@ -52,7 +52,7 @@ public:
     //
 
     template< template< int > class D >
-    EN_INLINE std::vector< D< CPU > >& scan();
+    EN_INLINE std::vector< D< CPU > > scan();
 
     template< template< int > class D >
     EN_INLINE Status connect( D< CPU >& device );

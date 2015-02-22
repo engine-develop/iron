@@ -20,13 +20,12 @@
 //------------------------------------------------------------------------------
 //
 
-// Serial
-#ifndef __AVR__
-#include <serial/serial.h>
-#endif // __AVR__
-
 // Engine
 #include "utility.hpp"
+
+#ifndef __AVR__
+#include "port_cpu.hpp"
+#endif // __AVR__
 
 namespace engine
 {
@@ -37,7 +36,7 @@ namespace engine
 #ifdef __AVR__
 typedef HardwareSerial port_obj_t;
 #else
-typedef serial::Serial port_obj_t;
+typedef Serial port_obj_t;
 #endif // __AVR__
 
 //------------------------------------------------------------------------------

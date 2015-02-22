@@ -208,7 +208,8 @@ bool testDeviceAttributes()
 
 bool testBus()
 {
-    std::vector< Camera< CPU > >& devices = Bus< CPU >::get().scan< Camera >();
+    std::vector< Camera< CPU > > devices
+            = Bus< CPU >::get().scan< Camera >();
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {

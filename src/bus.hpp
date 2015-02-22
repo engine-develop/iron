@@ -23,11 +23,9 @@
 // STD
 #include <vector>
 
-// Serial
-#include <serial/serial.h>
-
 // Engine
 #include "signal.hpp"
+#include "port.hpp"
 #include "device.hpp"
 
 namespace engine

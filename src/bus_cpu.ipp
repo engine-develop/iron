@@ -56,22 +56,22 @@ EN_INLINE std::vector< port_obj_t* >& Bus< CPU >::ports()
 //
 
 template< template< int > class D >
-EN_INLINE std::vector< D< CPU > >& Bus< CPU >::scan()
+EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
 {
     release();
 
     std::vector< D< CPU > > devices;
 
-    std::vector< serial::PortInfo > devices_i = serial::list_ports();
+    std::vector< PortInfo > devices_i = list_ports();
 
-    for ( std::vector< serial::PortInfo >::const_iterator it
+    for ( std::vector< PortInfo >::const_iterator it
             = devices_i.begin(); it != devices_i.end(); ++it )
     {
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
         port_obj_t* port = new port_obj_t( it->port,
                                            9600,
-                                           serial::Timeout::simpleTimeout( 1000 ) );
+                                           Timeout::simpleTimeout( 1000 ) );
 
         // Failed to open port
         //

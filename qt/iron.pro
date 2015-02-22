@@ -13,62 +13,34 @@ ARDUINO_AVR_DIR = $$ARDUINO_DIR/hardware/tools/avr
 
 QT -= core gui
 
-PROJECT = iron
-TARGET = $$PROJECT
+TARGET = iron
 TEMPLATE = lib
 CONFIG += staticlib
 
-#CONFIG += avr-gcc
-
-avr-gcc {
-    TARGET = $$PROJECT-avr
-
-    QMAKE_CC                     = $$ARDUINO_AVR_DIR/bin/avr-gcc
-    QMAKE_CFLAGS                 = -s -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$$ARDUINO_MCU -DF_CPU=$$ARDUINO_FCPU
-    QMAKE_CFLAGS_DEBUG           =
-    QMAKE_CFLAGS_RELEASE         =
-    QMAKE_CFLAGS_THREAD          =
-
-    QMAKE_CXX                    = $$ARDUINO_AVR_DIR/bin/avr-g++
-    QMAKE_CXXFLAGS               = -s -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$$ARDUINO_MCU -DF_CPU=$$ARDUINO_FCPU
-    QMAKE_CXXFLAGS               = -std=c++0x
-    QMAKE_CXXFLAGS_DEBUG         =
-    QMAKE_CXXFLAGS_RELEASE       =
-    QMAKE_CXXFLAGS_THREAD        =
-    QMAKE_CXXFLAGS_EXCEPTIONS_ON =
-    QMAKE_CXXFLAGS_RTTI_ON       =
-
-    QMAKE_LINK                   = $$ARDUINO_AVR_DIR/bin/avr-gcc
-    QMAKE_LFLAGS                 = -s -Os -Wall -mmcu=$$ARDUINO_MCU
-    QMAKE_LFLAGS_EXCEPTIONS_ON   =
-    QMAKE_LFLAGS_WINDOWS         =
-    QMAKE_LN_SHLIB               =
-    QMAKE_LIBS                   = -lm
-} else {
-}
-
 QMAKE_CXXFLAGS += -std=c++0x
 
-INCLUDEPATH += $$ENGINE_PROJ_DIR/build/ext/serial/include
-LIBS += -L$$ENGINE_PROJ_DIR/build/ext/serial/lib -lserial
+INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino)
+INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/variants/standard)
+INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries)
+INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire)
+INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
 
 win32 {
     LIBS += -lsetupapi
 }
 
-INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino)
-INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/variants/standard)
-#INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/tools/avr/avr/include)
-INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries)
-INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire)
-INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries/Wire/utility)
-
 SOURCES += \
+    ../src/port_cpu.cpp \
+    ../src/port_cpu_windows.cpp
 
 HEADERS += \
     ../src/attribute.hpp \
     ../src/bus.hpp \
     ../src/bus.ipp \
+    ../src/bus_cpu.hpp \
+    ../src/bus_cpu.ipp \
+    ../src/bus_mcu.hpp \
+    ../src/bus_mcu.ipp \
     ../src/device.hpp \
     ../src/device.ipp \
     ../src/iron.hpp \
@@ -83,15 +55,21 @@ HEADERS += \
     ../src/typestore.hpp \
     ../src/utility.hpp \
     ../src/version.hpp \
-    ../src/bus_cpu.hpp \
-    ../src/bus_cpu.ipp \
-    ../src/bus_mcu.hpp \
-    ../src/bus_mcu.ipp
+    ../src/port_cpu.hpp \
+    ../src/port_cpu_windows.hpp
 
-headers.path = $$ENGINE_PROJ_DIR/build/$$PROJECT/include
+CONFIG( debug, debug|release ) {
+    DEST_DIR = debug
+}
+
+CONFIG( release, debug|release ) {
+    DEST_DIR = release
+}
+
+headers.path = $$ENGINE_PROJ_DIR/build/$$TARGET/include
 headers.files = $$HEADERS
 INSTALLS += headers
 
-#libs.path = $$shell_path($$ENGINE_PROJ_DIR/build/$$PROJECT/lib)
-#libs.files = $$DESTDIR_TARGET
-#INSTALLS += libs
+libs.path = $$ENGINE_PROJ_DIR/build/$$TARGET/lib
+libs.files = $${OUT_PWD}/$$DEST_DIR/lib$${TARGET}.a
+INSTALLS += libs

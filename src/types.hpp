@@ -34,7 +34,7 @@ enum Status
     Error      = 0,
     Success    = 1,
     InvalidArg = 2,
-    Timeout    = 3,
+    TimeOut    = 3,
     Begin      = 0,
     End        = 0,
     Continue   = 1
