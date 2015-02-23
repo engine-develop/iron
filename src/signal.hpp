@@ -34,10 +34,12 @@
     { \
         static const bool valid = true; \
         static EN_INLINE const char* name(); \
-        static const uint32_t id = EN_PACK4( ID_0, ID_1, ID_2, ID_3 ); \
+        static const uint8_t id[ 4 ]; \
     }; \
     \
     EN_INLINE const char* TSignal< NAME >::name() { return EN_STRINGIZE( NAME ); } \
+    \
+    const uint8_t TSignal< NAME >::id[] = { ID_0, ID_1, ID_2, ID_3 }; \
 
 namespace engine
 {
@@ -50,11 +52,14 @@ struct TSignal
 {
     static const bool valid = false;
     static EN_INLINE const char* name();
-    static const uint32_t id = 0;
+    static const uint8_t id[ 4 ];
 };
 
 template< class S >
 EN_INLINE const char* TSignal< S >::name() { return ""; }
+
+template< class S >
+const uint8_t TSignal< S >::id[ 4 ] = { 0x0, 0x0, 0x0, 0x0 };
 
 //------------------------------------------------------------------------------
 // Define standard signals

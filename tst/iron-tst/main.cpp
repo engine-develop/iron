@@ -48,15 +48,29 @@ Camera< CPU > g_cam;
 //------------------------------------------------------------------------------
 //
 
-bool testTypestore()
+bool testBus()
 {
-    typedef TypeStore< Types_Device > typestore_t;
+    std::vector< Camera< CPU > > devices
+            = Bus< CPU >::get().scan< Camera >();
 
-    for ( typename typestore_t::iterator_t it = typestore_t::get().begin();
-          it != typestore_t::get().end(); ++it )
+    for ( size_t i = 0; i < devices.size(); ++i )
     {
-        std::cout << it->first << std::endl;
+        Bus< CPU >::get().connect( devices[ i ] );
+        assert( devices[ i ].state() & Connected );
+        sleep( 2 );
     }
+
+    sleep( 2 );
+
+    for ( size_t i = 0; i < devices.size(); ++i )
+    {
+        Bus< CPU >::get().disconnect( devices[ i ] );
+        assert( !(devices[ i ].state() & Connected) );
+        sleep( 2 );
+    }
+
+    Bus< CPU >::get().signal< Signal_ID >();
+    Bus< CPU >::get().wait< Signal_ID >();
 
     return true;
 }
@@ -86,9 +100,9 @@ bool testDevice()
     assert( ( g_cam.state() & Connected ) );
     assert( ( g_cam.state() & Idle ) );
 
-    g_cam.state() = 0;
+    g_cam.state() &= ~Connected;
     assert( !( g_cam.state() & Connected ) );
-    assert( !( g_cam.state() & Idle ) );
+    assert( ( g_cam.state() & Idle ) );
 
     g_cam.state() = Idle | Connected;
     assert( ( g_cam.state() & Connected ) );
@@ -226,29 +240,15 @@ bool testDeviceAttributes()
 //------------------------------------------------------------------------------
 //
 
-bool testBus()
+bool testTypestore()
 {
-    std::vector< Camera< CPU > > devices
-            = Bus< CPU >::get().scan< Camera >();
+    typedef TypeStore< Types_Device > typestore_t;
 
-    for ( size_t i = 0; i < devices.size(); ++i )
+    for ( typename typestore_t::iterator_t it = typestore_t::get().begin();
+          it != typestore_t::get().end(); ++it )
     {
-        Bus< CPU >::get().connect( devices[ i ] );
-        assert( devices[ i ].state() & Connected );
-        sleep( 2 );
+        std::cout << it->first << std::endl;
     }
-
-    sleep( 2 );
-
-    for ( size_t i = 0; i < devices.size(); ++i )
-    {
-        Bus< CPU >::get().disconnect( devices[ i ] );
-        assert( devices[ i ].state() & ~Connected );
-        sleep( 2 );
-    }
-
-    Bus< CPU >::get().signal< Signal_ID >();
-    while ( Bus< CPU >::get().wait< Signal_ID >() ) {}
 
     return true;
 }
@@ -260,10 +260,10 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    assert( testTypestore() );
+    assert( testBus() );
     assert( testDevice() );
     assert( testDeviceAttributes() );
-    assert( testBus() );
+    assert( testTypestore() );
 
     return 0;
 }

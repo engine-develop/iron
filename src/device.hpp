@@ -23,6 +23,7 @@
 // Engine
 #include "utility.hpp"
 #include "port.hpp"
+#include "bus.hpp"
 #include "attribute.hpp"
 
 //------------------------------------------------------------------------------
@@ -108,6 +109,8 @@ public:
     //
 
     EN_INLINE void setup();
+
+    EN_INLINE Status preEvaluate();
 
     EN_INLINE Status evaluate();
 

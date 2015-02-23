@@ -57,8 +57,36 @@ template< template< int > class D, int A >
 EN_INLINE void BDevice< D, A >::setup()
 {
 #ifdef __AVR__
+    // Set pin modes
+    //
     FAttributesSetPinModes< D >::eval();
+
+    signal< A, Signal_ID >();
 #endif // __AVR__
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE Status BDevice< D, A >::preEvaluate()
+{
+#ifdef __AVR__
+    // Handle ID signal
+    //
+    if ( wait< A, Signal_ID >( 100 ) == Success )
+    {
+        signal< A, Signal_ID >();
+    }
+
+    // Handle Connect signal
+    //
+    if ( wait< A, Signal_Connect >( 100 ) == Success )
+    {
+        m_state |= Connected;
+    }
+#endif // __AVR__
+    return Success;
 }
 
 //------------------------------------------------------------------------------
@@ -67,6 +95,9 @@ EN_INLINE void BDevice< D, A >::setup()
 template< template< int > class D, int A >
 EN_INLINE Status BDevice< D, A >::evaluate()
 {
+#ifdef __AVR__
+    Serial.println( "BDevice< D, A >::preEvaluate()" );
+#endif
     return Success;
 }
 

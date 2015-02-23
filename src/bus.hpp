@@ -24,7 +24,6 @@
 #include "timer.hpp"
 #include "signal.hpp"
 #include "port.hpp"
-#include "device.hpp"
 
 namespace engine
 {
@@ -58,13 +57,13 @@ public:
 
     template< class S >
     EN_INLINE Status wait( port_obj_t* port,
-                           uint32_t timeout = uint32_t()-1 );
+                           uint32_t timeout = uint32_t( -1 ) );
 
     template< class S >
     EN_INLINE Status signal();
 
     template< class S >
-    EN_INLINE Status wait( uint32_t timeout = uint32_t()-1 );
+    EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
 
 protected:
 
@@ -80,6 +79,18 @@ class Bus
     : public BBus
 {
 };
+
+//------------------------------------------------------------------------------
+//
+
+template< int A, class S >
+EN_INLINE Status signal();
+
+//------------------------------------------------------------------------------
+//
+
+template< int A, class S >
+EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
 
 } // engine
 

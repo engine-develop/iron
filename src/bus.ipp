@@ -48,17 +48,13 @@ EN_INLINE Status BBus::signal( port_obj_t* port )
 
     // Write signal id
     //
-    uint8_t id0, id1, id2, id3;
-    EN_UPACK4( traits_t::id, id0, id1, id2, id3 );
-
-    APort::write( port, id0 );
-    APort::write( port, id1 );
-    APort::write( port, id2 );
-    APort::write( port, id3 );
+    APort::write( port, traits_t::id[ 0 ] );
+    APort::write( port, traits_t::id[ 1 ] );
+    APort::write( port, traits_t::id[ 2 ] );
+    APort::write( port, traits_t::id[ 3 ] );
 
     return Success;
 }
-
 
 //------------------------------------------------------------------------------
 //
@@ -85,9 +81,11 @@ EN_INLINE Status BBus::wait( port_obj_t* port,
             APort::read( port, id1 );
             APort::read( port, id2 );
             APort::read( port, id3 );
-            uint32_t id = EN_PACK4( id0, id1, id2, id3 );
 
-            if ( id == traits_t::id )
+            if ( id0 == traits_t::id[ 0 ]
+              && id1 == traits_t::id[ 1 ]
+              && id2 == traits_t::id[ 2 ]
+              && id3 == traits_t::id[ 3 ] )
             {
                 return Success;
             }
@@ -115,6 +113,24 @@ template< class S >
 EN_INLINE Status BBus::wait( uint32_t timeout )
 {
     return wait< S >( m_port );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int A, class S >
+EN_INLINE Status signal()
+{
+    return Bus< A >::get().template signal< S >();
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int A, class S >
+EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) )
+{
+    return Bus< A >::get().template wait< S >( timeout );
 }
 
 } // engine

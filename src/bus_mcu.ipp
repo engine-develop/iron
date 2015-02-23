@@ -9,6 +9,8 @@ namespace engine
 
 EN_INLINE Bus< MCU >::Bus()
 {
+    Serial.begin( 9600 );
+
     setPort( &Serial );
 }
 

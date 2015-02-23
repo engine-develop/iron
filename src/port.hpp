@@ -20,6 +20,11 @@
 //------------------------------------------------------------------------------
 //
 
+// Arduino
+#ifdef __AVR__
+#include <HardwareSerial.h>
+#endif // __AVR__
+
 // Engine
 #include "utility.hpp"
 

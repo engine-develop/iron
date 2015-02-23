@@ -8,7 +8,7 @@ namespace engine
 //
 
 EN_INLINE Timer::Timer( bool start )
-    : start( time_value_t() )
+    : start( time_t() )
 {
     if ( start ) reset();
 }
