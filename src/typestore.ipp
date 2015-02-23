@@ -44,7 +44,7 @@ EN_INLINE void* DeviceType< D >::create()
 //
 
 template< template< int A > class D >
-EN_INLINE void DeviceType< D >::remove( void* obj )
+EN_INLINE void DeviceType< D >::destroy( void* obj )
 {
     D< CPU >* obj_d = static_cast< D< CPU >* >( obj );
     delete obj_d;
@@ -58,7 +58,7 @@ template< template< int A > class D >
 EN_INLINE void DeviceType< D >::evaluate( void* obj )
 {
     D< CPU >* obj_d = static_cast< D< CPU >* >( obj );
-    obj_d.evaluate();
+    obj_d->evaluate();
 }
 
 //------------------------------------------------------------------------------

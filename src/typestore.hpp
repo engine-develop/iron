@@ -56,13 +56,13 @@ class Type< Types_Device >
 {
 
 public:
-    virtual ~Type();
+    virtual ~Type() {}
 
     virtual std::string name() = 0;
     virtual std::string description() = 0;
     virtual uint32_t id() = 0;
     virtual void* create() = 0;
-    virtual void remove( void* obj ) = 0;
+    virtual void destroy( void* obj ) = 0;
     virtual void evaluate( void* obj ) = 0;
 };
 
@@ -82,7 +82,7 @@ public:
     virtual EN_INLINE std::string description();
     virtual EN_INLINE uint32_t id();
     virtual EN_INLINE void* create();
-    virtual EN_INLINE void remove( void* obj );
+    virtual EN_INLINE void destroy( void* obj );
     virtual EN_INLINE void evaluate( void* obj );
 };
 

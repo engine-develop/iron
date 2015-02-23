@@ -51,7 +51,7 @@
         : public BDevice< CNAME, A > \
 
 #define EN_REGISTER_DEVICE( CNAME ) \
-    TypeStore< Types_Device >::get().registerType( new DeviceType< CNAME >() ); \
+    static const Status CNAME ## _ ## status = TypeStore< Types_Device >::get().registerType( new DeviceType< CNAME >() ); \
 
 namespace engine
 {

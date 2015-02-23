@@ -37,7 +37,7 @@ EN_DEVICE_CLASS( Camera )
 
 // Register device
 //
-//EN_REGISTER_DEVICE( Camera )
+EN_REGISTER_DEVICE( Camera )
 
 } // engine
 
@@ -247,7 +247,7 @@ bool testTypestore()
     for ( typename typestore_t::iterator_t it = typestore_t::get().begin();
           it != typestore_t::get().end(); ++it )
     {
-        std::cout << it->first << std::endl;
+        std::cout << it->first << ": " << it->second->name() << std::endl;
     }
 
     return true;
