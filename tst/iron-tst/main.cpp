@@ -244,8 +244,11 @@ bool testTypestore()
 {
     typedef TypeStore< Types_Device > typestore_t;
 
-    for ( typename typestore_t::iterator_t it = typestore_t::get().begin();
-          it != typestore_t::get().end(); ++it )
+    EN_ASSERT( typestore_t::get().types().size() == 1, "invalid number of types" );
+
+    for ( typename typestore_t::iterator_t it
+            = typestore_t::get().typesBegin();
+          it != typestore_t::get().typesEnd(); ++it )
     {
         std::cout << it->first << ": " << it->second->name() << std::endl;
     }

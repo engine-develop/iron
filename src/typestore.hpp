@@ -108,9 +108,11 @@ public:
 
     EN_INLINE Status registerType( Type< T >* type );
 
-    EN_INLINE iterator_t begin();
+    EN_INLINE const registry_t& types() const;
 
-    EN_INLINE iterator_t end();
+    EN_INLINE iterator_t typesBegin();
+
+    EN_INLINE iterator_t typesEnd();
 
 protected:
 

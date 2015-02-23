@@ -122,7 +122,16 @@ EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
 //
 
 template< int T >
-EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::begin()
+EN_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() const
+{
+    return m_types;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::typesBegin()
 {
     return m_types.begin();
 }
@@ -131,7 +140,7 @@ EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::begin()
 //
 
 template< int T >
-EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::end()
+EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::typesEnd()
 {
     return m_types.end();
 }
