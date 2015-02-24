@@ -10,6 +10,7 @@ namespace engine
 template< template< int > class D, int A >
 EN_INLINE BDevice< D, A >::BDevice()
     : m_state( 0 )
+    , m_baudrate( 9600 )
     , m_port( 0x0 )
 {
     setDefaults();
@@ -27,9 +28,27 @@ EN_INLINE BDevice< D, A >::~BDevice()
 //
 
 template< template< int > class D, int A >
-uint8_t& BDevice< D, A >::state()
+EN_INLINE uint8_t& BDevice< D, A >::state()
 {
     return m_state;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE void BDevice< D, A >::setBaudrate( const uint32_t& baudrate )
+{
+    m_baudrate = baudrate;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D, int A >
+EN_INLINE const uint32_t& BDevice< D, A >::baudrate() const
+{
+    return m_baudrate;
 }
 
 //------------------------------------------------------------------------------
@@ -71,21 +90,27 @@ EN_INLINE void BDevice< D, A >::setup()
 template< template< int > class D, int A >
 EN_INLINE Status BDevice< D, A >::preEvaluate()
 {
-#ifdef __AVR__
     // Handle ID signal
     //
-    if ( wait< A, Signal_ID >( 100 ) == Success )
+    if ( wait< A, Signal_ID >( 10 ) == Success )
     {
         signal< A, Signal_ID >();
     }
 
     // Handle Connect signal
     //
-    if ( wait< A, Signal_Connect >( 100 ) == Success )
+    if ( wait< A, Signal_Connect >( 10 ) == Success )
     {
         m_state |= Connected;
     }
-#endif // __AVR__
+
+    // Handle Disconnect signal
+    //
+    if ( wait< A, Signal_Disconnect >( 10 ) == Success )
+    {
+        m_state &= ~Connected;
+    }
+
     return Success;
 }
 
@@ -95,9 +120,8 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
 template< template< int > class D, int A >
 EN_INLINE Status BDevice< D, A >::evaluate()
 {
-#ifdef __AVR__
-    Serial.println( "BDevice< D, A >::preEvaluate()" );
-#endif
+    preEvaluate();
+
     return Success;
 }
 

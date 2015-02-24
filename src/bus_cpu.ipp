@@ -69,8 +69,10 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
     {
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
+        D< CPU > device;
+
         port_obj_t* port = new port_obj_t( it->port,
-                                           9600,
+                                           device.baudrate(),
                                            Timeout::simpleTimeout( 1000 ) );
 
         // Failed to open port
@@ -96,7 +98,6 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
         {
             EN_DEBUG( "-- Found device\n" );
 
-            D< CPU > device;
             device.setPort( port );
 
             devices.push_back( device );

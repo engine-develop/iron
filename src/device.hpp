@@ -98,7 +98,11 @@ public:
     // Fields
     //
 
-    uint8_t& state();
+    EN_INLINE uint8_t& state();
+
+    EN_INLINE void setBaudrate( const uint32_t& baudrate );
+
+    EN_INLINE const uint32_t& baudrate() const;
 
     EN_INLINE void setPort( port_obj_t* port );
 
@@ -144,6 +148,7 @@ protected:
     //
 
     uint8_t m_state;
+    uint32_t m_baudrate;
     port_obj_t* m_port;
     uint8_t m_attributes[ nAttrBytes ];
 

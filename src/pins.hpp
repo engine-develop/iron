@@ -1,6 +1,7 @@
 #ifndef PINS_HPP
 #define PINS_HPP
 
+// Copyright (C) 2015 Engine Development
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
