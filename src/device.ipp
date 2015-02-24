@@ -10,9 +10,10 @@ namespace engine
 template< template< int > class D, int A >
 EN_INLINE BDevice< D, A >::BDevice()
     : m_state( 0 )
-    , m_baudrate( 9600 )
+    , m_baudrate( 0 )
     , m_port( 0x0 )
 {
+    setBaudrate( 9600 );
     setDefaults();
 }
 
