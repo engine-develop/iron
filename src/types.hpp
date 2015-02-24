@@ -52,6 +52,27 @@ enum ArchType
 //------------------------------------------------------------------------------
 //
 
+template< int A >
+struct TArchType
+{
+    static const uint8_t opposite = 0;
+};
+
+template<>
+struct TArchType< CPU >
+{
+    static const uint8_t opposite = MCU;
+};
+
+template<>
+struct TArchType< MCU >
+{
+    static const uint8_t opposite = CPU;
+};
+
+//------------------------------------------------------------------------------
+//
+
 enum LogicLevel
 {
     Low  = 0x0,

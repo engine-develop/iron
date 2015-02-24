@@ -50,8 +50,11 @@ typedef Serial port_obj_t;
 
 struct APort
 {
-
     static EN_INLINE uint32_t available( port_obj_t* port );
+
+    static EN_INLINE void write( port_obj_t* port,
+                                 const uint8_t* buffer,
+                                 size_t size );
 
     template< class T >
     static EN_INLINE void write( port_obj_t* port,
@@ -60,7 +63,25 @@ struct APort
     template< class T >
     static EN_INLINE void read( port_obj_t* port,
                                 T& value );
+};
 
+//------------------------------------------------------------------------------
+//
+
+template< int S >
+struct PortBuffer
+{
+    EN_INLINE PortBuffer( port_obj_t* port_ = 0x0 );
+
+    EN_INLINE void reset();
+
+    EN_INLINE void write();
+
+    EN_INLINE void read();
+
+    port_obj_t* port;
+    uint16_t i;
+    uint8_t data[ S ];
 };
 
 } // engine

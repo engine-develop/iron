@@ -15,6 +15,16 @@ EN_INLINE uint32_t APort::available( port_obj_t* port )
 //------------------------------------------------------------------------------
 //
 
+EN_INLINE void APort::write( port_obj_t* port,
+                             const uint8_t* buffer,
+                             size_t size )
+{
+    port->write( buffer, size );
+}
+
+//------------------------------------------------------------------------------
+//
+
 template< class T >
 EN_INLINE void APort::write( port_obj_t* port,
                              const T& value )
@@ -34,6 +44,47 @@ EN_INLINE void APort::read( port_obj_t* port,
 #else
     port->read( &value, sizeof( T ) );
 #endif // __AVR__
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int S >
+EN_INLINE PortBuffer< S >::PortBuffer( port_obj_t* port_ )
+    : port( port_ )
+    , i( 0 )
+{
+    reset();
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int S >
+EN_INLINE void PortBuffer< S >::reset()
+{
+    i = 0;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int S >
+EN_INLINE void PortBuffer< S >::write()
+{
+    APort::write( data, S );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int S >
+EN_INLINE void PortBuffer< S >::read()
+{
+    while ( APort::available( port ) > 0 && i < S )
+    {
+        APort::read( port, data[ i++ ] );
+    }
 }
 
 } // engine
