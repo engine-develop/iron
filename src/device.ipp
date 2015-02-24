@@ -40,6 +40,11 @@ template< template< int > class D, int A >
 EN_INLINE void BDevice< D, A >::setBaudrate( const uint32_t& baudrate )
 {
     m_baudrate = baudrate;
+
+    if ( m_port )
+    {
+        APort::setBaudrate( m_port, m_baudrate );
+    }
 }
 
 //------------------------------------------------------------------------------

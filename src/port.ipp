@@ -7,6 +7,19 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+EN_INLINE void APort::setBaudrate( port_obj_t* port,
+                                   const uint32_t& baudrate )
+{
+#ifdef __AVR__
+    port->setBaudrate( baudrate );
+#else
+    port->begin( baudrate );
+#endif // __AVR__
+}
+
+//------------------------------------------------------------------------------
+//
+
 EN_INLINE uint32_t APort::available( port_obj_t* port )
 {
     return port->available();
