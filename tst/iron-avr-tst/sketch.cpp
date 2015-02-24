@@ -37,25 +37,23 @@ public:
     //
     EN_INLINE Status evaluate()
     {
-        //this->preEvaluate();
+        this->preEvaluate();
 
-        // Return if device is not connected
+        // Return if device is not selected
         //
-        if ( !( this->state() & Connected ) ) { return Success; }
+        if ( !( this->state() & Selected ) ) { return Success; }
 
-        this->template set< 4, High >();
+        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
+        //
+        if ( this->template is< 0, High >() )
+        {
+            this->template set< 4, High >();
+        }
 
-//        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
-//        //
-//        if ( this->template is< 0, High >() )
-//        {
-//            this->template set< 4, High >();
-//        }
-
-//        else
-//        {
-//            this->template set< 4, Low >();
-//        }
+        else
+        {
+            this->template set< 4, Low >();
+        }
 
         return Success;
     }
@@ -94,31 +92,31 @@ bool testAttributes()
     uint8_t led = High;
 
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low, "invalid value" );
+    EN_ASSERT( shutter == Low );
 
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom != 0, "invalid value" );
+    EN_ASSERT( zoom != 0 );
 
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 2389221, "invalid value" );
+    EN_ASSERT( model == 2389221 );
 
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == true, "invalid value" );
+    EN_ASSERT( flash == true );
 
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low, "invalid value" );
+    EN_ASSERT( led == Low );
 
     // Test get 'shutter'
     //
     shutter = High;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low, "invalid value" );
+    EN_ASSERT( shutter == Low );
 
     // Test get 'zoom'
     //
     zoom = 0;
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom != 0, "invalid value" );
+    EN_ASSERT( zoom != 0 );
 
     // Test set/get 'model'
     //
@@ -127,7 +125,7 @@ bool testAttributes()
 
     model = 0;
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 1590123, "invalid value" );
+    EN_ASSERT( model == 1590123 );
 
     // Test set/get 'flash'
     //
@@ -136,7 +134,7 @@ bool testAttributes()
 
     flash = true;
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == false, "invalid value" );
+    EN_ASSERT( flash == false );
 
     // Test set 'led'
     //
@@ -144,14 +142,14 @@ bool testAttributes()
 
     led = Low;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == High, "invalid value" );
+    EN_ASSERT( led == High );
 
     delay_ms( 2000 );
     g_cam.set< 4, Low >();
 
     led = High;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low, "invalid value" );
+    EN_ASSERT( led == Low );
 
     return true;
 }
@@ -165,8 +163,8 @@ void setup()
 
     g_cam.setup();
 
-    //EN_ASSERT( testBus(), "test bus failed" );
-    //EN_ASSERT( testAttributes(), "test attributes failed" );
+    EN_ASSERT( testBus() );
+    EN_ASSERT( testAttributes() );
 }
 
 //------------------------------------------------------------------------------

@@ -21,6 +21,7 @@
 //
 
 // Engine
+#include "utility.hpp"
 #include "timer.hpp"
 #include "signal.hpp"
 #include "port.hpp"

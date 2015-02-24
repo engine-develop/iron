@@ -93,8 +93,8 @@ enum Selection
 
 enum State
 {
-    Connected = 0x1,
-    Idle      = 0x2
+    Selected = 0x1,
+    Idle     = 0x2
 };
 
 } // engine

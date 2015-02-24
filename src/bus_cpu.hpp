@@ -58,10 +58,10 @@ public:
     EN_INLINE std::vector< D< CPU > > scan();
 
     template< template< int > class D >
-    EN_INLINE Status connect( D< CPU >& device );
+    EN_INLINE Status select( D< CPU >& device );
 
     template< template< int > class D >
-    EN_INLINE Status disconnect( D< CPU >& device );
+    EN_INLINE Status deselect( D< CPU >& device );
 
 protected:
 
@@ -75,6 +75,24 @@ protected:
     std::vector< port_obj_t* > m_ports;
 
 };
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE std::vector< D< CPU > > scan();
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE Status select( D< CPU >& device );
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE Status deselect( D< CPU >& device );
 
 } // engine
 

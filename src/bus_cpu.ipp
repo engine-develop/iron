@@ -111,19 +111,19 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
 //
 
 template< template< int > class D >
-EN_INLINE Status Bus< CPU >::connect( D< CPU >& device )
+EN_INLINE Status Bus< CPU >::select( D< CPU >& device )
 {
-    if ( device.state() & Connected )
+    if ( device.state() & Selected )
     {
-        disconnect( device );
+        deselect( device );
     }
 
     m_port = device.port();
 
-    device.state() |= Connected;
-    signal< Signal_Connect >( device.port() );
+    device.state() |= Selected;
+    signal< Signal_Select >( device.port() );
 
-    EN_DEBUG( "Connected: %s\n", device.port()->getPort().c_str() );
+    EN_DEBUG( "Selected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
 }
@@ -132,22 +132,49 @@ EN_INLINE Status Bus< CPU >::connect( D< CPU >& device )
 //
 
 template< template< int > class D >
-EN_INLINE Status Bus< CPU >::disconnect( D< CPU >& device )
+EN_INLINE Status Bus< CPU >::deselect( D< CPU >& device )
 {
-    if ( !( device.state() & Connected ) )
+    if ( !( device.state() & Selected ) )
     {
         return Error;
     }
 
-    device.state() &= ~Connected;
-    signal< Signal_Disconnect >( device.port() );
+    device.state() &= ~Selected;
+    signal< Signal_Deselect >( device.port() );
 
     device.port()->close();
     m_port = 0x0;
 
-    EN_DEBUG( "Disconnected: %s\n", device.port()->getPort().c_str() );
+    EN_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE std::vector< D< CPU > > scan()
+{
+    return Bus< CPU >::get().scan< D >();
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE Status select( D< CPU >& device )
+{
+    return Bus< CPU >::get().select( device );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< template< int > class D >
+EN_INLINE Status deselect( D< CPU >& device )
+{
+    return Bus< CPU >::get().deselect( device );
 }
 
 } // engine

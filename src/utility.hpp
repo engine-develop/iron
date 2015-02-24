@@ -28,9 +28,9 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif // _WIN32
+#include <stdio.h>
 #include <cassert>
 #endif // __AVR__
-#include <stdio.h>
 
 // Arduino
 #ifdef __AVR__
@@ -56,18 +56,18 @@
 #ifdef NDEBUG
 #define EN_DEBUG( ... )
 #else
-#ifdef __AVR__
 #define EN_DEBUG( ... ) EN_PRINT( __VA_ARGS__ );
-#else
-#define EN_DEBUG( ... ) EN_PRINT( __VA_ARGS__ );
-#endif // __AVR__
 #endif // NDEBUG
 
-#define EN_ASSERT( X, ... ) \
+#ifdef NDEBUG
+#define EN_ASSERT( ... )
+#else
+#define EN_ASSERT( X ) \
     if ( !(X) ) \
     { \
-        EN_PRINT( "assertion failed: %s, line %d: %s\n", __FILE__, __LINE__, __VA_ARGS__ ) \
-    } \
+        EN_PRINT( "assertion failed: %s, line %d: %s\n", __FILE__, __LINE__ ) \
+    }
+#endif // NDEBUG
 
 #define EN_INLINE    __attribute__( ( always_inline ) ) inline
 #define EN_NO_INLINE __attribute__( ( noinline ) )

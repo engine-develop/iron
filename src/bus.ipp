@@ -41,10 +41,10 @@ EN_INLINE port_obj_t* BBus::port()
 template< class S >
 EN_INLINE Status BBus::signal( port_obj_t* port )
 {
-    if ( !port ) { return Error; }
-
     typedef TSignal< S > traits_t;
     static_assert( traits_t::valid, "signal type not defined" );
+
+    EN_ASSERT( port != 0x0 );
 
     // Write signal id
     //
@@ -63,12 +63,12 @@ template< class S >
 EN_INLINE Status BBus::wait( port_obj_t* port,
                              uint32_t timeout )
 {
-    if ( !port ) { return Error; }
-
     typedef TSignal< S > traits_t;
     static_assert( traits_t::valid, "signal type not defined" );
 
-    Timer tm( true );
+    EN_ASSERT( port != 0x0 );
+
+    static Timer tm( true );
 
     while ( 1 )
     {
@@ -103,6 +103,8 @@ EN_INLINE Status BBus::wait( port_obj_t* port,
 template< class S >
 EN_INLINE Status BBus::signal()
 {
+    if ( !m_port ) { return Error; }
+
     return signal< S >( m_port );
 }
 
@@ -112,7 +114,9 @@ EN_INLINE Status BBus::signal()
 template< class S >
 EN_INLINE Status BBus::wait( uint32_t timeout )
 {
-    return wait< S >( m_port );
+    if ( !m_port ) { return Error; }
+
+    return wait< S >( m_port, timeout );
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +132,7 @@ EN_INLINE Status signal()
 //
 
 template< int A, class S >
-EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) )
+EN_INLINE Status wait( uint32_t timeout )
 {
     return Bus< A >::get().template wait< S >( timeout );
 }

@@ -85,8 +85,6 @@ EN_INLINE void BDevice< D, A >::setup()
     // Set pin modes
     //
     FAttributesSetPinModes< D >::eval();
-
-    signal< A, Signal_ID >();
 #endif // __AVR__
 }
 
@@ -96,6 +94,7 @@ EN_INLINE void BDevice< D, A >::setup()
 template< template< int > class D, int A >
 EN_INLINE Status BDevice< D, A >::preEvaluate()
 {
+#ifdef __AVR__
     // Handle ID signal
     //
     if ( wait< A, Signal_ID >( 10 ) == Success )
@@ -103,19 +102,20 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
         signal< A, Signal_ID >();
     }
 
-    // Handle Connect signal
+    // Handle Select signal
     //
-    if ( wait< A, Signal_Connect >( 10 ) == Success )
+    if ( wait< A, Signal_Select >( 10 ) == Success )
     {
-        m_state |= Connected;
+        m_state |= Selected;
     }
 
-    // Handle Disconnect signal
+    // Handle Deselect signal
     //
-    if ( wait< A, Signal_Disconnect >( 10 ) == Success )
+    if ( wait< A, Signal_Deselect >( 10 ) == Success )
     {
-        m_state &= ~Connected;
+        m_state &= ~Selected;
     }
+#endif // __AVR__
 
     return Success;
 }
@@ -126,8 +126,6 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
 template< template< int > class D, int A >
 EN_INLINE Status BDevice< D, A >::evaluate()
 {
-    preEvaluate();
-
     return Success;
 }
 

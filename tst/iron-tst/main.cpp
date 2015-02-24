@@ -50,13 +50,12 @@ Camera< CPU > g_cam;
 
 bool testBus()
 {
-    std::vector< Camera< CPU > > devices
-            = Bus< CPU >::get().scan< Camera >();
+    std::vector< Camera< CPU > > devices = scan< Camera >();
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< CPU >::get().connect( devices[ i ] );
-        assert( devices[ i ].state() & Connected );
+        select( devices[ i ] );
+        assert( devices[ i ].state() & Selected );
         sleep( 2 );
     }
 
@@ -64,13 +63,13 @@ bool testBus()
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
-        Bus< CPU >::get().disconnect( devices[ i ] );
-        assert( !(devices[ i ].state() & Connected) );
+        deselect( devices[ i ] );
+        assert( !( devices[ i ].state() & Selected ) );
         sleep( 2 );
     }
 
-    Bus< CPU >::get().signal< Signal_ID >();
-    Bus< CPU >::get().wait< Signal_ID >();
+    signal< CPU, Signal_ID >();
+    wait< CPU, Signal_ID >();
 
     return true;
 }
@@ -92,20 +91,20 @@ bool testDevice()
     static_assert( TDevice< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
-    g_cam.state() |= Connected;
-    assert( ( g_cam.state() & Connected ) );
+    g_cam.state() |= Selected;
+    assert( ( g_cam.state() & Selected ) );
     assert( !( g_cam.state() & Idle ) );
 
     g_cam.state() |= Idle;
-    assert( ( g_cam.state() & Connected ) );
+    assert( ( g_cam.state() & Selected ) );
     assert( ( g_cam.state() & Idle ) );
 
-    g_cam.state() &= ~Connected;
-    assert( !( g_cam.state() & Connected ) );
+    g_cam.state() &= ~Selected;
+    assert( !( g_cam.state() & Selected ) );
     assert( ( g_cam.state() & Idle ) );
 
-    g_cam.state() = Idle | Connected;
-    assert( ( g_cam.state() & Connected ) );
+    g_cam.state() = Idle | Selected;
+    assert( ( g_cam.state() & Selected ) );
     assert( ( g_cam.state() & Idle ) );
 
     return true;
@@ -169,19 +168,19 @@ bool testDeviceAttributes()
     uint8_t led = High;
 
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low, "invalid value" );
+    EN_ASSERT( shutter == Low );
 
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom == 512, "invalid value" );
+    EN_ASSERT( zoom == 512 );
 
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 2389221, "invalid value" );
+    EN_ASSERT( model == 2389221 );
 
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == true, "invalid value" );
+    EN_ASSERT( flash == true );
 
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low, "invalid value" );
+    EN_ASSERT( led == Low );
 
     // Test set/get 'shutter'
     //
@@ -190,7 +189,7 @@ bool testDeviceAttributes()
 
     shutter = Low;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == High, "invalid value" );
+    EN_ASSERT( shutter == High );
 
     // Test set/get 'zoom'
     //
@@ -199,7 +198,7 @@ bool testDeviceAttributes()
 
     zoom = 0;
     g_cam.get< 2 >( zoom );
-    EN_ASSERT( zoom == 95, "invalid value" );
+    EN_ASSERT( zoom == 95 );
 
     // Test set/get 'model'
     //
@@ -208,7 +207,7 @@ bool testDeviceAttributes()
 
     model = 0;
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 1590123, "invalid value" );
+    EN_ASSERT( model == 1590123 );
 
     // Test set/get 'flash'
     //
@@ -217,7 +216,7 @@ bool testDeviceAttributes()
 
     flash = true;
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == false, "invalid value" );
+    EN_ASSERT( flash == false );
 
     // Test set/get 'led'
     //
@@ -225,14 +224,14 @@ bool testDeviceAttributes()
 
     led = Low;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == High, "invalid value" );
+    EN_ASSERT( led == High );
 
     delay_ms( 2000 );
     g_cam.set< 4, Low >();
 
     led = High;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low, "invalid value" );
+    EN_ASSERT( led == Low );
 
     return true;
 }
@@ -244,7 +243,7 @@ bool testTypestore()
 {
     typedef TypeStore< Types_Device > typestore_t;
 
-    EN_ASSERT( typestore_t::get().types().size() == 1, "invalid number of types" );
+    EN_ASSERT( typestore_t::get().types().size() == 1 );
 
     for ( typename typestore_t::iterator_t it
             = typestore_t::get().typesBegin();
