@@ -38,7 +38,11 @@ EN_INLINE void Bus< CPU >::release()
     for ( std::vector< port_obj_t* >::iterator it = m_ports.begin();
           it != m_ports.end(); ++it )
     {
-        if ( *it ) delete *it;
+        if ( *it )
+        {
+            APort::close( *it );
+            delete *it;
+        }
     }
 
     m_ports.clear();
@@ -71,38 +75,39 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
 
         D< CPU > device;
 
-        port_obj_t* port = new port_obj_t( it->port,
-                                           device.baudrate(),
-                                           Timeout::simpleTimeout( 1000 ) );
+        m_port = new port_obj_t( it->port,
+                                 device.baudrate(),
+                                 Timeout::simpleTimeout( 1000 ) );
 
         // Failed to open port
         //
-        if ( !port->isOpen() )
+        if ( !m_port->isOpen() )
         {
             EN_DEBUG( "Error: Failed to open port\n" );
 
-            delete port;
+            delete m_port;
 
             continue;
         }
 
-        m_ports.push_back( port );
+        m_ports.push_back( m_port );
 
         // Signal ID
         //
-        signal< Signal_ID >( port );
+        signal< Signal_ID >( m_port );
 
         // Wait for return ID
         //
-        if ( wait< Signal_ID >( port, 1000 ) == Success )
+        if ( wait< Signal_ID >( m_port, 5000 ) == Success )
         {
             EN_DEBUG( "-- Found device\n" );
 
-            device.setPort( port );
-
+            device.setPort( m_port );
             devices.push_back( device );
         }
     }
+
+    m_port = 0x0;
 
     return devices;
 }
@@ -140,9 +145,8 @@ EN_INLINE Status Bus< CPU >::deselect( D< CPU >& device )
     }
 
     device.state() &= ~Selected;
-    signal< Signal_Deselect >( device.port() );
+    signal< Signal_Select >( device.port() );
 
-    device.port()->close();
     m_port = 0x0;
 
     EN_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );

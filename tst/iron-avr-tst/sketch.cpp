@@ -39,21 +39,23 @@ public:
     {
         this->preEvaluate();
 
-        // Return if device is not selected
-        //
-        if ( !( this->state() & Selected ) ) { return Success; }
+//        // Return if device is not selected
+//        //
+//        if ( !( this->state() & Selected ) ) { return Success; }
 
-        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
-        //
-        if ( this->template is< 0, High >() )
-        {
-            this->template set< 4, High >();
-        }
+//        this->template set< 4, High >();
 
-        else
-        {
-            this->template set< 4, Low >();
-        }
+//        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
+//        //
+//        if ( this->template is< 0, High >() )
+//        {
+//            this->template set< 4, High >();
+//        }
+
+//        else
+//        {
+//            this->template set< 4, Low >();
+//        }
 
         return Success;
     }
@@ -70,8 +72,8 @@ Camera< MCU > g_cam;
 
 bool testBus()
 {
-    Bus< MCU >::get().wait< Signal_ID >( 1000 );
-    Bus< MCU >::get().signal< Signal_ID >();
+    //signal< MCU, Signal_ID >();
+    //wait< MCU, Signal_ID >( 1000 );
 
     return true;
 }
@@ -163,8 +165,8 @@ void setup()
 
     g_cam.setup();
 
-    EN_ASSERT( testBus() );
-    EN_ASSERT( testAttributes() );
+    //EN_ASSERT( testBus() );
+    //EN_ASSERT( testAttributes() );
 }
 
 //------------------------------------------------------------------------------
@@ -172,5 +174,10 @@ void setup()
 
 void loop()
 {
-    g_cam.evaluate();
+    //g_cam.evaluate();
+
+    if ( wait< MCU, Signal_ID >( 100 ) == Success )
+    {
+        signal< MCU, Signal_ID >();
+    }
 }

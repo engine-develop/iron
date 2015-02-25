@@ -51,25 +51,27 @@ Camera< CPU > g_cam;
 bool testBus()
 {
     std::vector< Camera< CPU > > devices = scan< Camera >();
+    //EN_ASSERT( Bus< CPU >::get().ports().size() > 0 );
+    //EN_ASSERT( devices.size() > 0 );
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
         select( devices[ i ] );
-        assert( devices[ i ].state() & Selected );
-        sleep( 2 );
+        //EN_ASSERT( devices[ i ].state() & Selected );
+        sleep( 1 );
     }
 
-    sleep( 2 );
+//    sleep( 1 );
 
-    for ( size_t i = 0; i < devices.size(); ++i )
-    {
-        deselect( devices[ i ] );
-        assert( !( devices[ i ].state() & Selected ) );
-        sleep( 2 );
-    }
+//    for ( size_t i = 0; i < devices.size(); ++i )
+//    {
+//        deselect( devices[ i ] );
+//        EN_ASSERT( !( devices[ i ].state() & Selected ) );
+//        sleep( 1 );
+//    }
 
-    signal< CPU, Signal_ID >();
-    wait< CPU, Signal_ID >();
+//    signal< CPU, Signal_ID >();
+//    wait< CPU, Signal_ID >( 1000 );
 
     return true;
 }
@@ -84,28 +86,28 @@ bool testDevice()
     // Test device static info
     //
     status_i = strcmp( TDevice< Camera >::name(), "Camera" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     status_i = strcmp( TDevice< Camera >::description(), "Example camera device" );
-    assert( status_i == 0 );
-    assert( TDevice< Camera >::id == 2960893507 );
+    EN_ASSERT( status_i == 0 );
+    EN_ASSERT( TDevice< Camera >::id == 2960893507 );
     static_assert( TDevice< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
     g_cam.state() |= Selected;
-    assert( ( g_cam.state() & Selected ) );
-    assert( !( g_cam.state() & Idle ) );
+    EN_ASSERT( ( g_cam.state() & Selected ) );
+    EN_ASSERT( !( g_cam.state() & Idle ) );
 
     g_cam.state() |= Idle;
-    assert( ( g_cam.state() & Selected ) );
-    assert( ( g_cam.state() & Idle ) );
+    EN_ASSERT( ( g_cam.state() & Selected ) );
+    EN_ASSERT( ( g_cam.state() & Idle ) );
 
     g_cam.state() &= ~Selected;
-    assert( !( g_cam.state() & Selected ) );
-    assert( ( g_cam.state() & Idle ) );
+    EN_ASSERT( !( g_cam.state() & Selected ) );
+    EN_ASSERT( ( g_cam.state() & Idle ) );
 
     g_cam.state() = Idle | Selected;
-    assert( ( g_cam.state() & Selected ) );
-    assert( ( g_cam.state() & Idle ) );
+    EN_ASSERT( ( g_cam.state() & Selected ) );
+    EN_ASSERT( ( g_cam.state() & Idle ) );
 
     return true;
 }
@@ -120,7 +122,7 @@ bool testDeviceAttributes()
     // Test 'shutter'
     //
     status_i = strcmp( TAttribute< Camera, 0 >::name(), "shutter" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 0 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 0 >::begin == 0, "incorrect range" );
     static_assert( FAttributeRange< Camera, 0 >::end == 1, "incorrect range" );
@@ -128,7 +130,7 @@ bool testDeviceAttributes()
     // Test 'zoom'
     //
     status_i = strcmp( TAttribute< Camera, 1 >::name(), "zoom" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 1 >::type_t ) == 2, "incorrect size" );
     static_assert( FAttributeRange< Camera, 1 >::begin == 1, "incorrect range" );
     static_assert( FAttributeRange< Camera, 1 >::end == 3, "incorrect range" );
@@ -136,7 +138,7 @@ bool testDeviceAttributes()
     // Test 'model'
     //
     status_i = strcmp( TAttribute< Camera, 2 >::name(), "model" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 2 >::type_t ) == 4, "incorrect size" );
     static_assert( FAttributeRange< Camera, 2 >::begin == 3, "incorrect range" );
     static_assert( FAttributeRange< Camera, 2 >::end == 7, "incorrect range" );
@@ -144,7 +146,7 @@ bool testDeviceAttributes()
     // Test 'flash'
     //
     status_i = strcmp( TAttribute< Camera, 3 >::name(), "flash" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 3 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 3 >::begin == 7, "incorrect range" );
     static_assert( FAttributeRange< Camera, 3 >::end == 8, "incorrect range" );
@@ -152,7 +154,7 @@ bool testDeviceAttributes()
     // Test 'led'
     //
     status_i = strcmp( TAttribute< Camera, 4 >::name(), "led" );
-    assert( status_i == 0 );
+    EN_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 4 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 4 >::begin == 8, "incorrect range" );
     static_assert( FAttributeRange< Camera, 4 >::end == 9, "incorrect range" );
@@ -262,10 +264,10 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    assert( testBus() );
-    assert( testDevice() );
-    assert( testDeviceAttributes() );
-    assert( testTypestore() );
+    EN_ASSERT( testBus() );
+    //EN_ASSERT( testDevice() );
+    //EN_ASSERT( testDeviceAttributes() );
+    //EN_ASSERT( testTypestore() );
 
     return 0;
 }

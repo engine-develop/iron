@@ -7,6 +7,19 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+EN_INLINE void APort::close( port_obj_t* port )
+{
+#ifdef __AVR__
+    port->flush();
+    port->end();
+#else
+    port->close();
+#endif
+}
+
+//------------------------------------------------------------------------------
+//
+
 EN_INLINE void APort::setBaudrate( port_obj_t* port,
                                    const uint32_t& baudrate )
 {

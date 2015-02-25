@@ -97,26 +97,18 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
 #ifdef __AVR__
     // Handle ID signal
     //
-    if ( wait< A, Signal_ID >( 10 ) == Success )
+    if ( wait< A, Signal_ID >( 100 ) == Success )
     {
         signal< A, Signal_ID >();
     }
 
-    // Handle Select signal
-    //
-    if ( wait< A, Signal_Select >( 10 ) == Success )
-    {
-        m_state |= Selected;
-    }
-
-    // Handle Deselect signal
-    //
-    if ( wait< A, Signal_Deselect >( 10 ) == Success )
-    {
-        m_state &= ~Selected;
-    }
+//    // Handle Select signal
+//    //
+//    if ( wait< A, Signal_Select >( 1 ) == Success )
+//    {
+//        m_state ^= Selected;
+//    }
 #endif // __AVR__
-
     return Success;
 }
 

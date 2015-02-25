@@ -50,6 +50,8 @@ typedef Serial port_obj_t;
 
 struct APort
 {
+    static EN_INLINE void close( port_obj_t* port );
+
     static EN_INLINE void setBaudrate( port_obj_t* port,
                                        const uint32_t& baudrate );
 
