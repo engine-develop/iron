@@ -32,6 +32,9 @@
 #include <cassert>
 #endif // __AVR__
 
+// Chaos
+#include <chaos/preprocessor.h>
+
 // Arduino
 #ifdef __AVR__
 #include <Wire/Wire.h>

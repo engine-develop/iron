@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-ENGINE_PROJ_DIR = D:/data/engine/projects
-
 ARDUINO_DIR     = C:/Program Files (x86)/Arduino
 ARDUINO_MCU     = atmega328p
 ARDUINO_FCPU    = 16000000
@@ -18,6 +16,8 @@ TEMPLATE = lib
 CONFIG += staticlib
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+INCLUDEPATH += ../ext/chaos-pp-master
 
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/variants/standard)
@@ -71,10 +71,10 @@ CONFIG( release, debug|release ) {
     DEST_DIR = release
 }
 
-headers.path = $$ENGINE_PROJ_DIR/build/$$TARGET/include
+headers.path = $$PWD/../build/$$TARGET/include
 headers.files = $$HEADERS
 INSTALLS += headers
 
-libs.path = $$ENGINE_PROJ_DIR/build/$$TARGET/lib
+libs.path = $$PWD/../build/$$TARGET/lib
 libs.files = $${OUT_PWD}/$$DEST_DIR/lib$${TARGET}.a
 INSTALLS += libs

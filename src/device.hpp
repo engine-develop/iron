@@ -29,7 +29,7 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_DEVICE( CNAME, DESC, ID_0, ID_1, ID_2, ID_3, NATTR ) \
+#define EN_DEFINE_TDEVICE( CNAME, DESC, ID_0, ID_1, ID_2, ID_3, NATTR ) \
     template< int A > class CNAME; \
     \
     template<> \
@@ -44,6 +44,29 @@
     EN_INLINE const char* TDevice< CNAME >::name() { return EN_STRINGIZE( CNAME ); } \
     \
     EN_INLINE const char* TDevice< CNAME >::description() { return DESC; } \
+
+#define EN_DEFINE_DEVICE_ATTR_I( S, I, ELEM, DATA ) \
+    EN_DEFINE_ATTRIBUTE( \
+        CHAOS_PP_TUPLE_ELEM( 6, 0, DATA ), \
+        I, \
+        CHAOS_PP_TUPLE_ELEM( 5, 0, ELEM ), \
+        CHAOS_PP_TUPLE_ELEM( 5, 1, ELEM ), \
+        CHAOS_PP_TUPLE_ELEM( 5, 2, ELEM ), \
+        CHAOS_PP_TUPLE_ELEM( 5, 3, ELEM ), \
+        CHAOS_PP_TUPLE_ELEM( 5, 4, ELEM ) \
+    ) \
+
+#define EN_DEFINE_DEVICE( INFO, ATTRS ) \
+    EN_DEFINE_TDEVICE( \
+        CHAOS_PP_TUPLE_ELEM( 6, 0, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 6, 1, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 6, 2, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 6, 3, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 6, 4, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 6, 5, INFO ), \
+        CHAOS_PP_SEQ_SIZE( ATTRS ) \
+    ) \
+    CHAOS_PP_EXPR( CHAOS_PP_SEQ_FOR_EACH_I( EN_DEFINE_DEVICE_ATTR_I, ATTRS, INFO ) ) \
 
 #define EN_DEVICE_CLASS( CNAME ) \
     template< int A = CPU > \

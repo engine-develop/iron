@@ -16,15 +16,14 @@ namespace engine
 
 // Define device
 //
-EN_DEFINE_DEVICE( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43, 5 )
-
-// Define device attributes
-//
-EN_DEFINE_ATTRIBUTE( Camera, 0, Input,    shutter, uint8_t,  Low,     2    )
-EN_DEFINE_ATTRIBUTE( Camera, 1, Input,    zoom,    uint16_t, 512,     A0   )
-EN_DEFINE_ATTRIBUTE( Camera, 2, Internal, model,   uint32_t, 2389221, None )
-EN_DEFINE_ATTRIBUTE( Camera, 3, Internal, flash,   bool,     true,    None )
-EN_DEFINE_ATTRIBUTE( Camera, 4, Output,   led,     uint8_t,  Low,     13   )
+EN_DEFINE_DEVICE(
+    ( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43 ),
+    (( Input,    shutter, digital_t, Low,     2    ))
+    (( Input,    zoom,    analog_t,  512,     A0   ))
+    (( Internal, model,   uint32_t,  2389221, None ))
+    (( Internal, flash,   bool,      true,    None ))
+    (( Output,   led,     digital_t, Low,     13   ))
+)
 
 // Define device class
 //

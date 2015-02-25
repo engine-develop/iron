@@ -1,5 +1,3 @@
-ENGINE_PROJ_DIR = D:/data/engine/projects
-
 ARDUINO_DIR     = C:/Program Files (x86)/Arduino
 ARDUINO_MCU     = atmega328p
 ARDUINO_FCPU    = 16000000
@@ -14,11 +12,12 @@ INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/arduino/variants/standard)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/hardware/tools/avr/avr/include)
 INCLUDEPATH += $$quote($$ARDUINO_DIR/libraries)
-
-INCLUDEPATH += $$ENGINE_PROJ_DIR/build/iron/include
+INCLUDEPATH += ../ext/chaos-pp-master
+INCLUDEPATH += ../build/iron/include
 
 QMAKE_CC                     = $$ARDUINO_AVR_DIR/bin/avr-gcc
 QMAKE_CFLAGS                 = -s -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$$ARDUINO_MCU -DF_CPU=$$ARDUINO_FCPU
+#QMAKE_CFLAGS                += -std=c99
 QMAKE_CFLAGS_DEBUG           =
 QMAKE_CFLAGS_RELEASE         =
 QMAKE_CFLAGS_THREAD          =
@@ -26,6 +25,7 @@ QMAKE_CFLAGS_THREAD          =
 QMAKE_CXX                    = $$ARDUINO_AVR_DIR/bin/avr-gcc
 QMAKE_CXXFLAGS               = -s -Os -Wall -fno-exceptions -ffunction-sections -fdata-sections -mmcu=$$ARDUINO_MCU -DF_CPU=$$ARDUINO_FCPU
 QMAKE_CXXFLAGS              += -std=c++0x
+#QMAKE_CXXFLAGS              += -E -C -P
 QMAKE_CXXFLAGS_DEBUG         =
 QMAKE_CXXFLAGS_RELEASE       =
 QMAKE_CXXFLAGS_THREAD        =

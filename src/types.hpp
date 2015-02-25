@@ -97,6 +97,12 @@ enum State
     Idle     = 0x2
 };
 
+//------------------------------------------------------------------------------
+//
+
+typedef uint8_t  digital_t;
+typedef uint16_t analog_t;
+
 } // engine
 
 #endif // TYPES_HPP
