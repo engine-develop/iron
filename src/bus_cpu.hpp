@@ -39,18 +39,18 @@ class Bus< CPU >
 
 public:
 
-    //------
+    //----------
     //
 
     static EN_INLINE Bus& get();
 
-    //------
+    //----------
     // Fields
     //
 
     EN_INLINE std::vector< port_obj_t* >& ports();
 
-    //------
+    //----------
     // Devices
     //
 

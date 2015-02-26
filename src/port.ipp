@@ -75,6 +75,20 @@ EN_INLINE void APort::read( port_obj_t* port,
 //------------------------------------------------------------------------------
 //
 
+EN_INLINE void APort::read( port_obj_t* port,
+                            uint8_t* buffer,
+                            size_t size )
+{
+#ifdef __AVR__
+    port->readBytes( reinterpret_cast< char* >( buffer ), size );
+#else
+    port->read( buffer, size );
+#endif // __AVR__
+}
+
+//------------------------------------------------------------------------------
+//
+
 template< int S >
 EN_INLINE PortBuffer< S >::PortBuffer( port_obj_t* port_ )
     : port( port_ )

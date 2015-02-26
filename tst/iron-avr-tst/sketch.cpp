@@ -164,7 +164,7 @@ void setup()
 
     g_cam.setup();
 
-    signal< MCU, Signal_ID >();
+    //signal< MCU, Signal_ID >();
 
     //EN_ASSERT( testBus() );
     //EN_ASSERT( testAttributes() );
@@ -175,5 +175,15 @@ void setup()
 
 void loop()
 {
-    g_cam.evaluate();
+    //g_cam.evaluate();
+
+    if ( wait< MCU, Signal_ID >( 1 ) == Success )
+    {
+        signal< MCU, Signal_ID >();
+
+        setDigital< 13, HIGH >();
+        delay_ms( 3000 );
+    }
+
+    setDigital< 13, LOW >();
 }

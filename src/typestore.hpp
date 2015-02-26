@@ -98,12 +98,12 @@ public:
     typedef std::map< uint32_t, Type< T >* > registry_t;
     typedef typename registry_t::iterator iterator_t;
 
-    //------
+    //----------
     //
 
     static EN_INLINE TypeStore& get();
 
-    //------
+    //----------
     //
 
     EN_INLINE Status registerType( Type< T >* type );

@@ -36,7 +36,7 @@ class Bus< MCU >
 
 public:
 
-    //------
+    //----------
     //
 
     static EN_INLINE Bus& get();

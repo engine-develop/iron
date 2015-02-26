@@ -110,14 +110,14 @@ public:
     typedef TDevice< D > traits_t;
     static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
 
-    //------
+    //----------
     //
 
     EN_INLINE BDevice();
 
     EN_INLINE ~BDevice();
 
-    //------
+    //----------
     // Fields
     //
 
@@ -131,7 +131,7 @@ public:
 
     EN_INLINE port_obj_t* port();
 
-    //------
+    //----------
     // Evaluation
     //
 
@@ -141,7 +141,7 @@ public:
 
     EN_INLINE Status evaluate();
 
-    //------
+    //----------
     // Attributes
     //
 
@@ -167,7 +167,7 @@ public:
 
 protected:
 
-    //------
+    //----------
     //
 
     uint8_t m_state;

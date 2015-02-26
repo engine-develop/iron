@@ -68,6 +68,10 @@ struct APort
     template< class T >
     static EN_INLINE void read( port_obj_t* port,
                                 T& value );
+
+    static EN_INLINE void read( port_obj_t* port,
+                                uint8_t* buffer,
+                                size_t size );
 };
 
 //------------------------------------------------------------------------------

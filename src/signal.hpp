@@ -47,7 +47,6 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-static const uint8_t signal_delimiter = 0x1E;
 static const uint8_t signal_size = 4;
 
 //------------------------------------------------------------------------------
@@ -58,14 +57,14 @@ struct TSignal
 {
     static const bool valid = false;
     static EN_INLINE const char* name();
-    static const uint8_t id[ 4 ];
+    static const uint8_t id[ signal_size ];
 };
 
 template< class S >
 EN_INLINE const char* TSignal< S >::name() { return ""; }
 
 template< class S >
-const uint8_t TSignal< S >::id[ 4 ] = { 0x0, 0x0, 0x0, 0x0 };
+const uint8_t TSignal< S >::id[ signal_size ] = { 0x0, 0x0, 0x0, 0x0 };
 
 //------------------------------------------------------------------------------
 // Define standard signals

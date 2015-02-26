@@ -41,7 +41,7 @@ public:
 
     EN_INLINE ~BBus();
 
-    //------
+    //----------
     // Fields
     //
 
@@ -49,7 +49,7 @@ public:
 
     EN_INLINE port_obj_t* port();
 
-    //------
+    //----------
     // Signals
     //
 
