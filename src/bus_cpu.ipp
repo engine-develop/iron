@@ -98,7 +98,7 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
 
         // Wait for return ID
         //
-        if ( wait< Signal_ID >( m_port, 5000 ) == Success )
+        if ( wait< Signal_ID >( m_port, 1000 ) == Success )
         {
             EN_DEBUG( "-- Found device\n" );
 

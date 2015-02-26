@@ -71,10 +71,12 @@ CONFIG( release, debug|release ) {
     DEST_DIR = release
 }
 
-headers.path = $$PWD/../build/$$TARGET/include
 headers.files = $$HEADERS
+headers.path = $$PWD/../build/$$TARGET/include
+headers.CONFIG = no_check_exist
 INSTALLS += headers
 
+libs.files = $$OUT_PWD/$$DEST_DIR/lib$${TARGET}.a
 libs.path = $$PWD/../build/$$TARGET/lib
-libs.files = $${OUT_PWD}/$$DEST_DIR/lib$${TARGET}.a
+libs.CONFIG = no_check_exist
 INSTALLS += libs

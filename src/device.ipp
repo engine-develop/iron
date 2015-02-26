@@ -97,7 +97,7 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
 #ifdef __AVR__
     // Handle ID signal
     //
-    if ( wait< A, Signal_ID >( 100 ) == Success )
+    if ( wait< A, Signal_ID >( 1 ) == Success )
     {
         signal< A, Signal_ID >();
     }

@@ -1,5 +1,3 @@
-ENGINE_PROJ_DIR = D:/data/engine/projects
-
 TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle

@@ -47,6 +47,12 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+static const uint8_t signal_delimiter = 0x1E;
+static const uint8_t signal_size = 4;
+
+//------------------------------------------------------------------------------
+//
+
 template< class S >
 struct TSignal
 {
@@ -65,10 +71,10 @@ const uint8_t TSignal< S >::id[ 4 ] = { 0x0, 0x0, 0x0, 0x0 };
 // Define standard signals
 //
 
-EN_DEFINE_SIGNAL( Signal_ID,       0x2B, 0x43, 0x06, 0x0D )
-EN_DEFINE_SIGNAL( Signal_Select,   0x03, 0x16, 0x93, 0x63 )
-EN_DEFINE_SIGNAL( Signal_Write,    0x3E, 0x3A, 0x59, 0x11 )
-EN_DEFINE_SIGNAL( Signal_Read,     0x21, 0x31, 0x56, 0x8E )
+EN_DEFINE_SIGNAL( Signal_ID,     0x2B, 0x43, 0x06, 0x0D )
+EN_DEFINE_SIGNAL( Signal_Select, 0x03, 0x16, 0x93, 0x63 )
+EN_DEFINE_SIGNAL( Signal_Write,  0x3E, 0x3A, 0x59, 0x11 )
+EN_DEFINE_SIGNAL( Signal_Read,   0x21, 0x31, 0x56, 0x8E )
 
 } // engine
 
