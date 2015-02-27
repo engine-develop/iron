@@ -137,7 +137,7 @@ public:
 
     EN_INLINE void setup();
 
-    EN_INLINE Status preEvaluate();
+    EN_INLINE void handleSignals();
 
     EN_INLINE Status evaluate();
 

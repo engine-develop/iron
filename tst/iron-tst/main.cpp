@@ -50,13 +50,13 @@ Camera< CPU > g_cam;
 bool testBus()
 {
     std::vector< Camera< CPU > > devices = scan< Camera >();
-    //EN_ASSERT( Bus< CPU >::get().ports().size() > 0 );
-    //EN_ASSERT( devices.size() > 0 );
+    EN_ASSERT( Bus< CPU >::get().ports().size() > 0 );
+    EN_ASSERT( devices.size() > 0 );
 
     for ( size_t i = 0; i < devices.size(); ++i )
     {
         select( devices[ i ] );
-        //EN_ASSERT( devices[ i ].state() & Selected );
+        EN_ASSERT( devices[ i ].state() & Selected );
         sleep( 1 );
     }
 

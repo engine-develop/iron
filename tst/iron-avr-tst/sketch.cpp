@@ -36,25 +36,23 @@ public:
     //
     EN_INLINE Status evaluate()
     {
-        this->preEvaluate();
+        this->handleSignals();
 
-//        // Return if device is not selected
-//        //
-//        if ( !( this->state() & Selected ) ) { return Success; }
+        // Return if device is not selected
+        //
+        if ( !( this->state() & Selected ) ) { return Success; }
 
-//        this->template set< 4, High >();
+        // If 'shutter' is HIGH, set 'led' HIGH.
+        //
+        //if ( this->template is< 0, High >() )
+        //{
+            this->template set< 4, High >();
+        //}
 
-//        // Test 'is' function. If 'shutter' is HIGH, set 'led' HIGH.
-//        //
-//        if ( this->template is< 0, High >() )
-//        {
-//            this->template set< 4, High >();
-//        }
-
-//        else
-//        {
-//            this->template set< 4, Low >();
-//        }
+        //else
+        //{
+        //    this->template set< 4, Low >();
+        //}
 
         return Success;
     }
@@ -164,8 +162,6 @@ void setup()
 
     g_cam.setup();
 
-    //signal< MCU, Signal_ID >();
-
     //EN_ASSERT( testBus() );
     //EN_ASSERT( testAttributes() );
 }
@@ -175,15 +171,10 @@ void setup()
 
 void loop()
 {
-    //g_cam.evaluate();
+    g_cam.evaluate();
 
-    if ( wait< MCU, Signal_ID >( 1 ) == Success )
-    {
-        signal< MCU, Signal_ID >();
-
-        setDigital< 13, HIGH >();
-        delay_ms( 3000 );
-    }
-
-    setDigital< 13, LOW >();
+//    if ( wait< MCU, Signal_ID >( 1 ) == Success )
+//    {
+//        signal< MCU, Signal_ID >();
+//    }
 }

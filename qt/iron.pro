@@ -61,7 +61,8 @@ HEADERS += \
     ../src/typestore.hpp \
     ../src/typestore.ipp \
     ../src/utility.hpp \
-    ../src/version.hpp
+    ../src/version.hpp \
+    ../src/node.hpp
 
 CONFIG( debug, debug|release ) {
     DEST_DIR = debug

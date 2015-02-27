@@ -92,7 +92,7 @@ EN_INLINE void BDevice< D, A >::setup()
 //
 
 template< template< int > class D, int A >
-EN_INLINE Status BDevice< D, A >::preEvaluate()
+EN_INLINE void BDevice< D, A >::handleSignals()
 {
 #ifdef __AVR__
     // Handle ID signal
@@ -102,14 +102,13 @@ EN_INLINE Status BDevice< D, A >::preEvaluate()
         signal< A, Signal_ID >();
     }
 
-//    // Handle Select signal
-//    //
-//    if ( wait< A, Signal_Select >( 1 ) == Success )
-//    {
-//        m_state ^= Selected;
-//    }
+    // Handle Select signal
+    //
+    if ( wait< A, Signal_Select >( 1 ) == Success )
+    {
+        m_state ^= Selected;
+    }
 #endif // __AVR__
-    return Success;
 }
 
 //------------------------------------------------------------------------------

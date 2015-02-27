@@ -39,6 +39,7 @@
 #include "port.hpp"
 #include "signal.hpp"
 #include "device.hpp"
+#include "node.hpp"
 #include "sync.hpp"
 #include "bus.hpp"
 

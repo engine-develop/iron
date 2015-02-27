@@ -70,17 +70,20 @@ EN_INLINE Status BBus::wait( port_obj_t* port,
 
     static Timer tm( true );
 
-    while ( APort::available( port ) > 0 )
+    while ( 1 )
     {
-        uint8_t buf[ 4 ];
-        APort::read( port, buf, 4 );
-
-        if (    buf[ 0 ] == traits_t::id[ 0 ]
-             && buf[ 1 ] == traits_t::id[ 1 ]
-             && buf[ 2 ] == traits_t::id[ 2 ]
-             && buf[ 3 ] == traits_t::id[ 3 ] )
+        while ( APort::available( port ) > 0 )
         {
-            return Success;
+            uint8_t buf[ signal_size ];
+            APort::read( port, buf, signal_size );
+
+            if (    buf[ 0 ] == traits_t::id[ 0 ]
+                 && buf[ 1 ] == traits_t::id[ 1 ]
+                 && buf[ 2 ] == traits_t::id[ 2 ]
+                 && buf[ 3 ] == traits_t::id[ 3 ] )
+            {
+                return Success;
+            }
         }
 
         if ( tm.elapsed() > timeout ) return TimeOut;

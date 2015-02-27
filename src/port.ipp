@@ -41,11 +41,11 @@ EN_INLINE uint32_t APort::available( port_obj_t* port )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void APort::write( port_obj_t* port,
-                             const uint8_t* buffer,
-                             size_t size )
+EN_INLINE size_t APort::write( port_obj_t* port,
+                               const uint8_t* buffer,
+                               size_t size )
 {
-    port->write( buffer, size );
+    return port->write( buffer, size );
 }
 
 //------------------------------------------------------------------------------
@@ -75,14 +75,14 @@ EN_INLINE void APort::read( port_obj_t* port,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void APort::read( port_obj_t* port,
-                            uint8_t* buffer,
-                            size_t size )
+EN_INLINE size_t APort::read( port_obj_t* port,
+                              uint8_t* buffer,
+                              size_t size )
 {
 #ifdef __AVR__
-    port->readBytes( reinterpret_cast< char* >( buffer ), size );
+    return port->readBytes( reinterpret_cast< char* >( buffer ), size );
 #else
-    port->read( buffer, size );
+    return port->read( buffer, size );
 #endif // __AVR__
 }
 

@@ -57,9 +57,9 @@ struct APort
 
     static EN_INLINE uint32_t available( port_obj_t* port );
 
-    static EN_INLINE void write( port_obj_t* port,
-                                 const uint8_t* buffer,
-                                 size_t size );
+    static EN_INLINE size_t write( port_obj_t* port,
+                                   const uint8_t* buffer,
+                                   size_t size );
 
     template< class T >
     static EN_INLINE void write( port_obj_t* port,
@@ -69,9 +69,9 @@ struct APort
     static EN_INLINE void read( port_obj_t* port,
                                 T& value );
 
-    static EN_INLINE void read( port_obj_t* port,
-                                uint8_t* buffer,
-                                size_t size );
+    static EN_INLINE size_t read( port_obj_t* port,
+                                  uint8_t* buffer,
+                                  size_t size );
 };
 
 //------------------------------------------------------------------------------

@@ -36,10 +36,12 @@ EN_INLINE Bus< CPU >& Bus< CPU >::get()
 EN_INLINE void Bus< CPU >::release()
 {
     for ( std::vector< port_obj_t* >::iterator it = m_ports.begin();
-          it != m_ports.end(); ++it )
+            it != m_ports.end(); ++it )
     {
         if ( *it )
         {
+            EN_DEBUG( "Closing port: %s\n", (*it)->getPort().c_str() );
+
             APort::close( *it );
             delete *it;
         }
