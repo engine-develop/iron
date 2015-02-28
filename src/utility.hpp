@@ -200,6 +200,16 @@ EN_INLINE int scanI2CDevices()
 //------------------------------------------------------------------------------
 //
 #ifndef __AVR__
+EN_INLINE int strHexToDec( const std::string& s,
+                           int base = 0 )
+{
+    return static_cast< int >( strtol( s.c_str(), NULL, base ) );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
 EN_INLINE void removeChar( std::string& s,
                            char c = ' ' )
 {

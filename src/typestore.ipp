@@ -158,7 +158,7 @@ EN_INLINE TypeStore< T >::TypeStore()
 template< int T >
 EN_INLINE TypeStore< T >::~TypeStore()
 {
-    release();
+    clear();
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ EN_INLINE TypeStore< T >& TypeStore< T >::get()
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::release()
+EN_INLINE void TypeStore< T >::clear()
 {
     for ( iterator_t it = m_types.begin();
             it != m_types.end(); ++it )
@@ -191,7 +191,37 @@ EN_INLINE void TypeStore< T >::release()
 //
 
 template< int T >
-EN_INLINE bool TypeStore< T >::scanDirectory( const std::string& directory )
+EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
+{
+    assert( type );
+
+    // Get key id
+    //
+    uint8_t id0 = strHexToDec( type->id0 );
+    uint8_t id1 = strHexToDec( type->id1 );
+    uint8_t id2 = strHexToDec( type->id2 );
+    uint8_t id3 = strHexToDec( type->id3 );
+    uint32_t pid = EN_PACK4( id0, id1, id2, id3 );
+
+    // Insert
+    //
+    if ( m_types.count( pid ) )
+    {
+        EN_DEBUG( "Typestore already contains id" );
+
+        return Error;
+    }
+
+    m_types[ pid ] = type;
+
+    return Success;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE bool TypeStore< T >::scan( const std::string& directory )
 {
     std::vector< std::string > files;
     if ( !listDirectory( directory, files, true ) ) { return false; }
@@ -203,7 +233,10 @@ EN_INLINE bool TypeStore< T >::scanDirectory( const std::string& directory )
 
         for ( auto it1 = types.begin(); it1 != types.end(); ++it1 )
         {
-            if ( *it1 ) { m_types[ (*it1)->name ] = *it1; }
+            if ( *it1 )
+            {
+                registerType( *it1 );
+            }
         }
     }
 
@@ -214,14 +247,12 @@ EN_INLINE bool TypeStore< T >::scanDirectory( const std::string& directory )
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::init( const std::vector< std::string >& directories )
+EN_INLINE void TypeStore< T >::scan( const std::vector< std::string >& directories )
 {
-    release();
-
     for ( auto it = directories.begin();
             it != directories.end(); ++it )
     {
-        scanDirectory( *it );
+        scan( *it );
     }
 }
 

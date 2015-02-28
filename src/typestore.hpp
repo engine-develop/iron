@@ -128,7 +128,7 @@ class TypeStore
 
 public:
 
-    typedef std::map< std::string, Type< T >* > registry_t;
+    typedef std::map< uint32_t, Type< T >* > registry_t;
     typedef typename registry_t::iterator iterator_t;
 
     //----------
@@ -136,7 +136,13 @@ public:
 
     static EN_INLINE TypeStore& get();
 
-    EN_INLINE void init( const std::vector< std::string >& directories );
+    EN_INLINE void clear();
+
+    EN_INLINE Status registerType( Type< T >* type );
+
+    EN_INLINE bool scan( const std::string& directory );
+
+    EN_INLINE void scan( const std::vector< std::string >& directories );
 
     //----------
     //
@@ -153,10 +159,6 @@ protected:
     EN_INLINE ~TypeStore();
     EN_INLINE TypeStore( const TypeStore& ) {}
     EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
-
-    EN_INLINE void release();
-
-    EN_INLINE bool scanDirectory( const std::string& directory );
 
     registry_t m_types;
 

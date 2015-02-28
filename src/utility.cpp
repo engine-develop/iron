@@ -18,7 +18,7 @@ bool listDirectory( const std::string& path,
 
     struct dirent* entry;
 
-    while ( entry = readdir( dp ) )
+    while ( ( entry = readdir( dp ) ) )
     {
         std::string subPath = path + std::string( "/" ) + std::string( entry->d_name );
 

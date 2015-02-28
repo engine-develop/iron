@@ -216,12 +216,28 @@ bool testTypestore()
 {
     typedef TypeStore< Types_Node > typestore_t;
 
-    std::vector< std::string > directories;
-    directories.push_back( "D:/data/engine/projects/iron/tst/iron-cpu-tst" );
-    typestore_t::get().init( directories );
-
+    // Test directory scan
+    //
+    typestore_t::get().scan( "../../tst/iron-cpu-tst" );
     EN_ASSERT( typestore_t::get().types().size() == 1 );
 
+    // Test registry of user type
+    //
+    Type< Types_Node >* userType = new Type< Types_Node >();
+
+    userType->name = "TempSensor";
+    userType->description = "Temperature sensor";
+    userType->category = "sensor";
+    userType->id0 = "0xC4";
+    userType->id1 = "0xCE";
+    userType->id2 = "0x90";
+    userType->id3 = "0x27";
+
+    typestore_t::get().registerType( userType );
+    EN_ASSERT( typestore_t::get().types().size() == 2 );
+
+    // Print out key/name pairs
+    //
     for ( typename typestore_t::iterator_t it
             = typestore_t::get().typesBegin();
           it != typestore_t::get().typesEnd(); ++it )
