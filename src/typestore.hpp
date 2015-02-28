@@ -88,22 +88,35 @@ struct Type< Types_Node >
     : BType
 {
     std::vector< NodeTypeAttribute > attributes;
-    std::string setupCode;
-    std::string loopCode;
+    std::string classCode;
 };
 
 //------------------------------------------------------------------------------
 //
 
 template< int T >
-struct FTypeStore
+struct FTypeStoreType
 {
-    static EN_INLINE std::string blockLabel() { return ""; }
-
-    static EN_INLINE Type< T >* createType( std::string& block )
+    static EN_INLINE void createTypes( std::string& file,
+                                       std::vector< Type< T >* >& types )
     {
-        return 0x0;
     }
+};
+
+//------------------------------------------------------------------------------
+//
+
+template<>
+struct FTypeStoreType< Types_Node >
+{
+    static EN_INLINE void parseTypeInfo( std::string& block,
+                                         Type< Types_Node >* type );
+
+    static EN_INLINE void parseTypeClass( std::string& block,
+                                          Type< Types_Node >* type );
+
+    static EN_INLINE void createTypes( std::string& file,
+                                       std::vector< Type< Types_Node >* >& types );
 };
 
 //------------------------------------------------------------------------------
@@ -142,8 +155,6 @@ protected:
     EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
 
     EN_INLINE void release();
-
-    EN_INLINE bool scanFile( const std::string& file );
 
     EN_INLINE bool scanDirectory( const std::string& directory );
 

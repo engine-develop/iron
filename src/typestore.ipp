@@ -7,20 +7,9 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template<>
-EN_INLINE std::string FTypeStore< Types_Node >::blockLabel()
+EN_INLINE void FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
+                                                            Type< Types_Node >* type )
 {
-    return "EN_DEFINE_NODE";
-}
-
-//------------------------------------------------------------------------------
-//
-
-template<>
-EN_INLINE Type< Types_Node >* FTypeStore< Types_Node >::createType( std::string& block )
-{
-    Type< Types_Node >* type = new Type< Types_Node >();
-
     size_t p0 = block.find_first_of( "(" );
     size_t p1 = 0;
 
@@ -73,8 +62,85 @@ EN_INLINE Type< Types_Node >* FTypeStore< Types_Node >::createType( std::string&
 
         type->attributes.push_back( attr );
     }
+}
 
-    return type;
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE void FTypeStoreType< Types_Node >::parseTypeClass( std::string& block,
+                                                             Type< Types_Node >* type )
+{
+    type->classCode = block;
+}
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
+                                                          std::vector< Type< Types_Node >* >& types )
+{
+    std::ifstream fstr( file );
+    if ( !fstr.is_open() ) { return; }
+
+    std::string block;
+    int blockType = -1;
+    char blockBeginChar = ' ';
+    char blockEndChar   = ' ';
+    size_t nb = 0;
+    size_t ne = 0;
+
+    Type< Types_Node >* type = 0x0;
+
+    std::string line;
+
+    while ( std::getline( fstr, line ) )
+    {
+        if ( line.find( "EN_DEFINE_NODE" ) != std::string::npos )
+        {
+            type = new Type< Types_Node >();
+
+            blockType = 0;
+            blockBeginChar = '(';
+            blockEndChar   = ')';
+        }
+
+        else if ( line.find( "EN_NODE_CLASS" ) != std::string::npos )
+        {
+            blockType = 1;
+            blockBeginChar = '{';
+            blockEndChar   = '}';
+        }
+
+        if ( blockType != -1 )
+        {
+            block += line;
+
+            nb += std::count( line.begin(), line.end(), blockBeginChar );
+            ne += std::count( line.begin(), line.end(), blockEndChar );
+
+            if ( nb > 0 && nb - ne == 0 )
+            {
+                if ( blockType == 0 )
+                {
+                    parseTypeInfo( block, type );
+                }
+
+                else if ( blockType == 1 )
+                {
+                    parseTypeClass( block, type );
+
+                    types.push_back( type );
+                }
+
+                block = "";
+                blockType = -1;
+                nb = 0;
+                ne = 0;
+            }
+        }
+    }
+
+    fstr.close();
 }
 
 //------------------------------------------------------------------------------
@@ -125,60 +191,20 @@ EN_INLINE void TypeStore< T >::release()
 //
 
 template< int T >
-EN_INLINE bool TypeStore< T >::scanFile( const std::string& file )
-{
-    std::ifstream fstr( file );
-    if ( !fstr.is_open() ) { return false; }
-
-    bool open = false;
-    size_t nbo = 0;
-    std::string block;
-
-    std::string line;
-
-    while ( std::getline( fstr, line ) )
-    {
-        if ( line.find( FTypeStore< T >::blockLabel() ) != std::string::npos )
-        {
-            open = true;
-        }
-
-        if ( open )
-        {
-            block += line;
-
-            nbo += ( std::count( line.begin(), line.end(), '(' )
-                   - std::count( line.begin(), line.end(), ')' ) );
-
-            if ( nbo == 0 )
-            {
-                Type< T >* type = FTypeStore< T >::createType( block );
-
-                if ( type ) { m_types[ type->name ] = type; }
-
-                block = "";
-                open = false;
-            }
-        }
-    }
-
-    fstr.close();
-
-    return true;
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< int T >
 EN_INLINE bool TypeStore< T >::scanDirectory( const std::string& directory )
 {
     std::vector< std::string > files;
     if ( !listDirectory( directory, files, true ) ) { return false; }
 
-    for ( auto it = files.begin(); it != files.end(); ++it )
+    for ( auto it0 = files.begin(); it0 != files.end(); ++it0 )
     {
-        scanFile( *it );
+        std::vector< Type< T >* > types;
+        FTypeStoreType< T >::createTypes( *it0, types );
+
+        for ( auto it1 = types.begin(); it1 != types.end(); ++it1 )
+        {
+            if ( *it1 ) { m_types[ (*it1)->name ] = *it1; }
+        }
     }
 
     return true;
