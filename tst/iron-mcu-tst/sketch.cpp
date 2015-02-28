@@ -5,60 +5,9 @@
 
 // Engine
 #include <iron.hpp>
+#include "../examples/camera.hpp"
 
 using namespace engine;
-
-//------------------------------------------------------------------------------
-//
-
-namespace engine
-{
-
-// Define device
-//
-EN_DEFINE_DEVICE(
-    ( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43 ),
-    (( Input,    shutter, digital_t, Low,     2    ))
-    (( Input,    zoom,    analog_t,  512,     A0   ))
-    (( Internal, model,   uint32_t,  2389221, None ))
-    (( Internal, flash,   bool,      true,    None ))
-    (( Output,   led,     digital_t, Low,     13   ))
-)
-
-// Define device class
-//
-EN_DEVICE_CLASS( Camera )
-{
-
-public:
-
-    // Evaluation method
-    //
-    EN_INLINE Status evaluate()
-    {
-        this->handleSignals();
-
-        // Return if device is not selected
-        //
-        if ( !( this->state() & Selected ) ) { return Success; }
-
-        // If 'shutter' is HIGH, set 'led' HIGH.
-        //
-        //if ( this->template is< 0, High >() )
-        //{
-            this->template set< 4, High >();
-        //}
-
-        //else
-        //{
-        //    this->template set< 4, Low >();
-        //}
-
-        return Success;
-    }
-};
-
-} // engine
 
 // Global device object, MCU view
 //
@@ -172,9 +121,4 @@ void setup()
 void loop()
 {
     g_cam.evaluate();
-
-//    if ( wait< MCU, Signal_ID >( 1 ) == Success )
-//    {
-//        signal< MCU, Signal_ID >();
-//    }
 }

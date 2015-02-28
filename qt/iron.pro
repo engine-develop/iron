@@ -32,7 +32,8 @@ win32 {
 SOURCES += \
     ../src/port_cpu.cpp \
     ../src/port_cpu_unix.cpp \
-    ../src/port_cpu_windows.cpp
+    ../src/port_cpu_windows.cpp \
+    ../src/utility.cpp
 
 HEADERS += \
     ../src/attribute.hpp \
@@ -42,8 +43,6 @@ HEADERS += \
     ../src/bus_cpu.ipp \
     ../src/bus_mcu.hpp \
     ../src/bus_mcu.ipp \
-    ../src/device.hpp \
-    ../src/device.ipp \
     ../src/iron.hpp \
     ../src/pins.hpp \
     ../src/pins_atmega328p.hpp \
@@ -62,7 +61,8 @@ HEADERS += \
     ../src/typestore.ipp \
     ../src/utility.hpp \
     ../src/version.hpp \
-    ../src/node.hpp
+    ../src/node.hpp \
+    ../src/node.ipp
 
 CONFIG( debug, debug|release ) {
     DEST_DIR = debug

@@ -1,5 +1,5 @@
-#ifndef DEVICE_IPP
-#define DEVICE_IPP
+#ifndef NODE_IPP
+#define NODE_IPP
 
 namespace engine
 {
@@ -8,12 +8,9 @@ namespace engine
 //
 
 template< template< int > class D, int A >
-EN_INLINE BDevice< D, A >::BDevice()
+EN_INLINE BNode< D, A >::BNode()
     : m_state( 0 )
-    , m_baudrate( 0 )
-    , m_port( 0x0 )
 {
-    setBaudrate( 9600 );
     setDefaults();
 }
 
@@ -21,7 +18,7 @@ EN_INLINE BDevice< D, A >::BDevice()
 //
 
 template< template< int > class D, int A >
-EN_INLINE BDevice< D, A >::~BDevice()
+EN_INLINE BNode< D, A >::~BNode()
 {
 }
 
@@ -29,7 +26,7 @@ EN_INLINE BDevice< D, A >::~BDevice()
 //
 
 template< template< int > class D, int A >
-EN_INLINE uint8_t& BDevice< D, A >::state()
+EN_INLINE uint8_t& BNode< D, A >::state()
 {
     return m_state;
 }
@@ -38,48 +35,7 @@ EN_INLINE uint8_t& BDevice< D, A >::state()
 //
 
 template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::setBaudrate( const uint32_t& baudrate )
-{
-    m_baudrate = baudrate;
-
-    if ( m_port )
-    {
-        APort::setBaudrate( m_port, m_baudrate );
-    }
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE const uint32_t& BDevice< D, A >::baudrate() const
-{
-    return m_baudrate;
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::setPort( port_obj_t* port )
-{
-    m_port = port;
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE port_obj_t* BDevice< D, A >::port()
-{
-    return m_port;
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::setup()
+EN_INLINE void BNode< D, A >::setup()
 {
 #ifdef __AVR__
     // Set pin modes
@@ -92,32 +48,8 @@ EN_INLINE void BDevice< D, A >::setup()
 //
 
 template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::handleSignals()
+EN_INLINE void BNode< D, A >::loop()
 {
-#ifdef __AVR__
-    // Handle ID signal
-    //
-    if ( wait< A, Signal_ID >( 1 ) == Success )
-    {
-        signal< A, Signal_ID >();
-    }
-
-    // Handle Select signal
-    //
-    if ( wait< A, Signal_Select >( 1 ) == Success )
-    {
-        m_state ^= Selected;
-    }
-#endif // __AVR__
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< template< int > class D, int A >
-EN_INLINE Status BDevice< D, A >::evaluate()
-{
-    return Success;
 }
 
 //------------------------------------------------------------------------------
@@ -125,9 +57,9 @@ EN_INLINE Status BDevice< D, A >::evaluate()
 
 template< template< int > class D, int A >
     template< int AT >
-EN_INLINE void BDevice< D, A >::setDefault()
+EN_INLINE void BNode< D, A >::setDefault()
 {
-    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+    static_assert( AT >= 0 && AT < TNode< D >::numAttributes, "invalid attribute index" );
 
     FSetAttribute< D, AT >::eval( m_attributes, TAttribute< D, AT >::defaultValue );
 }
@@ -136,7 +68,7 @@ EN_INLINE void BDevice< D, A >::setDefault()
 //
 
 template< template< int > class D, int A >
-EN_INLINE void BDevice< D, A >::setDefaults()
+EN_INLINE void BNode< D, A >::setDefaults()
 {
     FAttributesSetDefaults< D >::eval( m_attributes );
 }
@@ -146,9 +78,9 @@ EN_INLINE void BDevice< D, A >::setDefaults()
 
 template< template< int > class D, int A >
     template< int AT, int V >
-EN_INLINE void BDevice< D, A >::set()
+EN_INLINE void BNode< D, A >::set()
 {
-    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+    static_assert( AT >= 0 && AT < TNode< D >::numAttributes, "invalid attribute index" );
 
 #ifdef __AVR__
     FAttributeSetPin< D, AT >::template eval< V >();
@@ -163,9 +95,9 @@ EN_INLINE void BDevice< D, A >::set()
 
 template< template< int > class D, int A >
     template< int AT, class T >
-EN_INLINE void BDevice< D, A >::set( const T& value )
+EN_INLINE void BNode< D, A >::set( const T& value )
 {
-    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+    static_assert( AT >= 0 && AT < TNode< D >::numAttributes, "invalid attribute index" );
 
 #ifdef __AVR__
     FAttributeSetPin< D, AT >::eval( value );
@@ -179,9 +111,9 @@ EN_INLINE void BDevice< D, A >::set( const T& value )
 
 template< template< int > class D, int A >
     template< int AT, class T >
-EN_INLINE void BDevice< D, A >::get( T& value )
+EN_INLINE void BNode< D, A >::get( T& value )
 {
-    static_assert( AT >= 0 && AT < TDevice< D >::numAttributes, "invalid attribute index" );
+    static_assert( AT >= 0 && AT < TNode< D >::numAttributes, "invalid attribute index" );
 
 #ifdef __AVR__
     FAttributeGetPin< D, AT >::eval( value, m_attributes );
@@ -195,7 +127,7 @@ EN_INLINE void BDevice< D, A >::get( T& value )
 
 template< template< int > class D, int A >
     template< int AT, int V >
-EN_INLINE bool BDevice< D, A >::is()
+EN_INLINE bool BNode< D, A >::is()
 {
     typename TAttribute< D, AT >::type_t value;
     get< AT >( value );
@@ -208,7 +140,7 @@ EN_INLINE bool BDevice< D, A >::is()
 
 template< template< int > class D, int A >
     template< int AT, class T >
-EN_INLINE bool BDevice< D, A >::is( const T& value )
+EN_INLINE bool BNode< D, A >::is( const T& value )
 {
     typename TAttribute< D, AT >::type_t value_l;
     get< AT >( value_l );
@@ -218,4 +150,4 @@ EN_INLINE bool BDevice< D, A >::is( const T& value )
 
 } // engine
 
-#endif // DEVICE_IPP
+#endif // NODE_IPP

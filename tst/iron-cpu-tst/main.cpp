@@ -8,39 +8,11 @@
 
 // Engine
 #include <iron.hpp>
+#include "camera.hpp"
 
 using namespace engine;
 
-//------------------------------------------------------------------------------
-//
-
-namespace engine
-{
-
-// Define device
-//
-EN_DEFINE_DEVICE(
-    ( Camera, "Example camera device", 0xB0, 0x7B, 0xA6, 0x43 ),
-    (( Input,    shutter, digital_t, Low,     2    ))
-    (( Input,    zoom,    analog_t,  512,     A0   ))
-    (( Internal, model,   uint32_t,  2389221, None ))
-    (( Internal, flash,   bool,      true,    None ))
-    (( Output,   led,     digital_t, Low,     13   ))
-)
-
-// Define device class
-//
-EN_DEVICE_CLASS( Camera )
-{
-};
-
-// Register device
-//
-EN_REGISTER_DEVICE( Camera )
-
-} // engine
-
-// Global device object, CPU view
+// Global node object, CPU view
 //
 Camera< CPU > g_cam;
 
@@ -78,18 +50,18 @@ bool testBus()
 //------------------------------------------------------------------------------
 //
 
-bool testDevice()
+bool testNodeTraits()
 {
     int status_i = 0;
 
-    // Test device static info
+    // Test node static info
     //
-    status_i = strcmp( TDevice< Camera >::name(), "Camera" );
+    status_i = strcmp( TNode< Camera >::name(), "Camera" );
     EN_ASSERT( status_i == 0 );
-    status_i = strcmp( TDevice< Camera >::description(), "Example camera device" );
+    status_i = strcmp( TNode< Camera >::description(), "Example camera node" );
     EN_ASSERT( status_i == 0 );
-    EN_ASSERT( TDevice< Camera >::id == 2960893507 );
-    static_assert( TDevice< Camera >::numAttributes == 5, "incorrect number" );
+    EN_ASSERT( TNode< Camera >::id == 2960893507 );
+    static_assert( TNode< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
     g_cam.state() |= Selected;
@@ -114,7 +86,7 @@ bool testDevice()
 //------------------------------------------------------------------------------
 //
 
-bool testDeviceAttributes()
+bool testNodeAttributes()
 {
     int status_i = 0;
 
@@ -242,7 +214,11 @@ bool testDeviceAttributes()
 
 bool testTypestore()
 {
-    typedef TypeStore< Types_Device > typestore_t;
+    typedef TypeStore< Types_Node > typestore_t;
+
+    std::vector< std::string > directories;
+    directories.push_back( "D:/data/engine/projects/iron/tst/iron-cpu-tst" );
+    typestore_t::get().init( directories );
 
     EN_ASSERT( typestore_t::get().types().size() == 1 );
 
@@ -250,7 +226,7 @@ bool testTypestore()
             = typestore_t::get().typesBegin();
           it != typestore_t::get().typesEnd(); ++it )
     {
-        std::cout << it->first << ": " << it->second->name() << std::endl;
+        std::cout << it->first << ": " << it->second->name << std::endl;
     }
 
     return true;
@@ -263,10 +239,10 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    EN_ASSERT( testBus() );
-    //EN_ASSERT( testDevice() );
-    //EN_ASSERT( testDeviceAttributes() );
-    //EN_ASSERT( testTypestore() );
+    //EN_ASSERT( testBus() );
+    EN_ASSERT( testNodeTraits() );
+    EN_ASSERT( testNodeAttributes() );
+    EN_ASSERT( testTypestore() );
 
     return 0;
 }

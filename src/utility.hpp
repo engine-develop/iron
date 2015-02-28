@@ -22,14 +22,17 @@
 
 // STD
 #ifndef __AVR__
-#ifdef LINUX
-#include <unistd.h>
-#endif // LINUX
 #ifdef _WIN32
 #include <windows.h>
 #endif // _WIN32
+#include <unistd.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <cassert>
+#include <dirent.h>
+#include <vector>
+#include <string>
+#include <algorithm>
 #endif // __AVR__
 
 // Chaos
@@ -192,6 +195,122 @@ EN_INLINE int scanI2CDevices()
 
     return nDevices;
 }
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE void removeChar( std::string& s,
+                           char c = ' ' )
+{
+    s.erase( std::remove( s.begin(), s.end(), c ), s.end() );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE void removeWhitespace( std::string& s )
+{
+    s.erase( std::remove_if( s.begin(), s.end(), ::isspace ), s.end() );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE void removePunct( std::string& s )
+{
+    s.erase( std::remove_if( s.begin(), s.end(), ::ispunct ), s.end() );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE std::string& rtrim( std::string& s,
+                              const char* t = " \t\n\r\f\v" )
+{
+    s.erase( s.find_last_not_of( t ) + 1 );
+
+    return s;
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE std::string& ltrim( std::string& s,
+                              const char* t = " \t\n\r\f\v" )
+{
+    s.erase( 0, s.find_first_not_of( t ) );
+
+    return s;
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE std::string& trim( std::string& s,
+                             const char* t = " \t\n\r\f\v" )
+{
+    return ltrim( rtrim( s, t ), t );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE void split( const std::string& s,
+                      std::vector< std::string >& result,
+                      char c = ' ' )
+{
+    const char* str = &s[ 0 ];
+
+    do
+    {
+        const char* begin = str;
+
+        while( *str != c && *str ) ++str;
+
+        result.push_back( std::string( begin, str ) );
+    }
+
+    while ( 0 != *str++ );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE bool isDirectory( const std::string& path )
+{
+    struct stat sb;
+
+    return ( stat( path.c_str(), &sb ) == 0
+             && S_ISDIR( sb.st_mode ) );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+EN_INLINE std::string getCurrentDirectory()
+{
+    char buf[ PATH_MAX ];
+    getcwd( buf, PATH_MAX );
+
+    return std::string( buf );
+}
+#endif // __AVR__
+
+//------------------------------------------------------------------------------
+//
+#ifndef __AVR__
+bool listDirectory( const std::string& path,
+                    std::vector< std::string >& files,
+                    const bool& recurse = false );
 #endif // __AVR__
 
 } // engine

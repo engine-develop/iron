@@ -21,12 +21,17 @@
 //
 
 // STD
+#include <string>
+#include <vector>
 #include <map>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
 
 // Engine
 #include "utility.hpp"
 #include "signal.hpp"
-#include "device.hpp"
+#include "node.hpp"
 
 namespace engine
 {
@@ -36,54 +41,69 @@ namespace engine
 
 enum Types
 {
-    Types_Device = 0,
+    Types_Node   = 0,
     Types_Signal = 1
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< int T >
-class Type
+struct BType
 {
+    std::string name;
+    std::string description;
+    std::string category;
+    std::string id0;
+    std::string id1;
+    std::string id2;
+    std::string id3;
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+struct Type
+    : public BType
+{
+};
+
+//------------------------------------------------------------------------------
+//
+
+struct NodeTypeAttribute
+{
+    std::string type;
+    std::string name;
+    std::string dataType;
+    std::string defaultValue;
+    std::string pin;
 };
 
 //------------------------------------------------------------------------------
 //
 
 template<>
-class Type< Types_Device >
+struct Type< Types_Node >
+    : BType
 {
-
-public:
-    virtual ~Type() {}
-
-    virtual std::string name() = 0;
-    virtual std::string description() = 0;
-    virtual uint32_t id() = 0;
-    virtual void* create() = 0;
-    virtual void destroy( void* obj ) = 0;
-    virtual void evaluate( void* obj ) = 0;
+    std::vector< NodeTypeAttribute > attributes;
+    std::string setupCode;
+    std::string loopCode;
 };
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int A > class D >
-class DeviceType
-    : public Type< Types_Device >
+template< int T >
+struct FTypeStore
 {
+    static EN_INLINE std::string blockLabel() { return ""; }
 
-public:
-
-    typedef TDevice< D > traits_t;
-
-    virtual EN_INLINE std::string name();
-    virtual EN_INLINE std::string description();
-    virtual EN_INLINE uint32_t id();
-    virtual EN_INLINE void* create();
-    virtual EN_INLINE void destroy( void* obj );
-    virtual EN_INLINE void evaluate( void* obj );
+    static EN_INLINE Type< T >* createType( std::string& block )
+    {
+        return 0x0;
+    }
 };
 
 //------------------------------------------------------------------------------
@@ -95,7 +115,7 @@ class TypeStore
 
 public:
 
-    typedef std::map< uint32_t, Type< T >* > registry_t;
+    typedef std::map< std::string, Type< T >* > registry_t;
     typedef typename registry_t::iterator iterator_t;
 
     //----------
@@ -103,10 +123,10 @@ public:
 
     static EN_INLINE TypeStore& get();
 
+    EN_INLINE void init( const std::vector< std::string >& directories );
+
     //----------
     //
-
-    EN_INLINE Status registerType( Type< T >* type );
 
     EN_INLINE const registry_t& types() const;
 
@@ -122,6 +142,10 @@ protected:
     EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
 
     EN_INLINE void release();
+
+    EN_INLINE bool scanFile( const std::string& file );
+
+    EN_INLINE bool scanDirectory( const std::string& directory );
 
     registry_t m_types;
 

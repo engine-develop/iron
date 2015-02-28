@@ -16,4 +16,7 @@ win32 {
 }
 
 SOURCES += \
-    ../tst/iron-tst/main.cpp
+    ../tst/iron-cpu-tst/main.cpp
+
+HEADERS += \
+    ../tst/iron-cpu-tst/camera.hpp

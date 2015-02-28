@@ -78,7 +78,7 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
         D< CPU > device;
 
         m_port = new port_obj_t( it->port,
-                                 device.baudrate(),
+                                 /*device.baudrate()*/ 9600,
                                  Timeout::simpleTimeout( 1000 ) );
 
         // Failed to open port
@@ -104,7 +104,7 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
         {
             EN_DEBUG( "-- Found device\n" );
 
-            device.setPort( m_port );
+            //device.setPort( m_port );
             devices.push_back( device );
         }
     }
@@ -125,12 +125,12 @@ EN_INLINE Status Bus< CPU >::select( D< CPU >& device )
         deselect( device );
     }
 
-    m_port = device.port();
+    //m_port = device.port();
 
     device.state() |= Selected;
-    signal< Signal_Select >( device.port() );
+    //signal< Signal_Select >( device.port() );
 
-    EN_DEBUG( "Selected: %s\n", device.port()->getPort().c_str() );
+    //EN_DEBUG( "Selected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
 }
@@ -147,11 +147,11 @@ EN_INLINE Status Bus< CPU >::deselect( D< CPU >& device )
     }
 
     device.state() &= ~Selected;
-    signal< Signal_Select >( device.port() );
+    //signal< Signal_Select >( device.port() );
 
     m_port = 0x0;
 
-    EN_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );
+    //EN_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
 }

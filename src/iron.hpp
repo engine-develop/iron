@@ -22,7 +22,7 @@
 
 #ifndef __AVR__
 #if __cplusplus < 201103L
-#error library requires C++11 support
+#error library requires C++11 support. please add '-std=c++0x' to compiler flags.
 #endif
 #endif // __AVR__
 
@@ -38,7 +38,6 @@
 #include "attribute.hpp"
 #include "port.hpp"
 #include "signal.hpp"
-#include "device.hpp"
 #include "node.hpp"
 #include "sync.hpp"
 #include "bus.hpp"

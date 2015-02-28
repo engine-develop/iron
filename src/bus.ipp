@@ -48,10 +48,10 @@ EN_INLINE Status BBus::signal( port_obj_t* port )
 
     // Write signal id
     //
-    APort::write( port, traits_t::id[ 0 ] );
-    APort::write( port, traits_t::id[ 1 ] );
-    APort::write( port, traits_t::id[ 2 ] );
-    APort::write( port, traits_t::id[ 3 ] );
+    APort::write( port, traits_t::id()[ 0 ] );
+    APort::write( port, traits_t::id()[ 1 ] );
+    APort::write( port, traits_t::id()[ 2 ] );
+    APort::write( port, traits_t::id()[ 3 ] );
 
     return Success;
 }
@@ -77,10 +77,10 @@ EN_INLINE Status BBus::wait( port_obj_t* port,
             uint8_t buf[ signal_size ];
             APort::read( port, buf, signal_size );
 
-            if (    buf[ 0 ] == traits_t::id[ 0 ]
-                 && buf[ 1 ] == traits_t::id[ 1 ]
-                 && buf[ 2 ] == traits_t::id[ 2 ]
-                 && buf[ 3 ] == traits_t::id[ 3 ] )
+            if (    buf[ 0 ] == traits_t::id()[ 0 ]
+                 && buf[ 1 ] == traits_t::id()[ 1 ]
+                 && buf[ 2 ] == traits_t::id()[ 2 ]
+                 && buf[ 3 ] == traits_t::id()[ 3 ] )
             {
                 return Success;
             }

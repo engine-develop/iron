@@ -31,21 +31,17 @@
 //
 
 #define EN_DEFINE_ATTRIBUTE( CNAME, I, MODE, NAME, TYPE, DVALUE, PIN ) \
-    template< int A > class CNAME; \
-    \
     template<> \
     struct TAttribute< CNAME, I > \
     { \
         static const bool valid = true; \
         static const uint8_t mode = MODE; \
-        static EN_INLINE const char* name(); \
+        static EN_INLINE const char* name() { return EN_STRINGIZE( NAME ); } \
         typedef TYPE type_t; \
         static const type_t defaultValue = DVALUE; \
         static const uint8_t pin = PIN; \
         \
     }; \
-    \
-    EN_INLINE const char* TAttribute< CNAME, I >::name() { return EN_STRINGIZE( NAME ); } \
 
 namespace engine
 {
@@ -55,16 +51,16 @@ namespace engine
 
 enum AttributeMode
 {
-    Input       = 0x0,
-    Output      = 0x1,
-    Internal    = 0x2
+    Input    = 0x0,
+    Output   = 0x1,
+    Internal = 0x2
 };
 
 //------------------------------------------------------------------------------
 //
 
 template< template< int A > class D >
-struct TDevice;
+struct TNode;
 
 //------------------------------------------------------------------------------
 //
@@ -74,14 +70,11 @@ struct TAttribute
 {
     static const bool valid = false;
     static const uint8_t mode = Input;
-    static EN_INLINE const char* name();
+    static EN_INLINE const char* name() { return ""; }
     typedef uint8_t type_t;
     static const type_t defaultValue = type_t();
     static const uint8_t pin = None;
 };
-
-template< template< int > class D, int AT >
-EN_INLINE const char* TAttribute< D, AT >::name() { return ""; }
 
 //------------------------------------------------------------------------------
 //
@@ -118,12 +111,12 @@ template< template< int > class D, int AT >
 struct IFAttributesBytes< D, AT, false >
 {
     static const uint32_t value = sizeof( typename TAttribute< D, AT >::type_t )
-        + IFAttributesBytes< D, AT+1, AT+1 == TDevice< D >::numAttributes >::value;
+        + IFAttributesBytes< D, AT+1, AT+1 == TNode< D >::numAttributes >::value;
 };
 
 template< template< int > class D >
 struct FAttributesBytes
-    : IFAttributesBytes< D, 0, 0 == TDevice< D >::numAttributes >
+    : IFAttributesBytes< D, 0, 0 == TNode< D >::numAttributes >
 {
 };
 
@@ -140,7 +133,7 @@ template< template< int > class D, int AT, int I >
 struct IFAttributeOffset< D, AT, I, false >
 {
     static const uint32_t value = sizeof( typename TAttribute< D, I >::type_t )
-        + IFAttributeOffset< D, AT, I+1, I+1 == AT || I+1 == TDevice< D >::numAttributes >::value;
+        + IFAttributeOffset< D, AT, I+1, I+1 == AT || I+1 == TNode< D >::numAttributes >::value;
 };
 
 template< template< int > class D, int AT >
@@ -212,13 +205,13 @@ struct IFAttributesSetDefaults< D, AT, false >
         typename TAttribute< D, AT >::type_t value( TAttribute< D, AT >::defaultValue );
         FSetAttribute< D, AT >::eval( buffer, value );
 
-        IFAttributesSetDefaults< D, AT+1, AT+1 == TDevice< D >::numAttributes >::eval( buffer );
+        IFAttributesSetDefaults< D, AT+1, AT+1 == TNode< D >::numAttributes >::eval( buffer );
     }
 };
 
 template< template< int > class D >
 struct FAttributesSetDefaults
-    : IFAttributesSetDefaults< D, 0, 0 == TDevice< D >::numAttributes >
+    : IFAttributesSetDefaults< D, 0, 0 == TNode< D >::numAttributes >
 {
 };
 
@@ -302,13 +295,13 @@ struct IFAttributesSetPinModes< D, AT, false >
         IFAttributeSetPinMode< D, AT, TAttribute< D, AT >::mode == Internal
                                 || TAttribute< D, AT >::pin == None >::eval();
 
-        IFAttributesSetPinModes< D, AT+1, AT+1 == TDevice< D >::numAttributes >::eval();
+        IFAttributesSetPinModes< D, AT+1, AT+1 == TNode< D >::numAttributes >::eval();
     }
 };
 
 template< template< int > class D >
 struct FAttributesSetPinModes
-    : IFAttributesSetPinModes< D, 0, 0 == TDevice< D >::numAttributes >
+    : IFAttributesSetPinModes< D, 0, 0 == TNode< D >::numAttributes >
 {
 };
 #endif // __AVR__

@@ -34,12 +34,17 @@
     { \
         static const bool valid = true; \
         static EN_INLINE const char* name(); \
-        static const uint8_t id[ 4 ]; \
+        static EN_INLINE const uint8_t* id(); \
     }; \
     \
     EN_INLINE const char* TSignal< NAME >::name() { return EN_STRINGIZE( NAME ); } \
     \
-    const uint8_t TSignal< NAME >::id[] = { ID_0, ID_1, ID_2, ID_3 }; \
+    EN_INLINE const uint8_t* TSignal< NAME >::id() \
+    { \
+        static uint8_t s_id[ signal_size ] = { ID_0, ID_1, ID_2, ID_3 }; \
+        \
+        return s_id; \
+    } \
 
 namespace engine
 {
@@ -57,14 +62,19 @@ struct TSignal
 {
     static const bool valid = false;
     static EN_INLINE const char* name();
-    static const uint8_t id[ signal_size ];
+    static EN_INLINE const uint8_t* id();
 };
 
 template< class S >
 EN_INLINE const char* TSignal< S >::name() { return ""; }
 
 template< class S >
-const uint8_t TSignal< S >::id[ signal_size ] = { 0x0, 0x0, 0x0, 0x0 };
+EN_INLINE const uint8_t* TSignal< S >::id()
+{
+    static uint8_t s_id[ signal_size ] = { 0x0, 0x0, 0x0, 0x0 };
+
+    return s_id;
+}
 
 //------------------------------------------------------------------------------
 // Define standard signals
