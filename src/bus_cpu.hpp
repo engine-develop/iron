@@ -54,14 +54,14 @@ public:
     // Devices
     //
 
-    template< template< int > class D >
-    EN_INLINE std::vector< D< CPU > > scan();
+    template< class N >
+    EN_INLINE std::vector< N > scan();
 
-    template< template< int > class D >
-    EN_INLINE Status select( D< CPU >& device );
+    template< class N >
+    EN_INLINE Status select( N& device );
 
-    template< template< int > class D >
-    EN_INLINE Status deselect( D< CPU >& device );
+    template< class N >
+    EN_INLINE Status deselect( N& device );
 
 protected:
 
@@ -79,20 +79,20 @@ protected:
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE std::vector< D< CPU > > scan();
+template< class N >
+EN_INLINE std::vector< N > scan();
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status select( D< CPU >& device );
+template< class N >
+EN_INLINE Status select( N& device );
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status deselect( D< CPU >& device );
+template< class N >
+EN_INLINE Status deselect( N& device );
 
 } // engine
 

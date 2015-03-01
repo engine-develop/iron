@@ -8,20 +8,21 @@
 
 // Engine
 #include <iron.hpp>
+
 #include "camera.hpp"
 
 using namespace engine;
 
 // Global node object, CPU view
 //
-Camera< CPU > g_cam;
+Camera g_cam;
 
 //------------------------------------------------------------------------------
 //
 
 bool testBus()
 {
-    std::vector< Camera< CPU > > devices = scan< Camera >();
+    std::vector< Camera > devices = scan< Camera >();
     EN_ASSERT( Bus< CPU >::get().ports().size() > 0 );
     EN_ASSERT( devices.size() > 0 );
 

@@ -30,9 +30,8 @@
 //
 
 #define EN_NODE_CLASS( CNAME ) \
-    template< int A = CPU > \
     struct CNAME \
-        : BNode< CNAME, A > \
+        : BNode< CNAME > \
 
 #define EN_DEFINE_TNODE( CNAME, DESC, CAT, ID_0, ID_1, ID_2, ID_3, NATTR ) \
     template<> \
@@ -60,7 +59,7 @@
     CHAOS_PP_EXPR( CHAOS_PP_SEQ_FOR_EACH_I( EN_DEFINE_NODE_ATTR_I, ATTRS, CNAME ) ) \
 
 #define EN_DEFINE_NODE_E( CNAME, DESC, CAT, ID_0, ID_1, ID_2, ID_3, INFO, ATTRS ) \
-    template< int > class CNAME; \
+    class CNAME; \
     \
     EN_DEFINE_TNODE( \
         CNAME, \
@@ -94,7 +93,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template< template< int A > class D >
+template< class N >
 struct TNode
 {
     static const uint32_t id = 0;
@@ -107,13 +106,12 @@ struct TNode
 //------------------------------------------------------------------------------
 //
 
-template< template< int A > class D, int A = CPU >
+template< class N >
 struct BNode
 {
 
-    enum { arch_t = A };
-    typedef TNode< D > traits_t;
-    static const uint32_t nAttrBytes = FAttributesBytes< D >::value;
+    typedef TNode< N > traits_t;
+    static const uint32_t nAttrBytes = FAttributesBytes< N >::value;
 
     //----------
     //

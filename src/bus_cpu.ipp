@@ -61,12 +61,12 @@ EN_INLINE std::vector< port_obj_t* >& Bus< CPU >::ports()
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
+template< class N >
+EN_INLINE std::vector< N > Bus< CPU >::scan()
 {
     release();
 
-    std::vector< D< CPU > > devices;
+    std::vector< N > devices;
 
     std::vector< PortInfo > devices_i = list_ports();
 
@@ -75,7 +75,7 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
     {
         EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
-        D< CPU > device;
+        N device;
 
         m_port = new port_obj_t( it->port,
                                  /*device.baudrate()*/ 9600,
@@ -117,8 +117,8 @@ EN_INLINE std::vector< D< CPU > > Bus< CPU >::scan()
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status Bus< CPU >::select( D< CPU >& device )
+template< class N >
+EN_INLINE Status Bus< CPU >::select( N& device )
 {
     if ( device.state() & Selected )
     {
@@ -138,8 +138,8 @@ EN_INLINE Status Bus< CPU >::select( D< CPU >& device )
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status Bus< CPU >::deselect( D< CPU >& device )
+template< class N >
+EN_INLINE Status Bus< CPU >::deselect( N& device )
 {
     if ( !( device.state() & Selected ) )
     {
@@ -159,17 +159,17 @@ EN_INLINE Status Bus< CPU >::deselect( D< CPU >& device )
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE std::vector< D< CPU > > scan()
+template< class N >
+EN_INLINE std::vector< N > scan()
 {
-    return Bus< CPU >::get().scan< D >();
+    return Bus< CPU >::get().scan< N >();
 }
 
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status select( D< CPU >& device )
+template< class N >
+EN_INLINE Status select( N& device )
 {
     return Bus< CPU >::get().select( device );
 }
@@ -177,8 +177,8 @@ EN_INLINE Status select( D< CPU >& device )
 //------------------------------------------------------------------------------
 //
 
-template< template< int > class D >
-EN_INLINE Status deselect( D< CPU >& device )
+template< class N >
+EN_INLINE Status deselect( N& device )
 {
     return Bus< CPU >::get().deselect( device );
 }

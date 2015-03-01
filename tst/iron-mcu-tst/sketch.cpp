@@ -5,13 +5,14 @@
 
 // Engine
 #include <iron.hpp>
-#include "../examples/camera.hpp"
+
+#include "camera.hpp"
 
 using namespace engine;
 
 // Global device object, MCU view
 //
-Camera< MCU > g_cam;
+Camera g_cam;
 
 //------------------------------------------------------------------------------
 //
@@ -120,5 +121,5 @@ void setup()
 
 void loop()
 {
-    g_cam.evaluate();
+    g_cam.loop();
 }

@@ -60,7 +60,8 @@ HEADERS += \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/USBDesc.h) \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/WCharacter.h) \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/wiring_private.h) \
-    $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/WString.h)
+    $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/WString.h) \
+    ../tst/iron-mcu-tst/camera.hpp
 
 SOURCES += \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/WInterrupts.c) \
@@ -81,4 +82,4 @@ SOURCES += \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/HID.cpp) \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/HardwareSerial.cpp) \
     $$quote($$ARDUINO_DIR/hardware/arduino/cores/arduino/CDC.cpp) \
-    ../tst/iron-avr-tst/sketch.cpp
+    ../tst/iron-mcu-tst/sketch.cpp
