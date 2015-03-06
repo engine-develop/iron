@@ -1,5 +1,5 @@
-#ifndef ATTRIBUTE_HPP
-#define ATTRIBUTE_HPP
+#ifndef IR_ATTRIBUTE_HPP
+#define IR_ATTRIBUTE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -412,4 +412,4 @@ struct FAttributeGetPin
 
 } // engine
 
-#endif // ATTRIBUTE_HPP
+#endif // IR_ATTRIBUTE_HPP

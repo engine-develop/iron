@@ -1,5 +1,5 @@
-#ifndef IR_BUS_MCU_HPP
-#define IR_BUS_MCU_HPP
+#ifndef IR_ENVIRONMENT_HPP
+#define IR_ENVIRONMENT_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -20,8 +20,7 @@
 //------------------------------------------------------------------------------
 //
 
-// Engine
-#include "bus.hpp"
+#include "utility.hpp"
 
 namespace engine
 {
@@ -29,9 +28,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-template<>
-class Bus< MCU >
-    : public BBus
+class Environment
 {
 
 public:
@@ -39,16 +36,32 @@ public:
     //----------
     //
 
-    static EN_INLINE Bus& get();
+    static EN_INLINE Environment& get();
+
+    EN_INLINE void reload();
+
+    //----------
+    //
+
+    EN_INLINE const std::string& installDirectory();
+
+    EN_INLINE const std::string& userDirectory();
+
+    EN_INLINE const std::vector< std::string >& pathDirectories();
 
 protected:
 
-    EN_INLINE Bus();
-    EN_INLINE ~Bus();
-    EN_INLINE Bus( const Bus& ) {}
-    EN_INLINE Bus& operator=( const Bus& ) { return *this; }
+    EN_INLINE Environment();
+    EN_INLINE ~Environment();
+    EN_INLINE Environment( const Environment& ) {}
+    EN_INLINE Environment& operator=( const Environment& ) { return *this; }
 
     EN_INLINE void release();
+    EN_INLINE void init();
+
+    std::string m_installDirectory;
+    std::string m_userDirectory;
+    std::vector< std::string > m_pathDirectories;
 
 };
 
@@ -57,6 +70,6 @@ protected:
 //------------------------------------------------------------------------------
 //
 
-#include "bus_mcu.ipp"
+#include "environment.ipp"
 
-#endif // IR_BUS_MCU_HPP
+#endif // IR_ENVIRONMENT_HPP

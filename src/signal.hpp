@@ -1,5 +1,5 @@
-#ifndef SIGNAL_HPP
-#define SIGNAL_HPP
+#ifndef IR_SIGNAL_HPP
+#define IR_SIGNAL_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -87,4 +87,4 @@ EN_DEFINE_SIGNAL( Signal_Read,   0x21, 0x31, 0x56, 0x8E )
 
 } // engine
 
-#endif // SIGNAL_HPP
+#endif // IR_SIGNAL_HPP

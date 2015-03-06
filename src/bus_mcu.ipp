@@ -1,5 +1,5 @@
-#ifndef BUS_MCU_IPP
-#define BUS_MCU_IPP
+#ifndef IR_BUS_MCU_IPP
+#define IR_BUS_MCU_IPP
 
 namespace engine
 {
@@ -41,4 +41,4 @@ EN_INLINE void Bus< MCU >::release()
 
 } // engine
 
-#endif // BUS_MCU_IPP
+#endif // IR_BUS_MCU_IPP

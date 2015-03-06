@@ -1,5 +1,5 @@
-#ifndef TYPESTORE_HPP
-#define TYPESTORE_HPP
+#ifndef IR_TYPESTORE_HPP
+#define IR_TYPESTORE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -30,6 +30,7 @@
 
 // Engine
 #include "utility.hpp"
+#include "environment.hpp"
 #include "signal.hpp"
 #include "node.hpp"
 
@@ -67,6 +68,13 @@ struct Type
     : public BType
 {
 };
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE bool operator<( const Type< T >& lhs,
+                          const Type< T >& rhs );
 
 //------------------------------------------------------------------------------
 //
@@ -136,22 +144,22 @@ public:
 
     static EN_INLINE TypeStore& get();
 
-    EN_INLINE void clear();
+    EN_INLINE void reload();
 
     EN_INLINE Status registerType( Type< T >* type );
 
-    EN_INLINE bool scan( const std::string& directory );
+    EN_INLINE void registerTypes( const std::string& directory );
 
-    EN_INLINE void scan( const std::vector< std::string >& directories );
+    EN_INLINE void registerTypes( const std::vector< std::string >& directories );
 
     //----------
     //
 
     EN_INLINE const registry_t& types() const;
 
-    EN_INLINE iterator_t typesBegin();
+    EN_INLINE std::vector< std::string > categories();
 
-    EN_INLINE iterator_t typesEnd();
+    EN_INLINE std::vector< Type< T >* > typesByCategory( const std::string& category );
 
 protected:
 
@@ -159,6 +167,10 @@ protected:
     EN_INLINE ~TypeStore();
     EN_INLINE TypeStore( const TypeStore& ) {}
     EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
+
+    EN_INLINE void clear();
+
+    EN_INLINE void init();
 
     registry_t m_types;
 
@@ -171,4 +183,4 @@ protected:
 
 #include "typestore.ipp"
 
-#endif // TYPESTORE_HPP
+#endif // IR_TYPESTORE_HPP

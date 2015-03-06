@@ -1,5 +1,5 @@
-#ifndef BUS_IPP
-#define BUS_IPP
+#ifndef IR_BUS_IPP
+#define IR_BUS_IPP
 
 namespace engine
 {
@@ -134,4 +134,4 @@ EN_INLINE Status wait( uint32_t timeout )
 
 } // engine
 
-#endif // BUS_IPP
+#endif // IR_BUS_IPP

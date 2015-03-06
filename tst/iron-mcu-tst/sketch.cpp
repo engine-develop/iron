@@ -10,25 +10,13 @@
 
 using namespace engine;
 
-// Global device object, MCU view
-//
+// Global device object
 Camera g_cam;
 
 //------------------------------------------------------------------------------
 //
 
-bool testBus()
-{
-    //signal< MCU, Signal_ID >();
-    //wait< MCU, Signal_ID >( 1000 );
-
-    return true;
-}
-
-//------------------------------------------------------------------------------
-//
-
-bool testAttributes()
+bool testNodeAttributes()
 {
     // Test attribute defaults
     //
@@ -112,8 +100,7 @@ void setup()
 
     g_cam.setup();
 
-    //EN_ASSERT( testBus() );
-    //EN_ASSERT( testAttributes() );
+    EN_ASSERT( testNodeAttributes() );
 }
 
 //------------------------------------------------------------------------------

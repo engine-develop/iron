@@ -1,5 +1,5 @@
-#ifndef BUS_CPU_HPP
-#define BUS_CPU_HPP
+#ifndef IR_BUS_CPU_HPP
+#define IR_BUS_CPU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -101,4 +101,4 @@ EN_INLINE Status deselect( N& device );
 
 #include "bus_cpu.ipp"
 
-#endif // BUS_CPU_HPP
+#endif // IR_BUS_CPU_HPP

@@ -1,5 +1,5 @@
-#ifndef PORT_HPP
-#define PORT_HPP
+#ifndef IR_PORT_HPP
+#define IR_PORT_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -100,4 +100,4 @@ struct PortBuffer
 
 #include "port.ipp"
 
-#endif // PORT_HPP
+#endif // IR_PORT_HPP

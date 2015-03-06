@@ -1,5 +1,5 @@
-#ifndef PINS_STANDARD_HPP
-#define PINS_STANDARD_HPP
+#ifndef IR_PINS_ATMEGA328P_HPP
+#define IR_PINS_ATMEGA328P_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -77,4 +77,4 @@ EN_DEFINE_PIN_PWM( 6, TCCR0A, COM0A1, OCR0A )
 
 } // engine
 
-#endif // PINS_STANDARD_HPP
+#endif // IR_PINS_ATMEGA328P_HPP

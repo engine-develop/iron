@@ -1,8 +1,18 @@
-#ifndef TYPESTORE_IPP
-#define TYPESTORE_IPP
+#ifndef IR_TYPESTORE_IPP
+#define IR_TYPESTORE_IPP
 
 namespace engine
 {
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE bool operator<( const Type< T >& lhs,
+                          const Type< T >& rhs )
+{
+    return ( lhs.name < rhs.name );
+}
 
 //------------------------------------------------------------------------------
 //
@@ -23,8 +33,11 @@ EN_INLINE void FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
     std::vector< std::string > tokens;
     split( tuple, tokens, ',' );
     assert( tokens.size() == 7 );
+    if ( tokens.size() != 7 ) return;
 
     removePunct( tokens[ 0 ] );
+    removePunct( tokens[ 1 ] );
+    removePunct( tokens[ 2 ] );
     removePunct( tokens[ 6 ] );
 
     type->name        = trim( tokens[ 0 ] );
@@ -169,7 +182,25 @@ EN_INLINE TypeStore< T >& TypeStore< T >::get()
 {
     static TypeStore< T > obj;
 
+    static bool reloadDone = false;
+
+    if ( !reloadDone )
+    {
+        obj.reload();
+        reloadDone = true;
+    }
+
     return obj;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE void TypeStore< T >::reload()
+{
+    clear();
+    init();
 }
 
 //------------------------------------------------------------------------------
@@ -178,13 +209,23 @@ EN_INLINE TypeStore< T >& TypeStore< T >::get()
 template< int T >
 EN_INLINE void TypeStore< T >::clear()
 {
-    for ( iterator_t it = m_types.begin();
-            it != m_types.end(); ++it )
+    for ( auto it = m_types.begin(); it != m_types.end(); ++it )
     {
         if ( it->second ) delete it->second;
     }
 
     m_types.clear();
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE void TypeStore< T >::init()
+{
+    // Register types from environment
+    //
+    registerTypes( Environment::get().pathDirectories() );
 }
 
 //------------------------------------------------------------------------------
@@ -207,7 +248,7 @@ EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
     //
     if ( m_types.count( pid ) )
     {
-        EN_DEBUG( "Typestore already contains id" );
+        EN_DEBUG( "Failed to add type '%s'. Typestore already contains id.\n", type->name.c_str() );
 
         return Error;
     }
@@ -221,10 +262,10 @@ EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
 //
 
 template< int T >
-EN_INLINE bool TypeStore< T >::scan( const std::string& directory )
+EN_INLINE void TypeStore< T >::registerTypes( const std::string& directory )
 {
     std::vector< std::string > files;
-    if ( !listDirectory( directory, files, true ) ) { return false; }
+    if ( !listDirectory( directory, files, true ) ) { return; }
 
     for ( auto it0 = files.begin(); it0 != files.end(); ++it0 )
     {
@@ -239,20 +280,18 @@ EN_INLINE bool TypeStore< T >::scan( const std::string& directory )
             }
         }
     }
-
-    return true;
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::scan( const std::vector< std::string >& directories )
+EN_INLINE void TypeStore< T >::registerTypes( const std::vector< std::string >& directories )
 {
     for ( auto it = directories.begin();
             it != directories.end(); ++it )
     {
-        scan( *it );
+        registerTypes( *it );
     }
 }
 
@@ -269,20 +308,42 @@ EN_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() con
 //
 
 template< int T >
-EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::typesBegin()
+EN_INLINE std::vector< std::string > TypeStore< T >::categories()
 {
-    return m_types.begin();
+    std::vector< std::string > categories;
+
+    for ( auto it = m_types.begin(); it != m_types.end(); ++it )
+    {
+        if ( std::find( categories.begin(),
+                        categories.end(),
+                        it->second->category ) == categories.end() )
+        {
+            categories.push_back( it->second->category );
+        }
+    }
+
+    return categories;
 }
 
 //------------------------------------------------------------------------------
 //
 
 template< int T >
-EN_INLINE typename TypeStore< T >::iterator_t TypeStore< T >::typesEnd()
+EN_INLINE std::vector< Type< T >* > TypeStore< T >::typesByCategory( const std::string& category )
 {
-    return m_types.end();
+    std::vector< Type< T >* > types;
+
+    for ( auto it = m_types.begin(); it != m_types.end(); ++it )
+    {
+        if ( it->second->category == category )
+        {
+            types.push_back( it->second );
+        }
+    }
+
+    return types;
 }
 
 } // engine
 
-#endif // TYPESTORE_IPP
+#endif // IR_TYPESTORE_IPP

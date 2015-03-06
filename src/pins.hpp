@@ -1,5 +1,5 @@
-#ifndef PINS_HPP
-#define PINS_HPP
+#ifndef IR_PINS_HPP
+#define IR_PINS_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -240,4 +240,4 @@ EN_INLINE uint16_t getAnalog()
 #include "pins_atmega328p.hpp"
 #endif
 
-#endif // PINS_HPP
+#endif // IR_PINS_HPP

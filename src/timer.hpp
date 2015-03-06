@@ -1,5 +1,5 @@
-#ifndef TIMER_HPP
-#define TIMER_HPP
+#ifndef IR_TIMER_HPP
+#define IR_TIMER_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -59,4 +59,4 @@ struct Timer
 
 #include "timer.ipp"
 
-#endif // TIMER_HPP
+#endif // IR_TIMER_HPP

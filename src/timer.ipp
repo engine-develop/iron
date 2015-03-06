@@ -1,5 +1,5 @@
-#ifndef TIMER_IPP
-#define TIMER_IPP
+#ifndef IR_TIMER_IPP
+#define IR_TIMER_IPP
 
 namespace engine
 {
@@ -40,4 +40,4 @@ EN_INLINE uint32_t Timer::elapsed()
 
 } // engine
 
-#endif // TIMER_IPP
+#endif // IR_TIMER_IPP

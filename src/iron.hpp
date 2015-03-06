@@ -1,5 +1,5 @@
-#ifndef IRON_HPP
-#define IRON_HPP
+#ifndef IR_IRON_HPP
+#define IR_IRON_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -43,7 +43,8 @@
 #include "bus.hpp"
 
 #ifndef __AVR__
+#include "environment.hpp"
 #include "typestore.hpp"
 #endif // __AVR__
 
-#endif // IRON_HPP
+#endif // IR_IRON_HPP

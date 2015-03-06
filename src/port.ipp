@@ -1,5 +1,5 @@
-#ifndef PORT_IPP
-#define PORT_IPP
+#ifndef IR_PORT_IPP
+#define IR_PORT_IPP
 
 namespace engine
 {
@@ -129,4 +129,4 @@ EN_INLINE void PortBuffer< S >::read()
 
 } // engine
 
-#endif // PORT_IPP
+#endif // IR_PORT_IPP

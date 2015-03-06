@@ -11,7 +11,7 @@ namespace engine
 #ifndef __AVR__
 bool listDirectory( const std::string& path,
                     std::vector< std::string >& files,
-                    const bool& recurse )
+                    const bool& recursive )
 {
     DIR* dp = opendir( path.c_str() );
     if ( !dp ) { return false; }
@@ -23,11 +23,11 @@ bool listDirectory( const std::string& path,
         std::string subPath = path + std::string( "/" ) + std::string( entry->d_name );
 
         if ( isDirectory( subPath )
-             && recurse
+             && recursive
              && strcmp( entry->d_name, "."  )
              && strcmp( entry->d_name, ".." ) )
         {
-            listDirectory( subPath, files, recurse );
+            listDirectory( subPath, files, recursive );
         }
 
         files.push_back( subPath );

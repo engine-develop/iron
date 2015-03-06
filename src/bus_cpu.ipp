@@ -1,5 +1,5 @@
-#ifndef BUS_CPU_IPP
-#define BUS_CPU_IPP
+#ifndef IR_BUS_CPU_IPP
+#define IR_BUS_CPU_IPP
 
 namespace engine
 {
@@ -185,4 +185,4 @@ EN_INLINE Status deselect( N& device )
 
 } // engine
 
-#endif // BUS_CPU_IPP
+#endif // IR_BUS_CPU_IPP

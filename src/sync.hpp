@@ -1,5 +1,5 @@
-#ifndef SYNC_HPP
-#define SYNC_HPP
+#ifndef IR_SYNC_HPP
+#define IR_SYNC_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -36,4 +36,4 @@ EN_INLINE Status sync( const D& src );
 
 #include "sync.ipp"
 
-#endif // SYNC_HPP
+#endif // IR_SYNC_HPP

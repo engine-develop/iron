@@ -62,7 +62,10 @@ HEADERS += \
     ../src/utility.hpp \
     ../src/version.hpp \
     ../src/node.hpp \
-    ../src/node.ipp
+    ../src/node.ipp \
+    ../src/environment.hpp \
+    ../src/environment.ipp \
+    ../src/utility.ipp
 
 CONFIG( debug, debug|release ) {
     DEST_DIR = debug

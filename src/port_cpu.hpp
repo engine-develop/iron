@@ -1,5 +1,5 @@
-#ifndef PORT_CPU_HPP
-#define PORT_CPU_HPP
+#ifndef IR_PORT_CPU_HPP
+#define IR_PORT_CPU_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -620,4 +620,4 @@ std::vector< PortInfo > list_ports();
 
 } // engine
 
-#endif // PORT_CPU_HPP
+#endif // IR_PORT_CPU_HPP

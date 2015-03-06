@@ -1,5 +1,5 @@
-#ifndef VERSION_HPP
-#define VERSION_HPP
+#ifndef IR_VERSION_HPP
+#define IR_VERSION_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -45,4 +45,4 @@ EN_INLINE const char* getAPIVersion()
 
 } // engine
 
-#endif // VERSION_HPP
+#endif // IR_VERSION_HPP

@@ -1,5 +1,5 @@
-#ifndef PORT_CPU_WINDOWS_HPP
-#define PORT_CPU_WINDOWS_HPP
+#ifndef IR_PORT_CPU_WINDOWS_HPP
+#define IR_PORT_CPU_WINDOWS_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -156,4 +156,4 @@ private:
 
 } // engine
 
-#endif // PORT_CPU_WINDOWS_HPP
+#endif // IR_PORT_CPU_WINDOWS_HPP

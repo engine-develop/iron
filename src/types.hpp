@@ -1,5 +1,5 @@
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef IR_TYPES_HPP
+#define IR_TYPES_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -105,4 +105,4 @@ typedef uint16_t analog_t;
 
 } // engine
 
-#endif // TYPES_HPP
+#endif // IR_TYPES_HPP

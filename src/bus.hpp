@@ -1,5 +1,5 @@
-#ifndef BUS_HPP
-#define BUS_HPP
+#ifndef IR_BUS_HPP
+#define IR_BUS_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -106,4 +106,4 @@ EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
 #include "bus_cpu.hpp"
 #endif // __AVR__
 
-#endif // BUS_HPP
+#endif // IR_BUS_HPP

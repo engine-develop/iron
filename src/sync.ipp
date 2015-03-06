@@ -1,5 +1,5 @@
-#ifndef SYNC_IPP
-#define SYNC_IPP
+#ifndef IR_SYNC_IPP
+#define IR_SYNC_IPP
 
 namespace engine
 {
@@ -15,4 +15,4 @@ EN_INLINE Status sync( const D& src )
 
 } // engine
 
-#endif // SYNC_IPP
+#endif // IR_SYNC_IPP

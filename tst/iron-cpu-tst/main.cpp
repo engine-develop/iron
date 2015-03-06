@@ -13,37 +13,79 @@
 
 using namespace engine;
 
-// Global node object, CPU view
-//
+// Global node object
 Camera g_cam;
 
 //------------------------------------------------------------------------------
 //
 
-bool testBus()
+bool testEnvironment()
 {
-    std::vector< Camera > devices = scan< Camera >();
-    EN_ASSERT( Bus< CPU >::get().ports().size() > 0 );
-    EN_ASSERT( devices.size() > 0 );
+    std::string userDir = Environment::get().userDirectory();
+    EN_ASSERT( isDirectory( userDir ) == true );
 
-    for ( size_t i = 0; i < devices.size(); ++i )
+    const std::vector< std::string >& pathDirs
+        = Environment::get().pathDirectories();
+    EN_ASSERT( pathDirs.size() == 3 );
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+//
+
+bool testTypeStore()
+{
+    typedef TypeStore< Types_Node > typestore_t;
+    typedef Type< Types_Node > type_t;
+
+    // Test directory scan
+    //
+    typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
+    //EN_ASSERT( typestore_t::get().types().size() == 1 );
+
+    // Test registry of user type
+    //
+    type_t* userType = new Type< Types_Node >();
+
+    userType->name = "TempSensor";
+    userType->description = "Temperature sensor";
+    userType->category = "Sensors";
+    userType->id0 = "0xC4";
+    userType->id1 = "0xCE";
+    userType->id2 = "0x90";
+    userType->id3 = "0x27";
+
+    typestore_t::get().registerType( userType );
+    //EN_ASSERT( typestore_t::get().types().size() == 2 );
+
+    // Print out key/name pairs
+    //
+    for ( auto it = typestore_t::get().types().begin();
+          it != typestore_t::get().types().end(); ++it )
     {
-        select( devices[ i ] );
-        EN_ASSERT( devices[ i ].state() & Selected );
-        sleep( 1 );
+        std::cout << "key: " << it->first << " value: " << it->second->name << std::endl;
     }
 
-//    sleep( 1 );
+    // Get type categories
+    //
+    std::vector< std::string > categories = typestore_t::get().categories();
+    //EN_ASSERT( categories.size() == 2 );
 
-//    for ( size_t i = 0; i < devices.size(); ++i )
-//    {
-//        deselect( devices[ i ] );
-//        EN_ASSERT( !( devices[ i ].state() & Selected ) );
-//        sleep( 1 );
-//    }
+    for ( size_t i = 0 ; i < categories.size(); ++i )
+    {
+        std::cout << i << ": " << categories[ i ] << std::endl;
+    }
 
-//    signal< CPU, Signal_ID >();
-//    wait< CPU, Signal_ID >( 1000 );
+    // Get types by category
+    //
+    std::vector< type_t* > types = typestore_t::get().typesByCategory( "Sensors" );
+    EN_ASSERT( types.size() == 2 );
+
+    for ( size_t i = 0 ; i < types.size(); ++i )
+    {
+        std::cout << i << ": " << types[ i ]->name << std::endl;
+    }
 
     return true;
 }
@@ -213,53 +255,14 @@ bool testNodeAttributes()
 //------------------------------------------------------------------------------
 //
 
-bool testTypestore()
-{
-    typedef TypeStore< Types_Node > typestore_t;
-
-    // Test directory scan
-    //
-    typestore_t::get().scan( "../../tst/iron-cpu-tst" );
-    EN_ASSERT( typestore_t::get().types().size() == 1 );
-
-    // Test registry of user type
-    //
-    Type< Types_Node >* userType = new Type< Types_Node >();
-
-    userType->name = "TempSensor";
-    userType->description = "Temperature sensor";
-    userType->category = "sensor";
-    userType->id0 = "0xC4";
-    userType->id1 = "0xCE";
-    userType->id2 = "0x90";
-    userType->id3 = "0x27";
-
-    typestore_t::get().registerType( userType );
-    EN_ASSERT( typestore_t::get().types().size() == 2 );
-
-    // Print out key/name pairs
-    //
-    for ( typename typestore_t::iterator_t it
-            = typestore_t::get().typesBegin();
-          it != typestore_t::get().typesEnd(); ++it )
-    {
-        std::cout << it->first << ": " << it->second->name << std::endl;
-    }
-
-    return true;
-}
-
-//------------------------------------------------------------------------------
-//
-
 int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    //EN_ASSERT( testBus() );
+    EN_ASSERT( testEnvironment() );
+    EN_ASSERT( testTypeStore() );
     EN_ASSERT( testNodeTraits() );
     EN_ASSERT( testNodeAttributes() );
-    EN_ASSERT( testTypestore() );
 
     return 0;
 }

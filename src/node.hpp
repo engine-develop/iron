@@ -1,5 +1,5 @@
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef IR_NODE_HPP
+#define IR_NODE_HPP
 
 // Copyright (C) 2015 Engine Development
 //
@@ -175,4 +175,4 @@ protected:
 
 #include "node.ipp"
 
-#endif // NODE_HPP
+#endif // IR_NODE_HPP

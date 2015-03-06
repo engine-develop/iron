@@ -1,5 +1,5 @@
-#ifndef NODE_IPP
-#define NODE_IPP
+#ifndef IR_NODE_IPP
+#define IR_NODE_IPP
 
 namespace engine
 {
@@ -150,4 +150,4 @@ EN_INLINE bool BNode< N >::is( const T& value )
 
 } // engine
 
-#endif // NODE_IPP
+#endif // IR_NODE_IPP
