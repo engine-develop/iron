@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -42,8 +43,17 @@ namespace engine
 
 enum Types
 {
-    Types_Node   = 0,
-    Types_Signal = 1
+    Types_Variable = 0,
+    Types_Node     = 1
+};
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+struct TTypes
+{
+    static EN_INLINE const char* label() { return ""; }
 };
 
 //------------------------------------------------------------------------------
@@ -54,10 +64,7 @@ struct BType
     std::string name;
     std::string description;
     std::string category;
-    std::string id0;
-    std::string id1;
-    std::string id2;
-    std::string id3;
+    uint32_t id;
 };
 
 //------------------------------------------------------------------------------
@@ -75,6 +82,16 @@ struct Type
 template< int T >
 EN_INLINE bool operator<( const Type< T >& lhs,
                           const Type< T >& rhs );
+
+//------------------------------------------------------------------------------
+//
+
+template<>
+struct Type< Types_Variable >
+    : BType
+{
+    std::string dataType;
+};
 
 //------------------------------------------------------------------------------
 //
@@ -105,6 +122,11 @@ struct Type< Types_Node >
 template< int T >
 struct FTypeStoreType
 {
+    static EN_INLINE Status verifyType( Type< T >* type )
+    {
+        return Success;
+    }
+
     static EN_INLINE void createTypes( std::string& file,
                                        std::vector< Type< T >* >& types )
     {
@@ -115,16 +137,37 @@ struct FTypeStoreType
 //
 
 template<>
-struct FTypeStoreType< Types_Node >
+struct FTypeStoreType< Types_Variable >
 {
-    static EN_INLINE void parseTypeInfo( std::string& block,
-                                         Type< Types_Node >* type );
+    typedef Type< Types_Variable > type_t;
 
-    static EN_INLINE void parseTypeClass( std::string& block,
-                                          Type< Types_Node >* type );
+    static EN_INLINE Status verifyType( type_t* type );
+
+    static EN_INLINE Status parseTypeInfo( std::string& block,
+                                           type_t* type );
 
     static EN_INLINE void createTypes( std::string& file,
-                                       std::vector< Type< Types_Node >* >& types );
+                                       std::vector< type_t* >& types );
+};
+
+//------------------------------------------------------------------------------
+//
+
+template<>
+struct FTypeStoreType< Types_Node >
+{
+    typedef Type< Types_Node > type_t;
+
+    static EN_INLINE Status verifyType( type_t* type );
+
+    static EN_INLINE Status parseTypeInfo( std::string& block,
+                                           type_t* type );
+
+    static EN_INLINE Status parseTypeClass( std::string& block,
+                                            type_t* type );
+
+    static EN_INLINE void createTypes( std::string& file,
+                                       std::vector< type_t* >& types );
 };
 
 //------------------------------------------------------------------------------
@@ -157,6 +200,8 @@ public:
 
     EN_INLINE const registry_t& types() const;
 
+    EN_INLINE Type< T >* type( const uint32_t& id );
+
     EN_INLINE std::vector< std::string > categories();
 
     EN_INLINE std::vector< Type< T >* > typesByCategory( const std::string& category );
@@ -171,6 +216,8 @@ protected:
     EN_INLINE void clear();
 
     EN_INLINE void init();
+
+    EN_INLINE Status verifyType( Type< T >* type );
 
     registry_t m_types;
 

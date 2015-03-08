@@ -25,6 +25,7 @@
 
 // Engine
 #include "utility.hpp"
+#include "variable.hpp"
 #include "pins.hpp"
 
 //------------------------------------------------------------------------------

@@ -38,6 +38,7 @@
 #include "attribute.hpp"
 #include "port.hpp"
 #include "signal.hpp"
+#include "variable.hpp"
 #include "node.hpp"
 #include "sync.hpp"
 #include "bus.hpp"

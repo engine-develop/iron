@@ -7,6 +7,24 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
+template<>
+struct TTypes< Types_Variable >
+{
+    static EN_INLINE const char* label() { return "variable"; }
+};
+
+//------------------------------------------------------------------------------
+//
+
+template<>
+struct TTypes< Types_Node >
+{
+    static EN_INLINE const char* label() { return "node"; }
+};
+
+//------------------------------------------------------------------------------
+//
+
 template< int T >
 EN_INLINE bool operator<( const Type< T >& lhs,
                           const Type< T >& rhs )
@@ -17,8 +35,109 @@ EN_INLINE bool operator<( const Type< T >& lhs,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
-                                                            Type< Types_Node >* type )
+EN_INLINE Status FTypeStoreType< Types_Variable >::verifyType( type_t* type )
+{
+    if (    !type->name.empty()
+         && !type->description.empty()
+         && !type->category.empty()
+         && !type->dataType.empty() )
+    {
+        return Success;
+    }
+
+    return Error;
+}
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE Status FTypeStoreType< Types_Variable >::parseTypeInfo( std::string& block,
+                                                                  type_t* type )
+{
+    size_t p0 = block.find_first_of( "(" );
+    size_t p1 = block.find_first_of( ")", p0 + 1 );
+    std::string tuple = block.substr( p0, (p1-p0)+1 );
+
+    std::vector< std::string > tokens;
+    split( tuple, tokens, ',' );
+    assert( tokens.size() == 4 );
+    if ( tokens.size() != 4 ) return Error;
+
+    removePunct( tokens[ 0 ] );
+    removePunct( tokens[ 1 ] );
+    removePunct( tokens[ 2 ] );
+    removePunct( tokens[ 3 ] );
+
+    type->name        = trim( tokens[ 0 ] );
+    type->description = trim( tokens[ 2 ] );
+    type->category    = trim( tokens[ 3 ] );
+    type->id          = 0;
+    type->dataType    = trim( tokens[ 1 ] );
+
+    return Success;
+}
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE void FTypeStoreType< Types_Variable >::createTypes( std::string& file,
+                                                              std::vector< type_t* >& types )
+{
+    std::ifstream fstr( file );
+    if ( !fstr.is_open() ) { return; }
+
+    std::string block;
+    size_t nb = 0;
+    size_t ne = 0;
+
+    std::string line;
+
+    while ( std::getline( fstr, line ) )
+    {
+        if ( line.find( "EN_DEFINE_VARIABLE" ) != std::string::npos )
+        {
+            block += line;
+
+            nb += std::count( line.begin(), line.end(), '(' );
+            ne += std::count( line.begin(), line.end(), ')' );
+
+            if ( nb > 0 && nb - ne == 0 )
+            {
+                Type< Types_Variable >* type = new Type< Types_Variable >();
+                parseTypeInfo( block, type );
+                types.push_back( type );
+
+                block = "";
+                nb = 0;
+                ne = 0;
+            }
+        }
+    }
+
+    fstr.close();
+}
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE Status FTypeStoreType< Types_Node >::verifyType( type_t* type )
+{
+    if (    !type->name.empty()
+         && !type->description.empty()
+         && !type->category.empty()
+         && !type->classCode.empty() )
+    {
+        return Success;
+    }
+
+    return Error;
+}
+
+//------------------------------------------------------------------------------
+//
+
+EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
+                                                              Type< Types_Node >* type )
 {
     size_t p0 = block.find_first_of( "(" );
     size_t p1 = 0;
@@ -32,21 +151,17 @@ EN_INLINE void FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
 
     std::vector< std::string > tokens;
     split( tuple, tokens, ',' );
-    assert( tokens.size() == 7 );
-    if ( tokens.size() != 7 ) return;
+    assert( tokens.size() == 3 );
+    if ( tokens.size() != 3 ) return Error;
 
     removePunct( tokens[ 0 ] );
     removePunct( tokens[ 1 ] );
     removePunct( tokens[ 2 ] );
-    removePunct( tokens[ 6 ] );
 
     type->name        = trim( tokens[ 0 ] );
     type->description = trim( tokens[ 1 ] );
     type->category    = trim( tokens[ 2 ] );
-    type->id0         = trim( tokens[ 3 ] );
-    type->id1         = trim( tokens[ 4 ] );
-    type->id2         = trim( tokens[ 5 ] );
-    type->id3         = trim( tokens[ 6 ] );
+    type->id          = 0;
 
     //----------
     // Find attributes
@@ -75,15 +190,19 @@ EN_INLINE void FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
 
         type->attributes.push_back( attr );
     }
+
+    return Success;
 }
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void FTypeStoreType< Types_Node >::parseTypeClass( std::string& block,
-                                                             Type< Types_Node >* type )
+EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeClass( std::string& block,
+                                                               Type< Types_Node >* type )
 {
     type->classCode = block;
+
+    return Success;
 }
 
 //------------------------------------------------------------------------------
@@ -232,28 +351,41 @@ EN_INLINE void TypeStore< T >::init()
 //
 
 template< int T >
+EN_INLINE Status TypeStore< T >::verifyType( Type< T >* type )
+{
+    return FTypeStoreType< T >::verifyType( type );
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
 EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
 {
     assert( type );
+    if ( !type ) return Error;
+
+    if ( !verifyType( type ) ) return Error;
 
     // Get key id
     //
-    uint8_t id0 = strHexToDec( type->id0 );
-    uint8_t id1 = strHexToDec( type->id1 );
-    uint8_t id2 = strHexToDec( type->id2 );
-    uint8_t id3 = strHexToDec( type->id3 );
-    uint32_t pid = EN_PACK4( id0, id1, id2, id3 );
+    std::string hash_t( type->category );
+    hash_t += "/";
+    hash_t += type->name;
+    std::hash< std::string > fhash;
+    uint32_t id = fhash( hash_t );
 
     // Insert
     //
-    if ( m_types.count( pid ) )
+    if ( m_types.count( id ) )
     {
         EN_DEBUG( "Failed to add type '%s'. Typestore already contains id.\n", type->name.c_str() );
 
         return Error;
     }
 
-    m_types[ pid ] = type;
+    type->id = id;
+    m_types[ type->id ] = type;
 
     return Success;
 }
@@ -302,6 +434,20 @@ template< int T >
 EN_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() const
 {
     return m_types;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE Type< T >* TypeStore< T >::type( const uint32_t& id )
+{
+    if ( m_types.count( id ) == 0 )
+    {
+        return 0x0;
+    }
+
+    return m_types[ id ];
 }
 
 //------------------------------------------------------------------------------

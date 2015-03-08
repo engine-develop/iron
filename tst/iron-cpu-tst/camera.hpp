@@ -14,7 +14,7 @@ namespace engine
 //
 
 EN_DEFINE_NODE(
-    ( Camera, "Example camera node", "sensor", 0xB0, 0x7B, 0xA6, 0x43 ),
+    ( Camera, "Example camera node", "Sensors" ),
     (( Input,    shutter, digital_t, Low,     2    ))
     (( Input,    zoom,    analog_t,  512,     A0   ))
     (( Internal, model,   uint32_t,  2389221, None ))

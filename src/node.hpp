@@ -33,15 +33,14 @@
     struct CNAME \
         : BNode< CNAME > \
 
-#define EN_DEFINE_TNODE( CNAME, DESC, CAT, ID_0, ID_1, ID_2, ID_3, NATTR ) \
+#define EN_DEFINE_TNODE( CNAME, DESC, CAT, NATTR ) \
     template<> \
     struct TNode< CNAME > \
     { \
-        static const uint32_t id = EN_PACK4( ID_0, ID_1, ID_2, ID_3 ); \
-        static const uint16_t numAttributes = NATTR; \
         static EN_INLINE const char* name()        { return EN_STRINGIZE( CNAME ); } \
         static EN_INLINE const char* description() { return DESC; } \
         static EN_INLINE const char* category()    { return CAT; } \
+        static const uint16_t numAttributes = NATTR; \
     }; \
 
 #define EN_DEFINE_NODE_ATTR_I( S, I, ELEM, DATA ) \
@@ -58,17 +57,13 @@
 #define EN_DEFINE_NODE_ATTRS( CNAME, ATTRS ) \
     CHAOS_PP_EXPR( CHAOS_PP_SEQ_FOR_EACH_I( EN_DEFINE_NODE_ATTR_I, ATTRS, CNAME ) ) \
 
-#define EN_DEFINE_NODE_E( CNAME, DESC, CAT, ID_0, ID_1, ID_2, ID_3, INFO, ATTRS ) \
+#define EN_DEFINE_NODE_E( CNAME, DESC, CAT, INFO, ATTRS ) \
     class CNAME; \
     \
     EN_DEFINE_TNODE( \
         CNAME, \
         DESC, \
         CAT, \
-        ID_0, \
-        ID_1, \
-        ID_2, \
-        ID_3, \
         CHAOS_PP_SEQ_SIZE( ATTRS ) \
     ) \
     \
@@ -76,13 +71,9 @@
 
 #define EN_DEFINE_NODE( INFO, ATTRS ) \
     EN_DEFINE_NODE_E( \
-        CHAOS_PP_TUPLE_ELEM( 7, 0, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 1, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 2, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 3, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 4, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 5, INFO ), \
-        CHAOS_PP_TUPLE_ELEM( 7, 6, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 3, 0, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 3, 1, INFO ), \
+        CHAOS_PP_TUPLE_ELEM( 3, 2, INFO ), \
         INFO, \
         ATTRS \
     ) \
@@ -96,11 +87,10 @@ namespace engine
 template< class N >
 struct TNode
 {
-    static const uint32_t id = 0;
-    static const uint16_t numAttributes = 0;
     static EN_INLINE const char* name()        { return ""; }
     static EN_INLINE const char* description() { return ""; }
     static EN_INLINE const char* category()    { return ""; }
+    static const uint16_t numAttributes = 0;
 };
 
 //------------------------------------------------------------------------------

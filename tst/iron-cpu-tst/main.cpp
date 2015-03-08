@@ -36,40 +36,41 @@ bool testEnvironment()
 
 bool testTypeStore()
 {
-    typedef TypeStore< Types_Node > typestore_t;
-    typedef Type< Types_Node > type_t;
+    typedef TypeStore< Types_Variable > v_typestore_t;
+    typedef Type< Types_Variable > v_type_t;
+
+    typedef TypeStore< Types_Node > n_typestore_t;
+    typedef Type< Types_Node > n_type_t;
 
     // Test directory scan
     //
-    typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
-    //EN_ASSERT( typestore_t::get().types().size() == 1 );
+    v_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
+    n_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
+    //EN_ASSERT( n_typestore_t::get().types().size() == 1 );
 
-    // Test registry of user type
+    // Test registry of user node type
     //
-    type_t* userType = new Type< Types_Node >();
+    n_type_t* userNodeType = new n_type_t();
 
-    userType->name = "TempSensor";
-    userType->description = "Temperature sensor";
-    userType->category = "Sensors";
-    userType->id0 = "0xC4";
-    userType->id1 = "0xCE";
-    userType->id2 = "0x90";
-    userType->id3 = "0x27";
+    userNodeType->name = "TempSensor";
+    userNodeType->description = "Temperature sensor";
+    userNodeType->category = "Sensors";
+    userNodeType->classCode = "void setup() {} void loop() {}";
 
-    typestore_t::get().registerType( userType );
-    //EN_ASSERT( typestore_t::get().types().size() == 2 );
+    n_typestore_t::get().registerType( userNodeType );
+    //EN_ASSERT( n_typestore_t::get().types().size() == 2 );
 
     // Print out key/name pairs
     //
-    for ( auto it = typestore_t::get().types().begin();
-          it != typestore_t::get().types().end(); ++it )
+    for ( auto it = n_typestore_t::get().types().begin();
+          it != n_typestore_t::get().types().end(); ++it )
     {
         std::cout << "key: " << it->first << " value: " << it->second->name << std::endl;
     }
 
     // Get type categories
     //
-    std::vector< std::string > categories = typestore_t::get().categories();
+    std::vector< std::string > categories = n_typestore_t::get().categories();
     //EN_ASSERT( categories.size() == 2 );
 
     for ( size_t i = 0 ; i < categories.size(); ++i )
@@ -79,7 +80,7 @@ bool testTypeStore()
 
     // Get types by category
     //
-    std::vector< type_t* > types = typestore_t::get().typesByCategory( "Sensors" );
+    std::vector< n_type_t* > types = n_typestore_t::get().typesByCategory( "Sensors" );
     EN_ASSERT( types.size() == 2 );
 
     for ( size_t i = 0 ; i < types.size(); ++i )
@@ -103,7 +104,6 @@ bool testNodeTraits()
     EN_ASSERT( status_i == 0 );
     status_i = strcmp( TNode< Camera >::description(), "Example camera node" );
     EN_ASSERT( status_i == 0 );
-    EN_ASSERT( TNode< Camera >::id == 2960893507 );
     static_assert( TNode< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
