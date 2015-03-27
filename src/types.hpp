@@ -75,8 +75,8 @@ struct TArchType< MCU >
 
 enum LogicLevel
 {
-    Low  = 0x0,
-    High = 0x1
+    LOW  = 0x0,
+    HIGH = 0x1
 };
 
 //------------------------------------------------------------------------------
@@ -96,12 +96,6 @@ enum State
     Selected = 0x1,
     Idle     = 0x2
 };
-
-//------------------------------------------------------------------------------
-//
-
-typedef uint8_t  digital_t;
-typedef uint16_t analog_t;
 
 } // engine
 

@@ -100,7 +100,7 @@ struct NodeTypeAttribute
 {
     std::string type;
     std::string name;
-    std::string dataType;
+    std::string variable;
     std::string defaultValue;
     std::string pin;
 };
@@ -203,6 +203,8 @@ public:
     EN_INLINE Type< T >* type( const uint32_t& id );
 
     EN_INLINE std::vector< std::string > categories();
+
+    EN_INLINE std::vector< Type< T >* > typesByName( const std::string& name );
 
     EN_INLINE std::vector< Type< T >* > typesByCategory( const std::string& category );
 

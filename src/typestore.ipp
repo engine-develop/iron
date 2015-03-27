@@ -182,9 +182,9 @@ EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block
         removePunct( tokens[ 4 ] );
 
         NodeTypeAttribute attr;
-        attr.type         = trim( tokens[ 0 ] );
-        attr.name         = trim( tokens[ 1 ] );
-        attr.dataType     = trim( tokens[ 2 ] );
+        attr.name         = trim( tokens[ 0 ] );
+        attr.type         = trim( tokens[ 1 ] );
+        attr.variable     = trim( tokens[ 2 ] );
         attr.defaultValue = trim( tokens[ 3 ] );
         attr.pin          = trim( tokens[ 4 ] );
 
@@ -469,6 +469,25 @@ EN_INLINE std::vector< std::string > TypeStore< T >::categories()
     }
 
     return categories;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< int T >
+EN_INLINE std::vector< Type< T >* > TypeStore< T >::typesByName( const std::string& name )
+{
+    std::vector< Type< T >* > types;
+
+    for ( auto it = m_types.begin(); it != m_types.end(); ++it )
+    {
+        if ( it->second->name == name )
+        {
+            types.push_back( it->second );
+        }
+    }
+
+    return types;
 }
 
 //------------------------------------------------------------------------------

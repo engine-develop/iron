@@ -14,12 +14,12 @@ namespace engine
 //
 
 EN_DEFINE_NODE(
-    ( Camera, "Example camera node", "sensor" ),
-    (( Input,    shutter, digital_t, Low,     2    ))
-    (( Input,    zoom,    analog_t,  512,     A0   ))
-    (( Internal, model,   uint32_t,  2389221, None ))
-    (( Internal, flash,   bool,      true,    None ))
-    (( Output,   led,     digital_t, Low,     13   ))
+    ( Camera, "Example camera node", "Sensors" ),
+    (( shutter, Input,    Byte,  LOW,     2    ))
+    (( zoom,    Input,    Int,   512,     A0   ))
+    (( model,   Internal, Ulong, 2389221, None ))
+    (( flash,   Internal, Byte,  true,    None ))
+    (( led,     Output,   Byte,  LOW,     13   ))
 )
 
 //------------------------------------------------------------------------------

@@ -31,14 +31,15 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_ATTRIBUTE( CNAME, I, MODE, NAME, TYPE, DVALUE, PIN ) \
+#define EN_DEFINE_ATTRIBUTE( CNAME, I, NAME, MODE, VARIABLE, DVALUE, PIN ) \
     template<> \
     struct TAttribute< CNAME, I > \
     { \
         static const bool valid = true; \
         static const uint8_t mode = MODE; \
         static EN_INLINE const char* name() { return EN_STRINGIZE( NAME ); } \
-        typedef TYPE type_t; \
+        typedef VARIABLE variable_t; \
+        typedef typename TVariable< variable_t >::type_t type_t; \
         static const type_t defaultValue = DVALUE; \
         static const uint8_t pin = PIN; \
         \
@@ -72,8 +73,9 @@ struct TAttribute
     static const bool valid = false;
     static const uint8_t mode = Input;
     static EN_INLINE const char* name() { return ""; }
-    typedef uint8_t type_t;
-    static const type_t defaultValue = type_t();
+    typedef Int variable_t;
+    typedef typename TVariable< variable_t >::type_t type_t;
+    static const type_t defaultValue = 0;
     static const uint8_t pin = None;
 };
 

@@ -45,6 +45,8 @@ bool testTypeStore()
     // Test directory scan
     //
     v_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
+    //EN_ASSERT( v_typestore_t::get().types().size() == 1 );
+
     n_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
     //EN_ASSERT( n_typestore_t::get().types().size() == 1 );
 
@@ -177,14 +179,14 @@ bool testNodeAttributes()
     //
     g_cam.setDefaults();
 
-    uint8_t shutter = High;
+    uint8_t shutter = HIGH;
     uint16_t zoom = 1;
     uint32_t model = 0;
     bool flash = false;
-    uint8_t led = High;
+    uint8_t led = HIGH;
 
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low );
+    EN_ASSERT( shutter == LOW );
 
     g_cam.get< 1 >( zoom );
     EN_ASSERT( zoom == 512 );
@@ -196,16 +198,16 @@ bool testNodeAttributes()
     EN_ASSERT( flash == true );
 
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low );
+    EN_ASSERT( led == LOW );
 
     // Test set/get 'shutter'
     //
-    shutter = High;
+    shutter = HIGH;
     g_cam.set< 0 >( shutter );
 
-    shutter = Low;
+    shutter = LOW;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == High );
+    EN_ASSERT( shutter == HIGH );
 
     // Test set/get 'zoom'
     //
@@ -236,18 +238,18 @@ bool testNodeAttributes()
 
     // Test set/get 'led'
     //
-    g_cam.set< 4, High >();
+    g_cam.set< 4, HIGH >();
 
-    led = Low;
+    led = LOW;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == High );
+    EN_ASSERT( led == HIGH );
 
     delay_ms( 2000 );
-    g_cam.set< 4, Low >();
+    g_cam.set< 4, LOW >();
 
-    led = High;
+    led = HIGH;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low );
+    EN_ASSERT( led == LOW );
 
     return true;
 }

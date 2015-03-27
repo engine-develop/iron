@@ -68,6 +68,16 @@ struct TVariableRev
     typedef int type_t;
 };
 
+//------------------------------------------------------------------------------
+//
+
+EN_DEFINE_VARIABLE( Byte,  uint8_t,  "8-bit unsigned number",  "Variable" )
+EN_DEFINE_VARIABLE( Int,   int16_t,  "16-bit number",          "Variable" )
+EN_DEFINE_VARIABLE( Uint,  uint16_t, "16-bit unsigned number", "Variable" )
+EN_DEFINE_VARIABLE( Long,  int32_t,  "32-bit number",          "Variable" )
+EN_DEFINE_VARIABLE( Ulong, uint32_t, "32-bit unsigned number", "Variable" )
+EN_DEFINE_VARIABLE( Float, float,    "32-bit decimal number",  "Variable" )
+
 } // engine
 
 #endif // IR_VARIABLE_HPP
