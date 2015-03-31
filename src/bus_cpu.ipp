@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Bus< CPU >::Bus()
+IRON_INLINE Bus< CPU >::Bus()
     : m_ports()
 {
 }
@@ -15,7 +15,7 @@ EN_INLINE Bus< CPU >::Bus()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Bus< CPU >::~Bus()
+IRON_INLINE Bus< CPU >::~Bus()
 {
     release();
 }
@@ -23,7 +23,7 @@ EN_INLINE Bus< CPU >::~Bus()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Bus< CPU >& Bus< CPU >::get()
+IRON_INLINE Bus< CPU >& Bus< CPU >::get()
 {
     static Bus< CPU > obj;
 
@@ -33,14 +33,14 @@ EN_INLINE Bus< CPU >& Bus< CPU >::get()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void Bus< CPU >::release()
+IRON_INLINE void Bus< CPU >::release()
 {
     for ( std::vector< port_obj_t* >::iterator it = m_ports.begin();
             it != m_ports.end(); ++it )
     {
         if ( *it )
         {
-            EN_DEBUG( "Closing port: %s\n", (*it)->getPort().c_str() );
+            IRON_DEBUG( "Closing port: %s\n", (*it)->getPort().c_str() );
 
             APort::close( *it );
             delete *it;
@@ -53,7 +53,7 @@ EN_INLINE void Bus< CPU >::release()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::vector< port_obj_t* >& Bus< CPU >::ports()
+IRON_INLINE std::vector< port_obj_t* >& Bus< CPU >::ports()
 {
     return m_ports;
 }
@@ -62,7 +62,7 @@ EN_INLINE std::vector< port_obj_t* >& Bus< CPU >::ports()
 //
 
 template< class N >
-EN_INLINE std::vector< N > Bus< CPU >::scan()
+IRON_INLINE std::vector< N > Bus< CPU >::scan()
 {
     release();
 
@@ -73,7 +73,7 @@ EN_INLINE std::vector< N > Bus< CPU >::scan()
     for ( std::vector< PortInfo >::const_iterator it
             = devices_i.begin(); it != devices_i.end(); ++it )
     {
-        EN_DEBUG( "Opening port: %s\n", it->port.c_str() );
+        IRON_DEBUG( "Opening port: %s\n", it->port.c_str() );
 
         N device;
 
@@ -85,7 +85,7 @@ EN_INLINE std::vector< N > Bus< CPU >::scan()
         //
         if ( !m_port->isOpen() )
         {
-            EN_DEBUG( "Error: Failed to open port\n" );
+            IRON_DEBUG( "Error: Failed to open port\n" );
 
             delete m_port;
 
@@ -102,7 +102,7 @@ EN_INLINE std::vector< N > Bus< CPU >::scan()
         //
         if ( wait< Signal_ID >( m_port, 1000 ) == Success )
         {
-            EN_DEBUG( "-- Found device\n" );
+            IRON_DEBUG( "-- Found device\n" );
 
             //device.setPort( m_port );
             devices.push_back( device );
@@ -118,7 +118,7 @@ EN_INLINE std::vector< N > Bus< CPU >::scan()
 //
 
 template< class N >
-EN_INLINE Status Bus< CPU >::select( N& device )
+IRON_INLINE Status Bus< CPU >::select( N& device )
 {
     if ( device.state() & Selected )
     {
@@ -130,7 +130,7 @@ EN_INLINE Status Bus< CPU >::select( N& device )
     device.state() |= Selected;
     //signal< Signal_Select >( device.port() );
 
-    //EN_DEBUG( "Selected: %s\n", device.port()->getPort().c_str() );
+    //IRON_DEBUG( "Selected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
 }
@@ -139,7 +139,7 @@ EN_INLINE Status Bus< CPU >::select( N& device )
 //
 
 template< class N >
-EN_INLINE Status Bus< CPU >::deselect( N& device )
+IRON_INLINE Status Bus< CPU >::deselect( N& device )
 {
     if ( !( device.state() & Selected ) )
     {
@@ -151,7 +151,7 @@ EN_INLINE Status Bus< CPU >::deselect( N& device )
 
     m_port = 0x0;
 
-    //EN_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );
+    //IRON_DEBUG( "Deselected: %s\n", device.port()->getPort().c_str() );
 
     return Success;
 }
@@ -160,7 +160,7 @@ EN_INLINE Status Bus< CPU >::deselect( N& device )
 //
 
 template< class N >
-EN_INLINE std::vector< N > scan()
+IRON_INLINE std::vector< N > scan()
 {
     return Bus< CPU >::get().scan< N >();
 }
@@ -169,7 +169,7 @@ EN_INLINE std::vector< N > scan()
 //
 
 template< class N >
-EN_INLINE Status select( N& device )
+IRON_INLINE Status select( N& device )
 {
     return Bus< CPU >::get().select( device );
 }
@@ -178,7 +178,7 @@ EN_INLINE Status select( N& device )
 //
 
 template< class N >
-EN_INLINE Status deselect( N& device )
+IRON_INLINE Status deselect( N& device )
 {
     return Bus< CPU >::get().deselect( device );
 }

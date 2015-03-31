@@ -29,22 +29,22 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_NODE_CLASS( CNAME ) \
+#define IRON_NODE_CLASS( CNAME ) \
     struct CNAME \
         : BNode< CNAME > \
 
-#define EN_DEFINE_TNODE( CNAME, DESC, CAT, NATTR ) \
+#define IRON_DEFINE_TNODE( CNAME, DESC, CAT, NATTR ) \
     template<> \
     struct TNode< CNAME > \
     { \
-        static EN_INLINE const char* name()        { return EN_STRINGIZE( CNAME ); } \
-        static EN_INLINE const char* description() { return DESC; } \
-        static EN_INLINE const char* category()    { return CAT; } \
+        static IRON_INLINE const char* name()        { return IRON_STRINGIZE( CNAME ); } \
+        static IRON_INLINE const char* description() { return DESC; } \
+        static IRON_INLINE const char* category()    { return CAT; } \
         static const uint16_t numAttributes = NATTR; \
     }; \
 
-#define EN_DEFINE_NODE_ATTR_I( S, I, ELEM, DATA ) \
-    EN_DEFINE_ATTRIBUTE( \
+#define IRON_DEFINE_NODE_ATTR_I( S, I, ELEM, DATA ) \
+    IRON_DEFINE_ATTRIBUTE( \
         DATA, \
         I, \
         CHAOS_PP_TUPLE_ELEM( 5, 0, ELEM ), \
@@ -54,23 +54,23 @@
         CHAOS_PP_TUPLE_ELEM( 5, 4, ELEM ) \
     ) \
 
-#define EN_DEFINE_NODE_ATTRS( CNAME, ATTRS ) \
-    CHAOS_PP_EXPR( CHAOS_PP_SEQ_FOR_EACH_I( EN_DEFINE_NODE_ATTR_I, ATTRS, CNAME ) ) \
+#define IRON_DEFINE_NODE_ATTRS( CNAME, ATTRS ) \
+    CHAOS_PP_EXPR( CHAOS_PP_SEQ_FOR_EACH_I( IRON_DEFINE_NODE_ATTR_I, ATTRS, CNAME ) ) \
 
-#define EN_DEFINE_NODE_E( CNAME, DESC, CAT, INFO, ATTRS ) \
+#define IRON_DEFINE_NODE_E( CNAME, DESC, CAT, INFO, ATTRS ) \
     class CNAME; \
     \
-    EN_DEFINE_TNODE( \
+    IRON_DEFINE_TNODE( \
         CNAME, \
         DESC, \
         CAT, \
         CHAOS_PP_SEQ_SIZE( ATTRS ) \
     ) \
     \
-    EN_DEFINE_NODE_ATTRS( CNAME, ATTRS ) \
+    IRON_DEFINE_NODE_ATTRS( CNAME, ATTRS ) \
 
-#define EN_DEFINE_NODE( INFO, ATTRS ) \
-    EN_DEFINE_NODE_E( \
+#define IRON_DEFINE_NODE( INFO, ATTRS ) \
+    IRON_DEFINE_NODE_E( \
         CHAOS_PP_TUPLE_ELEM( 3, 0, INFO ), \
         CHAOS_PP_TUPLE_ELEM( 3, 1, INFO ), \
         CHAOS_PP_TUPLE_ELEM( 3, 2, INFO ), \
@@ -87,9 +87,9 @@ namespace engine
 template< class N >
 struct TNode
 {
-    static EN_INLINE const char* name()        { return ""; }
-    static EN_INLINE const char* description() { return ""; }
-    static EN_INLINE const char* category()    { return ""; }
+    static IRON_INLINE const char* name()        { return ""; }
+    static IRON_INLINE const char* description() { return ""; }
+    static IRON_INLINE const char* category()    { return ""; }
     static const uint16_t numAttributes = 0;
 };
 
@@ -106,47 +106,47 @@ struct BNode
     //----------
     //
 
-    EN_INLINE BNode();
+    IRON_INLINE BNode();
 
-    EN_INLINE ~BNode();
+    IRON_INLINE ~BNode();
 
     //----------
     // Fields
     //
 
-    EN_INLINE uint8_t& state();
+    IRON_INLINE void setState( const uint8_t& state );
+
+    IRON_INLINE uint8_t& state();
 
     //----------
     // Evaluation
     //
 
-    EN_INLINE void setup();
-
-    EN_INLINE void loop();
+    IRON_INLINE void evaluate();
 
     //----------
     // Attributes
     //
 
     template< int AT >
-    EN_INLINE void setDefault();
+    IRON_INLINE void setDefault();
 
-    EN_INLINE void setDefaults();
-
-    template< int AT, int V >
-    EN_INLINE void set();
-
-    template< int AT, class T >
-    EN_INLINE void set( const T& value );
-
-    template< int AT, class T >
-    EN_INLINE void get( T& value );
+    IRON_INLINE void setDefaults();
 
     template< int AT, int V >
-    EN_INLINE bool is();
+    IRON_INLINE void set();
 
     template< int AT, class T >
-    EN_INLINE bool is( const T& value );
+    IRON_INLINE void set( const T& value );
+
+    template< int AT, class T >
+    IRON_INLINE void get( T& value );
+
+    template< int AT, int V >
+    IRON_INLINE bool is();
+
+    template< int AT, class T >
+    IRON_INLINE bool is( const T& value );
 
 protected:
 

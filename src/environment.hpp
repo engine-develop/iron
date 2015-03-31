@@ -36,28 +36,28 @@ public:
     //----------
     //
 
-    static EN_INLINE Environment& get();
+    static IRON_INLINE Environment& get();
 
-    EN_INLINE void reload();
+    IRON_INLINE void reload();
 
     //----------
     //
 
-    EN_INLINE const std::string& installDirectory();
+    IRON_INLINE const std::string& installDirectory();
 
-    EN_INLINE const std::string& userDirectory();
+    IRON_INLINE const std::string& userDirectory();
 
-    EN_INLINE const std::vector< std::string >& pathDirectories();
+    IRON_INLINE const std::vector< std::string >& pathDirectories();
 
 protected:
 
-    EN_INLINE Environment();
-    EN_INLINE ~Environment();
-    EN_INLINE Environment( const Environment& ) {}
-    EN_INLINE Environment& operator=( const Environment& ) { return *this; }
+    IRON_INLINE Environment();
+    IRON_INLINE ~Environment();
+    IRON_INLINE Environment( const Environment& ) {}
+    IRON_INLINE Environment& operator=( const Environment& ) { return *this; }
 
-    EN_INLINE void release();
-    EN_INLINE void init();
+    IRON_INLINE void release();
+    IRON_INLINE void init();
 
     std::string m_installDirectory;
     std::string m_userDirectory;

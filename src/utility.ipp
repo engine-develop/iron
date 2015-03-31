@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void delay_ms( size_t ms )
+IRON_INLINE void delay_ms( size_t ms )
 {
 #ifdef __AVR__
     delay( ms );
@@ -39,7 +39,7 @@ static void printf( const char *fmt, ... )
 //------------------------------------------------------------------------------
 //
 
-static EN_INLINE void errorLED()
+static IRON_INLINE void errorLED()
 {
     DDRB |= B00100000; // Set as output
 
@@ -54,7 +54,7 @@ static EN_INLINE void errorLED()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void disableI2CPullups()
+IRON_INLINE void disableI2CPullups()
 {
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega328P__)
     // deactivate internal pull-ups for twi
@@ -72,7 +72,7 @@ EN_INLINE void disableI2CPullups()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE int scanI2CDevices()
+IRON_INLINE int scanI2CDevices()
 {
     Serial.println( "Scanning I2C Devices..." );
 
@@ -105,8 +105,8 @@ EN_INLINE int scanI2CDevices()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE int strHexToDec( const std::string& s,
-                           int base )
+IRON_INLINE int strHexToDec( const std::string& s,
+                             int base )
 {
     return static_cast< int >( strtol( s.c_str(), NULL, base ) );
 }
@@ -114,8 +114,8 @@ EN_INLINE int strHexToDec( const std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removeChar( std::string& s,
-                           char c )
+IRON_INLINE void removeChar( std::string& s,
+                             char c )
 {
     s.erase( std::remove( s.begin(), s.end(), c ), s.end() );
 }
@@ -123,7 +123,7 @@ EN_INLINE void removeChar( std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removeWhitespace( std::string& s )
+IRON_INLINE void removeWhitespace( std::string& s )
 {
     s.erase( std::remove_if( s.begin(), s.end(), ::isspace ), s.end() );
 }
@@ -131,7 +131,7 @@ EN_INLINE void removeWhitespace( std::string& s )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removePunct( std::string& s )
+IRON_INLINE void removePunct( std::string& s )
 {
     s.erase( std::remove_if( s.begin(), s.end(), ::ispunct ), s.end() );
 }
@@ -139,8 +139,8 @@ EN_INLINE void removePunct( std::string& s )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& rtrim( std::string& s,
-                              const char* t )
+IRON_INLINE std::string& rtrim( std::string& s,
+                                const char* t )
 {
     s.erase( s.find_last_not_of( t ) + 1 );
 
@@ -150,8 +150,8 @@ EN_INLINE std::string& rtrim( std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& ltrim( std::string& s,
-                              const char* t )
+IRON_INLINE std::string& ltrim( std::string& s,
+                                const char* t )
 {
     s.erase( 0, s.find_first_not_of( t ) );
 
@@ -161,8 +161,8 @@ EN_INLINE std::string& ltrim( std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& trim( std::string& s,
-                             const char* t )
+IRON_INLINE std::string& trim( std::string& s,
+                               const char* t )
 {
     return ltrim( rtrim( s, t ), t );
 }
@@ -170,9 +170,9 @@ EN_INLINE std::string& trim( std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void split( const std::string& s,
-                      std::vector< std::string >& result,
-                      char delimiter )
+IRON_INLINE void split( const std::string& s,
+                        std::vector< std::string >& result,
+                        char delimiter )
 {
     const char* str = &s[ 0 ];
 
@@ -191,9 +191,9 @@ EN_INLINE void split( const std::string& s,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void join( const std::vector< std::string >& tokens,
-                     std::string& result,
-                     const std::string& delimiter )
+IRON_INLINE void join( const std::vector< std::string >& tokens,
+                       std::string& result,
+                       const std::string& delimiter )
 {
     for ( size_t i = 0; i < tokens.size(); ++i )
     {
@@ -209,7 +209,41 @@ EN_INLINE void join( const std::vector< std::string >& tokens,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void makeUnixPath( std::string& path )
+IRON_INLINE bool beginsWith( const std::string& s,
+                             const std::string& text )
+{
+    if ( s.length() >= text.length() )
+    {
+        return ( s.compare( 0, text.length(), text ) == 0 );
+    }
+
+    else
+    {
+        return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+//
+
+IRON_INLINE bool endsWith( const std::string& s,
+                           const std::string& text )
+{
+    if ( s.length() >= text.length() )
+    {
+        return ( s.compare( s.length() - text.length(), text.length(), text ) == 0 );
+    }
+
+    else
+    {
+        return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+//
+
+IRON_INLINE void makeUnixPath( std::string& path )
 {
     static const char unixSeparator = '/';
     static const char windowsSeparator = '\\';
@@ -223,7 +257,7 @@ EN_INLINE void makeUnixPath( std::string& path )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE bool isDirectory( const std::string& path )
+IRON_INLINE bool isDirectory( const std::string& path )
 {
     struct stat sb;
 
@@ -234,7 +268,7 @@ EN_INLINE bool isDirectory( const std::string& path )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getCurrentDirectory()
+IRON_INLINE std::string getCurrentDirectory()
 {
     char buf[ PATH_MAX ];
     getcwd( buf, PATH_MAX );
@@ -248,7 +282,7 @@ EN_INLINE std::string getCurrentDirectory()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getHomeDirectory()
+IRON_INLINE std::string getHomeDirectory()
 {
     std::string path;
 #ifdef _WIN32
@@ -267,7 +301,7 @@ EN_INLINE std::string getHomeDirectory()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getAppsDirectory()
+IRON_INLINE std::string getAppsDirectory()
 {
     std::string path;
 #ifdef _WIN32
@@ -283,7 +317,7 @@ EN_INLINE std::string getAppsDirectory()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void createDirectories( const std::string& path )
+IRON_INLINE void createDirectories( const std::string& path )
 {
     struct stat st;
 
@@ -315,7 +349,7 @@ EN_INLINE void createDirectories( const std::string& path )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void createDirectories( const std::vector< std::string >& paths )
+IRON_INLINE void createDirectories( const std::vector< std::string >& paths )
 {
     for ( auto it = paths.begin(); it != paths.end(); ++it )
     {

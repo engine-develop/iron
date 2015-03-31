@@ -33,11 +33,11 @@
 //
 
 #ifndef __AVR__
-#define EN_DEFINE_PIN( ... )
-#define EN_DEFINE_PIN_PWM( ... )
+#define IRON_DEFINE_PIN( ... )
+#define IRON_DEFINE_PIN_PWM( ... )
 #else
 
-#define EN_DEFINE_PIN( N, P, BIT, PWM, ANALOG ) \
+#define IRON_DEFINE_PIN( N, P, BIT, PWM, ANALOG ) \
     template<> \
     struct TPin< N > \
     { \
@@ -49,7 +49,7 @@
     template<> \
     struct FPinSetMode< N, INPUT > \
     { \
-        static EN_INLINE void eval() \
+        static IRON_INLINE void eval() \
         { \
             DDR##P &= ~( 1 << TPin< N >::bit ); \
         } \
@@ -57,7 +57,7 @@
     template<> \
     struct FPinSetMode< N, OUTPUT > \
     { \
-        static EN_INLINE void eval() \
+        static IRON_INLINE void eval() \
         { \
             DDR##P |= ( 1 << TPin< N >::bit ); \
         } \
@@ -66,7 +66,7 @@
     template<> \
     struct FPinSetDigital< N, HIGH > \
     { \
-        static EN_INLINE void eval() \
+        static IRON_INLINE void eval() \
         { \
             PORT##P |= ( 1 << TPin< N >::bit ); \
         } \
@@ -75,7 +75,7 @@
     template<> \
     struct FPinSetDigital< N, LOW > \
     { \
-        static EN_INLINE void eval() \
+        static IRON_INLINE void eval() \
         { \
             PORT##P &= ~( 1 << TPin< N >::bit ); \
         } \
@@ -84,17 +84,17 @@
     template<> \
     struct FPinGetDigital< N > \
     { \
-        static EN_INLINE uint8_t eval() \
+        static IRON_INLINE uint8_t eval() \
         { \
             return ( PIN##P & ( 1 << TPin< N >::bit ) ) ? HIGH : LOW; \
         } \
     }; \
 
-#define EN_DEFINE_PIN_PWM( N, TCCR, COM, OCR ) \
+#define IRON_DEFINE_PIN_PWM( N, TCCR, COM, OCR ) \
     template<> \
     struct FPinSetAnalog< N > \
     { \
-        static EN_INLINE void eval( const int16_t& value ) \
+        static IRON_INLINE void eval( const int16_t& value ) \
         { \
             sbi( TCCR, COM ); \
             OCR = value; \
@@ -121,7 +121,7 @@ struct TPin
 template< int N, int V >
 struct FPinSetMode
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
     }
 };
@@ -132,7 +132,7 @@ struct FPinSetMode
 template< int N, int V >
 struct FPinSetDigital
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
     }
 };
@@ -143,7 +143,7 @@ struct FPinSetDigital
 template< int N >
 struct FPinGetDigital
 {
-    static EN_INLINE uint8_t eval()
+    static IRON_INLINE uint8_t eval()
     {
         return uint8_t();
     }
@@ -157,7 +157,7 @@ struct FPinSetAnalog
 {
     static_assert( TPin< N >::pwm, "invalid pin: must support PWM" );
 
-    static EN_INLINE void eval( const int16_t& value )
+    static IRON_INLINE void eval( const int16_t& value )
     {
     }
 };
@@ -168,7 +168,7 @@ struct FPinSetAnalog
 template< int N >
 struct FPinGetAnalog
 {
-    static EN_INLINE uint16_t eval()
+    static IRON_INLINE uint16_t eval()
     {
         // Delegate to standard function
         return analogRead( N );
@@ -179,7 +179,7 @@ struct FPinGetAnalog
 //
 
 template< int N, int V >
-EN_INLINE void setMode()
+IRON_INLINE void setMode()
 {
     FPinSetMode< N, V >::eval();
 }
@@ -188,7 +188,7 @@ EN_INLINE void setMode()
 //
 
 template< int N, int V >
-EN_INLINE void setDigital()
+IRON_INLINE void setDigital()
 {
     FPinSetDigital< N, V >::eval();
 }
@@ -197,7 +197,7 @@ EN_INLINE void setDigital()
 //
 
 template< int N >
-EN_INLINE void setDigital( const uint8_t& value )
+IRON_INLINE void setDigital( const uint8_t& value )
 {
     if ( value == Low ) FPinSetDigital< N, Low >::eval();
     else                FPinSetDigital< N, High >::eval();
@@ -207,7 +207,7 @@ EN_INLINE void setDigital( const uint8_t& value )
 //
 
 template< int N >
-EN_INLINE uint8_t getDigital()
+IRON_INLINE uint8_t getDigital()
 {
     return FPinGetDigital< N >::eval();
 }
@@ -216,7 +216,7 @@ EN_INLINE uint8_t getDigital()
 //
 
 template< int N >
-EN_INLINE void setAnalog( const uint16_t& value )
+IRON_INLINE void setAnalog( const uint16_t& value )
 {
     FPinSetAnalog< N >::eval( value );
 }
@@ -225,7 +225,7 @@ EN_INLINE void setAnalog( const uint16_t& value )
 //
 
 template< int N >
-EN_INLINE uint16_t getAnalog()
+IRON_INLINE uint16_t getAnalog()
 {
     return FPinGetAnalog< N >::eval();
 }

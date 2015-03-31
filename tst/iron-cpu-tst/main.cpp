@@ -22,11 +22,11 @@ Camera g_cam;
 bool testEnvironment()
 {
     std::string userDir = Environment::get().userDirectory();
-    EN_ASSERT( isDirectory( userDir ) == true );
+    IRON_ASSERT( isDirectory( userDir ) == true );
 
     const std::vector< std::string >& pathDirs
         = Environment::get().pathDirectories();
-    EN_ASSERT( pathDirs.size() == 3 );
+    IRON_ASSERT( pathDirs.size() == 3 );
 
     return true;
 }
@@ -45,10 +45,10 @@ bool testTypeStore()
     // Test directory scan
     //
     v_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
-    //EN_ASSERT( v_typestore_t::get().types().size() == 1 );
+    IRON_ASSERT( v_typestore_t::get().types().size() == 6 );
 
     n_typestore_t::get().registerTypes( "../../tst/iron-cpu-tst" );
-    //EN_ASSERT( n_typestore_t::get().types().size() == 1 );
+    IRON_ASSERT( n_typestore_t::get().types().size() == 7 );
 
     // Test registry of user node type
     //
@@ -57,10 +57,10 @@ bool testTypeStore()
     userNodeType->name = "TempSensor";
     userNodeType->description = "Temperature sensor";
     userNodeType->category = "Sensors";
-    userNodeType->classCode = "void setup() {} void loop() {}";
+    userNodeType->evaluateCode = "";
 
-    n_typestore_t::get().registerType( userNodeType );
-    //EN_ASSERT( n_typestore_t::get().types().size() == 2 );
+    IRON_ASSERT( n_typestore_t::get().registerType( userNodeType ) == Success );
+    IRON_ASSERT( n_typestore_t::get().types().size() == 8 );
 
     // Print out key/name pairs
     //
@@ -73,7 +73,7 @@ bool testTypeStore()
     // Get type categories
     //
     std::vector< std::string > categories = n_typestore_t::get().categories();
-    //EN_ASSERT( categories.size() == 2 );
+    IRON_ASSERT( categories.size() == 3 );
 
     for ( size_t i = 0 ; i < categories.size(); ++i )
     {
@@ -83,7 +83,7 @@ bool testTypeStore()
     // Get types by category
     //
     std::vector< n_type_t* > types = n_typestore_t::get().typesByCategory( "Sensors" );
-    EN_ASSERT( types.size() == 2 );
+    IRON_ASSERT( types.size() == 2 );
 
     for ( size_t i = 0 ; i < types.size(); ++i )
     {
@@ -103,27 +103,27 @@ bool testNodeTraits()
     // Test node static info
     //
     status_i = strcmp( TNode< Camera >::name(), "Camera" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     status_i = strcmp( TNode< Camera >::description(), "Example camera node" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( TNode< Camera >::numAttributes == 5, "incorrect number" );
     static_assert( FAttributesBytes< Camera >::value == 9, "incorrect size" );
 
     g_cam.state() |= Selected;
-    EN_ASSERT( ( g_cam.state() & Selected ) );
-    EN_ASSERT( !( g_cam.state() & Idle ) );
+    IRON_ASSERT( ( g_cam.state() & Selected ) );
+    IRON_ASSERT( !( g_cam.state() & Idle ) );
 
     g_cam.state() |= Idle;
-    EN_ASSERT( ( g_cam.state() & Selected ) );
-    EN_ASSERT( ( g_cam.state() & Idle ) );
+    IRON_ASSERT( ( g_cam.state() & Selected ) );
+    IRON_ASSERT( ( g_cam.state() & Idle ) );
 
     g_cam.state() &= ~Selected;
-    EN_ASSERT( !( g_cam.state() & Selected ) );
-    EN_ASSERT( ( g_cam.state() & Idle ) );
+    IRON_ASSERT( !( g_cam.state() & Selected ) );
+    IRON_ASSERT( ( g_cam.state() & Idle ) );
 
     g_cam.state() = Idle | Selected;
-    EN_ASSERT( ( g_cam.state() & Selected ) );
-    EN_ASSERT( ( g_cam.state() & Idle ) );
+    IRON_ASSERT( ( g_cam.state() & Selected ) );
+    IRON_ASSERT( ( g_cam.state() & Idle ) );
 
     return true;
 }
@@ -138,7 +138,7 @@ bool testNodeAttributes()
     // Test 'shutter'
     //
     status_i = strcmp( TAttribute< Camera, 0 >::name(), "shutter" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 0 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 0 >::begin == 0, "incorrect range" );
     static_assert( FAttributeRange< Camera, 0 >::end == 1, "incorrect range" );
@@ -146,7 +146,7 @@ bool testNodeAttributes()
     // Test 'zoom'
     //
     status_i = strcmp( TAttribute< Camera, 1 >::name(), "zoom" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 1 >::type_t ) == 2, "incorrect size" );
     static_assert( FAttributeRange< Camera, 1 >::begin == 1, "incorrect range" );
     static_assert( FAttributeRange< Camera, 1 >::end == 3, "incorrect range" );
@@ -154,7 +154,7 @@ bool testNodeAttributes()
     // Test 'model'
     //
     status_i = strcmp( TAttribute< Camera, 2 >::name(), "model" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 2 >::type_t ) == 4, "incorrect size" );
     static_assert( FAttributeRange< Camera, 2 >::begin == 3, "incorrect range" );
     static_assert( FAttributeRange< Camera, 2 >::end == 7, "incorrect range" );
@@ -162,7 +162,7 @@ bool testNodeAttributes()
     // Test 'flash'
     //
     status_i = strcmp( TAttribute< Camera, 3 >::name(), "flash" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 3 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 3 >::begin == 7, "incorrect range" );
     static_assert( FAttributeRange< Camera, 3 >::end == 8, "incorrect range" );
@@ -170,7 +170,7 @@ bool testNodeAttributes()
     // Test 'led'
     //
     status_i = strcmp( TAttribute< Camera, 4 >::name(), "led" );
-    EN_ASSERT( status_i == 0 );
+    IRON_ASSERT( status_i == 0 );
     static_assert( sizeof( TAttribute< Camera, 4 >::type_t ) == 1, "incorrect size" );
     static_assert( FAttributeRange< Camera, 4 >::begin == 8, "incorrect range" );
     static_assert( FAttributeRange< Camera, 4 >::end == 9, "incorrect range" );
@@ -179,35 +179,35 @@ bool testNodeAttributes()
     //
     g_cam.setDefaults();
 
-    uint8_t shutter = HIGH;
+    uint8_t shutter = High;
     uint16_t zoom = 1;
     uint32_t model = 0;
     bool flash = false;
-    uint8_t led = HIGH;
+    uint8_t led = High;
 
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == LOW );
+    IRON_ASSERT( shutter == Low );
 
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom == 512 );
+    IRON_ASSERT( zoom == 512 );
 
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 2389221 );
+    IRON_ASSERT( model == 2389221 );
 
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == true );
+    IRON_ASSERT( flash == true );
 
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == LOW );
+    IRON_ASSERT( led == Low );
 
     // Test set/get 'shutter'
     //
-    shutter = HIGH;
+    shutter = High;
     g_cam.set< 0 >( shutter );
 
-    shutter = LOW;
+    shutter = Low;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == HIGH );
+    IRON_ASSERT( shutter == High );
 
     // Test set/get 'zoom'
     //
@@ -216,7 +216,7 @@ bool testNodeAttributes()
 
     zoom = 0;
     g_cam.get< 2 >( zoom );
-    EN_ASSERT( zoom == 95 );
+    IRON_ASSERT( zoom == 95 );
 
     // Test set/get 'model'
     //
@@ -225,7 +225,7 @@ bool testNodeAttributes()
 
     model = 0;
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 1590123 );
+    IRON_ASSERT( model == 1590123 );
 
     // Test set/get 'flash'
     //
@@ -234,22 +234,22 @@ bool testNodeAttributes()
 
     flash = true;
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == false );
+    IRON_ASSERT( flash == false );
 
     // Test set/get 'led'
     //
-    g_cam.set< 4, HIGH >();
+    g_cam.set< 4, High >();
 
-    led = LOW;
+    led = Low;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == HIGH );
+    IRON_ASSERT( led == High );
 
     delay_ms( 2000 );
-    g_cam.set< 4, LOW >();
+    g_cam.set< 4, Low >();
 
-    led = HIGH;
+    led = High;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == LOW );
+    IRON_ASSERT( led == Low );
 
     return true;
 }
@@ -261,10 +261,10 @@ int main()
 {
     std::cout << "Running unit tests for Iron library " IRON_API_VERSION_S << std::endl;
 
-    EN_ASSERT( testEnvironment() );
-    EN_ASSERT( testTypeStore() );
-    EN_ASSERT( testNodeTraits() );
-    EN_ASSERT( testNodeAttributes() );
+    IRON_ASSERT( testEnvironment() );
+    IRON_ASSERT( testTypeStore() );
+    IRON_ASSERT( testNodeTraits() );
+    IRON_ASSERT( testNodeAttributes() );
 
     return 0;
 }

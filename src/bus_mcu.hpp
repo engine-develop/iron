@@ -39,16 +39,16 @@ public:
     //----------
     //
 
-    static EN_INLINE Bus& get();
+    static IRON_INLINE Bus& get();
 
 protected:
 
-    EN_INLINE Bus();
-    EN_INLINE ~Bus();
-    EN_INLINE Bus( const Bus& ) {}
-    EN_INLINE Bus& operator=( const Bus& ) { return *this; }
+    IRON_INLINE Bus();
+    IRON_INLINE ~Bus();
+    IRON_INLINE Bus( const Bus& ) {}
+    IRON_INLINE Bus& operator=( const Bus& ) { return *this; }
 
-    EN_INLINE void release();
+    IRON_INLINE void release();
 
 };
 

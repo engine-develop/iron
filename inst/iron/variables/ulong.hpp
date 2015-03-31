@@ -13,6 +13,6 @@ namespace engine
 // Define variable
 //
 
-EN_DEFINE_VARIABLE( Byte, uint8_t, "8-bit unsigned number: 0 to 255", "Variable" )
+IRON_DEFINE_VARIABLE( Ulong, uint32_t, "32-bit unsigned number", "Variable" )
 
 } // engine

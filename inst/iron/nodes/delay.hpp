@@ -1,44 +1,33 @@
-#ifndef IR_BUS_MCU_IPP
-#define IR_BUS_MCU_IPP
+//------------------------------------------------------------------------------
+//
+
+#include <iron.hpp>
+
+//------------------------------------------------------------------------------
+//
 
 namespace engine
 {
 
 //------------------------------------------------------------------------------
+// Define node
 //
 
-IRON_INLINE Bus< MCU >::Bus()
-{
-    Serial.begin( 9600 );
-
-    setPort( &Serial );
-}
+IRON_DEFINE_NODE(
+    ( Delay, "Example node", "Utility" ),
+    (( milliseconds, Input, Uint, 1000, None ))
+)
 
 //------------------------------------------------------------------------------
+// Define node class
 //
 
-IRON_INLINE Bus< MCU >::~Bus()
+IRON_NODE_CLASS( Delay )
 {
-    release();
-}
-
-//------------------------------------------------------------------------------
-//
-
-IRON_INLINE Bus< MCU >& Bus< MCU >::get()
-{
-    static Bus< MCU > obj;
-
-    return obj;
-}
-
-//------------------------------------------------------------------------------
-//
-
-IRON_INLINE void Bus< MCU >::release()
-{
-}
+    void evaluate()
+    {
+        delay( get< 0 >() );
+    }
+};
 
 } // engine
-
-#endif // IR_BUS_MCU_IPP

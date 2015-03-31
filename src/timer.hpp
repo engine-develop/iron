@@ -43,11 +43,11 @@ struct Timer
     typedef hr_clock_t::time_point time_t;
 #endif // __AVR__
 
-    EN_INLINE Timer( bool start = false );
+    IRON_INLINE Timer( bool start = false );
 
-    EN_INLINE void reset();
+    IRON_INLINE void reset();
 
-    EN_INLINE uint32_t elapsed();
+    IRON_INLINE uint32_t elapsed();
 
     time_t start;
 };

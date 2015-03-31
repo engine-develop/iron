@@ -26,16 +26,16 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_VARIABLE( CNAME, TYPE, DESC, CAT ) \
+#define IRON_DEFINE_VARIABLE( CNAME, TYPE, DESC, CAT ) \
     struct CNAME {}; \
     \
     template<> \
     struct TVariable< CNAME > \
     { \
         typedef TYPE type_t; \
-        static EN_INLINE const char* name()        { return EN_STRINGIZE( CNAME ); } \
-        static EN_INLINE const char* description() { return DESC; } \
-        static EN_INLINE const char* category()    { return CAT; } \
+        static IRON_INLINE const char* name()        { return IRON_STRINGIZE( CNAME ); } \
+        static IRON_INLINE const char* description() { return DESC; } \
+        static IRON_INLINE const char* category()    { return CAT; } \
     }; \
     \
     template<> \
@@ -54,9 +54,9 @@ template< class T >
 struct TVariable
 {
     typedef int type_t;
-    static EN_INLINE const char* name()        { return ""; }
-    static EN_INLINE const char* description() { return ""; }
-    static EN_INLINE const char* category()    { return ""; }
+    static IRON_INLINE const char* name()        { return ""; }
+    static IRON_INLINE const char* description() { return ""; }
+    static IRON_INLINE const char* category()    { return ""; }
 };
 
 //------------------------------------------------------------------------------
@@ -71,12 +71,12 @@ struct TVariableRev
 //------------------------------------------------------------------------------
 //
 
-EN_DEFINE_VARIABLE( Byte,  uint8_t,  "8-bit unsigned number",  "Variable" )
-EN_DEFINE_VARIABLE( Int,   int16_t,  "16-bit number",          "Variable" )
-EN_DEFINE_VARIABLE( Uint,  uint16_t, "16-bit unsigned number", "Variable" )
-EN_DEFINE_VARIABLE( Long,  int32_t,  "32-bit number",          "Variable" )
-EN_DEFINE_VARIABLE( Ulong, uint32_t, "32-bit unsigned number", "Variable" )
-EN_DEFINE_VARIABLE( Float, float,    "32-bit decimal number",  "Variable" )
+IRON_DEFINE_VARIABLE( Byte,  uint8_t,  "8-bit unsigned number",  "Variable" )
+IRON_DEFINE_VARIABLE( Int,   int16_t,  "16-bit number",          "Variable" )
+IRON_DEFINE_VARIABLE( Uint,  uint16_t, "16-bit unsigned number", "Variable" )
+IRON_DEFINE_VARIABLE( Long,  int32_t,  "32-bit number",          "Variable" )
+IRON_DEFINE_VARIABLE( Ulong, uint32_t, "32-bit unsigned number", "Variable" )
+IRON_DEFINE_VARIABLE( Float, float,    "32-bit decimal number",  "Variable" )
 
 } // engine
 

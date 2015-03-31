@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void APort::close( port_obj_t* port )
+IRON_INLINE void APort::close( port_obj_t* port )
 {
 #ifdef __AVR__
     port->flush();
@@ -20,8 +20,8 @@ EN_INLINE void APort::close( port_obj_t* port )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void APort::setBaudrate( port_obj_t* port,
-                                   const uint32_t& baudrate )
+IRON_INLINE void APort::setBaudrate( port_obj_t* port,
+                                     const uint32_t& baudrate )
 {
 #ifdef __AVR__
     port->begin( baudrate );
@@ -33,7 +33,7 @@ EN_INLINE void APort::setBaudrate( port_obj_t* port,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE uint32_t APort::available( port_obj_t* port )
+IRON_INLINE uint32_t APort::available( port_obj_t* port )
 {
     return port->available();
 }
@@ -41,9 +41,9 @@ EN_INLINE uint32_t APort::available( port_obj_t* port )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE size_t APort::write( port_obj_t* port,
-                               const uint8_t* buffer,
-                               size_t size )
+IRON_INLINE size_t APort::write( port_obj_t* port,
+                                 const uint8_t* buffer,
+                                 size_t size )
 {
     return port->write( buffer, size );
 }
@@ -52,8 +52,8 @@ EN_INLINE size_t APort::write( port_obj_t* port,
 //
 
 template< class T >
-EN_INLINE void APort::write( port_obj_t* port,
-                             const T& value )
+IRON_INLINE void APort::write( port_obj_t* port,
+                               const T& value )
 {
     port->write( &value, sizeof( T ) );
 }
@@ -62,8 +62,8 @@ EN_INLINE void APort::write( port_obj_t* port,
 //
 
 template< class T >
-EN_INLINE void APort::read( port_obj_t* port,
-                            T& value )
+IRON_INLINE void APort::read( port_obj_t* port,
+                              T& value )
 {
 #ifdef __AVR__
     value = port->read();
@@ -75,9 +75,9 @@ EN_INLINE void APort::read( port_obj_t* port,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE size_t APort::read( port_obj_t* port,
-                              uint8_t* buffer,
-                              size_t size )
+IRON_INLINE size_t APort::read( port_obj_t* port,
+                                uint8_t* buffer,
+                                size_t size )
 {
 #ifdef __AVR__
     return port->readBytes( reinterpret_cast< char* >( buffer ), size );
@@ -90,7 +90,7 @@ EN_INLINE size_t APort::read( port_obj_t* port,
 //
 
 template< int S >
-EN_INLINE PortBuffer< S >::PortBuffer( port_obj_t* port_ )
+IRON_INLINE PortBuffer< S >::PortBuffer( port_obj_t* port_ )
     : port( port_ )
     , i( 0 )
 {
@@ -101,7 +101,7 @@ EN_INLINE PortBuffer< S >::PortBuffer( port_obj_t* port_ )
 //
 
 template< int S >
-EN_INLINE void PortBuffer< S >::reset()
+IRON_INLINE void PortBuffer< S >::reset()
 {
     i = 0;
 }
@@ -110,7 +110,7 @@ EN_INLINE void PortBuffer< S >::reset()
 //
 
 template< int S >
-EN_INLINE void PortBuffer< S >::write()
+IRON_INLINE void PortBuffer< S >::write()
 {
     APort::write( data, S );
 }
@@ -119,7 +119,7 @@ EN_INLINE void PortBuffer< S >::write()
 //
 
 template< int S >
-EN_INLINE void PortBuffer< S >::read()
+IRON_INLINE void PortBuffer< S >::read()
 {
     while ( APort::available( port ) > 0 && i < S )
     {

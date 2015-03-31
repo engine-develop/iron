@@ -54,41 +54,41 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_STRINGIZE( X ) #X
-#define EN_STRING( X ) EN_STRINGIZE( X )
+#define IRON_STRINGIZE( X ) #X
+#define IRON_STRING( X ) IRON_STRINGIZE( X )
 
 #ifdef __AVR__
-#define EN_PRINT( ... ) engine::printf( __VA_ARGS__ );
+#define IRON_PRINT( ... ) engine::printf( __VA_ARGS__ );
 #else
-#define EN_PRINT( ... ) printf( __VA_ARGS__ );
+#define IRON_PRINT( ... ) printf( __VA_ARGS__ );
 #endif // __AVR__
 
 #ifdef NDEBUG
-#define EN_DEBUG( ... )
+#define IRON_DEBUG( ... )
 #else
-#define EN_DEBUG( ... ) EN_PRINT( __VA_ARGS__ );
+#define IRON_DEBUG( ... ) IRON_PRINT( __VA_ARGS__ );
 #endif // NDEBUG
 
 #ifdef NDEBUG
-#define EN_ASSERT( ... )
+#define IRON_ASSERT( ... )
 #else
-#define EN_ASSERT( X ) \
+#define IRON_ASSERT( X ) \
     if ( !(X) ) \
     { \
-        EN_PRINT( "assertion failed: %s, line %d: %s\n", __FILE__, __LINE__ ) \
+        IRON_PRINT( "assertion failed: %s, line %d: %s\n", __FILE__, __LINE__ ) \
     }
 #endif // NDEBUG
 
-#define EN_INLINE    __attribute__( ( always_inline ) ) inline
-#define EN_NO_INLINE __attribute__( ( noinline ) )
+#define IRON_INLINE    __attribute__( ( always_inline ) ) inline
+#define IRON_NO_INLINE __attribute__( ( noinline ) )
 
-#define EN_PACK4( A, B, C, D ) \
+#define IRON_PACK4( A, B, C, D ) \
     ((uint32_t)(A) << 24) \
   | ((uint32_t)(B) << 16) \
   | ((uint32_t)(C) <<  8) \
   | ((uint32_t)(D) <<  0) \
 
-#define EN_UPACK4( X, A, B, C, D ) \
+#define IRON_UPACK4( X, A, B, C, D ) \
     (A) = ( (X) >> 24 ) & 0xFF; \
     (B) = ( (X) >> 16 ) & 0xFF; \
     (C) = ( (X) >> 8  ) & 0xFF; \
@@ -108,7 +108,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void delay_ms( size_t ms );
+IRON_INLINE void delay_ms( size_t ms );
 
 #ifdef __AVR__
 
@@ -120,17 +120,17 @@ static void printf( const char *fmt, ... );
 //------------------------------------------------------------------------------
 //
 
-static EN_INLINE void errorLED();
+static IRON_INLINE void errorLED();
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void disableI2CPullups();
+IRON_INLINE void disableI2CPullups();
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE int scanI2CDevices();
+IRON_INLINE int scanI2CDevices();
 
 #endif // __AVR__
 
@@ -139,91 +139,103 @@ EN_INLINE int scanI2CDevices();
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE int strHexToDec( const std::string& s,
-                           int base = 0 );
+IRON_INLINE int strHexToDec( const std::string& s,
+                             int base = 0 );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removeChar( std::string& s,
-                           char c = ' ' );
+IRON_INLINE void removeChar( std::string& s,
+                             char c = ' ' );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removeWhitespace( std::string& s );
+IRON_INLINE void removeWhitespace( std::string& s );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void removePunct( std::string& s );
+IRON_INLINE void removePunct( std::string& s );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& rtrim( std::string& s,
-                              const char* t = " \t\n\r\f\v" );
+IRON_INLINE std::string& rtrim( std::string& s,
+                                const char* t = " \t\n\r\f\v" );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& ltrim( std::string& s,
-                              const char* t = " \t\n\r\f\v" );
+IRON_INLINE std::string& ltrim( std::string& s,
+                                const char* t = " \t\n\r\f\v" );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string& trim( std::string& s,
-                             const char* t = " \t\n\r\f\v" );
+IRON_INLINE std::string& trim( std::string& s,
+                               const char* t = " \t\n\r\f\v" );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void split( const std::string& s,
-                      std::vector< std::string >& result,
-                      char delimiter = ' ' );
+IRON_INLINE void split( const std::string& s,
+                        std::vector< std::string >& result,
+                        char delimiter = ' ' );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void join( const std::vector< std::string >& tokens,
-                     std::string& result,
-                     const std::string& delimiter = "," );
+IRON_INLINE void join( const std::vector< std::string >& tokens,
+                       std::string& result,
+                       const std::string& delimiter = "," );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void makeUnixPath( std::string& path );
+IRON_INLINE bool beginsWith( const std::string& s,
+                             const std::string& text );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE bool isDirectory( const std::string& path );
+IRON_INLINE bool endsWith( const std::string& s,
+                           const std::string& text );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getCurrentDirectory();
+IRON_INLINE void makeUnixPath( std::string& path );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getHomeDirectory();
+IRON_INLINE bool isDirectory( const std::string& path );
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE std::string getAppsDirectory();
+IRON_INLINE std::string getCurrentDirectory();
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void createDirectories( const std::string& path );
+IRON_INLINE std::string getHomeDirectory();
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void createDirectories( const std::vector< std::string >& paths );
+IRON_INLINE std::string getAppsDirectory();
+
+//------------------------------------------------------------------------------
+//
+
+IRON_INLINE void createDirectories( const std::string& path );
+
+//------------------------------------------------------------------------------
+//
+
+IRON_INLINE void createDirectories( const std::vector< std::string >& paths );
 
 //------------------------------------------------------------------------------
 //

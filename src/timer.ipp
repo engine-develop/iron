@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Timer::Timer( bool start )
+IRON_INLINE Timer::Timer( bool start )
     : start( time_t() )
 {
     if ( start ) reset();
@@ -16,7 +16,7 @@ EN_INLINE Timer::Timer( bool start )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void Timer::reset()
+IRON_INLINE void Timer::reset()
 {
 #ifdef __AVR__
     start = millis();
@@ -28,7 +28,7 @@ EN_INLINE void Timer::reset()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE uint32_t Timer::elapsed()
+IRON_INLINE uint32_t Timer::elapsed()
 {
 #ifdef __AVR__
     return millis() - start;

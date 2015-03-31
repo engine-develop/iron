@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Environment::Environment()
+IRON_INLINE Environment::Environment()
     : m_installDirectory()
     , m_userDirectory()
     , m_pathDirectories()
@@ -17,7 +17,7 @@ EN_INLINE Environment::Environment()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Environment::~Environment()
+IRON_INLINE Environment::~Environment()
 {
     release();
 }
@@ -25,7 +25,7 @@ EN_INLINE Environment::~Environment()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Environment& Environment::get()
+IRON_INLINE Environment& Environment::get()
 {
     static Environment obj;
 
@@ -43,7 +43,7 @@ EN_INLINE Environment& Environment::get()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void Environment::reload()
+IRON_INLINE void Environment::reload()
 {
     release();
     init();
@@ -52,7 +52,7 @@ EN_INLINE void Environment::reload()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void Environment::release()
+IRON_INLINE void Environment::release()
 {
     m_installDirectory.clear();
     m_userDirectory.clear();
@@ -62,7 +62,7 @@ EN_INLINE void Environment::release()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void Environment::init()
+IRON_INLINE void Environment::init()
 {
     // Get install directory
     //
@@ -110,7 +110,7 @@ EN_INLINE void Environment::init()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE const std::string& Environment::userDirectory()
+IRON_INLINE const std::string& Environment::userDirectory()
 {
     return m_userDirectory;
 }
@@ -118,7 +118,7 @@ EN_INLINE const std::string& Environment::userDirectory()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE const std::vector< std::string >& Environment::pathDirectories()
+IRON_INLINE const std::vector< std::string >& Environment::pathDirectories()
 {
     return m_pathDirectories;
 }

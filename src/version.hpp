@@ -28,9 +28,9 @@
 #define IRON_API_VERSION_PATCH 0
 
 #define IRON_API_VERSION_S \
-    EN_STRING( IRON_API_VERSION_MAJOR ) "." \
-    EN_STRING( IRON_API_VERSION_MINOR ) "." \
-    EN_STRING( IRON_API_VERSION_PATCH )
+    IRON_STRING( IRON_API_VERSION_MAJOR ) "." \
+    IRON_STRING( IRON_API_VERSION_MINOR ) "." \
+    IRON_STRING( IRON_API_VERSION_PATCH )
 
 namespace engine
 {
@@ -38,7 +38,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE const char* getAPIVersion()
+IRON_INLINE const char* getAPIVersion()
 {
     return IRON_API_VERSION_S;
 }

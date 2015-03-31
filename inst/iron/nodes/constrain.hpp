@@ -14,22 +14,24 @@ namespace engine
 //
 
 IRON_DEFINE_NODE(
-    ( Camera, "Example camera node", "Sensors" ),
-    (( shutter, Input,    Byte,  LOW,     2    ))
-    (( zoom,    Input,    Int,   512,     A0   ))
-    (( model,   Internal, Ulong, 2389221, None ))
-    (( flash,   Internal, Byte,  true,    None ))
-    (( led,     Output,   Byte,  LOW,     13   ))
+    ( Constrain, "Constrains a number to be within a range", "Utility" ),
+    (( x,      Input,  Int, 0, None ))
+    (( a,      Input,  Int, 0, None ))
+    (( b,      Input,  Int, 0, None ))
+    (( result, Output, Int, 0, None ))
 )
 
 //------------------------------------------------------------------------------
 // Define node class
 //
 
-IRON_NODE_CLASS( Camera )
+IRON_NODE_CLASS( Constrain )
 {
     void evaluate()
     {
+        set< 3 >( constrain( get< 0 >(),
+                             get< 1 >(),
+                             get< 2 >() ) );
     }
 };
 

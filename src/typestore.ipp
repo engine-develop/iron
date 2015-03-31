@@ -10,7 +10,7 @@ namespace engine
 template<>
 struct TTypes< Types_Variable >
 {
-    static EN_INLINE const char* label() { return "variable"; }
+    static IRON_INLINE const char* label() { return "variable"; }
 };
 
 //------------------------------------------------------------------------------
@@ -19,15 +19,15 @@ struct TTypes< Types_Variable >
 template<>
 struct TTypes< Types_Node >
 {
-    static EN_INLINE const char* label() { return "node"; }
+    static IRON_INLINE const char* label() { return "node"; }
 };
 
 //------------------------------------------------------------------------------
 //
 
 template< int T >
-EN_INLINE bool operator<( const Type< T >& lhs,
-                          const Type< T >& rhs )
+IRON_INLINE bool operator<( const Type< T >& lhs,
+                            const Type< T >& rhs )
 {
     return ( lhs.name < rhs.name );
 }
@@ -35,7 +35,7 @@ EN_INLINE bool operator<( const Type< T >& lhs,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Status FTypeStoreType< Types_Variable >::verifyType( type_t* type )
+IRON_INLINE Status FTypeStoreType< Types_Variable >::verifyType( type_t* type )
 {
     if (    !type->name.empty()
          && !type->description.empty()
@@ -51,8 +51,8 @@ EN_INLINE Status FTypeStoreType< Types_Variable >::verifyType( type_t* type )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Status FTypeStoreType< Types_Variable >::parseTypeInfo( std::string& block,
-                                                                  type_t* type )
+IRON_INLINE Status FTypeStoreType< Types_Variable >::parseTypeInfo( std::string& block,
+                                                                    type_t* type )
 {
     size_t p0 = block.find_first_of( "(" );
     size_t p1 = block.find_first_of( ")", p0 + 1 );
@@ -80,8 +80,8 @@ EN_INLINE Status FTypeStoreType< Types_Variable >::parseTypeInfo( std::string& b
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void FTypeStoreType< Types_Variable >::createTypes( std::string& file,
-                                                              std::vector< type_t* >& types )
+IRON_INLINE void FTypeStoreType< Types_Variable >::createTypes( std::string& file,
+                                                                std::vector< type_t* >& types )
 {
     std::ifstream fstr( file );
     if ( !fstr.is_open() ) { return; }
@@ -94,7 +94,7 @@ EN_INLINE void FTypeStoreType< Types_Variable >::createTypes( std::string& file,
 
     while ( std::getline( fstr, line ) )
     {
-        if ( line.find( "EN_DEFINE_VARIABLE" ) != std::string::npos )
+        if ( line.find( "IRON_DEFINE_VARIABLE" ) != std::string::npos )
         {
             block += line;
 
@@ -120,12 +120,11 @@ EN_INLINE void FTypeStoreType< Types_Variable >::createTypes( std::string& file,
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Status FTypeStoreType< Types_Node >::verifyType( type_t* type )
+IRON_INLINE Status FTypeStoreType< Types_Node >::verifyType( type_t* type )
 {
     if (    !type->name.empty()
          && !type->description.empty()
-         && !type->category.empty()
-         && !type->classCode.empty() )
+         && !type->category.empty() )
     {
         return Success;
     }
@@ -136,8 +135,8 @@ EN_INLINE Status FTypeStoreType< Types_Node >::verifyType( type_t* type )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
-                                                              Type< Types_Node >* type )
+IRON_INLINE Status FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block,
+                                                                Type< Types_Node >* type )
 {
     size_t p0 = block.find_first_of( "(" );
     size_t p1 = 0;
@@ -197,10 +196,14 @@ EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeInfo( std::string& block
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeClass( std::string& block,
-                                                               Type< Types_Node >* type )
+IRON_INLINE Status FTypeStoreType< Types_Node >::parseTypeClass( std::string& block,
+                                                                 Type< Types_Node >* type )
 {
-    type->classCode = block;
+    size_t p0 = block.find_first_of( "{" );
+           p0 = block.find_first_of( "{", p0+1 );
+    size_t p1 = block.find_first_of( "}", p0+1 );
+
+    type->evaluateCode = block.substr( p0+1, p1-p0-1 );
 
     return Success;
 }
@@ -208,8 +211,8 @@ EN_INLINE Status FTypeStoreType< Types_Node >::parseTypeClass( std::string& bloc
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
-                                                          std::vector< Type< Types_Node >* >& types )
+IRON_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
+                                                            std::vector< Type< Types_Node >* >& types )
 {
     std::ifstream fstr( file );
     if ( !fstr.is_open() ) { return; }
@@ -227,7 +230,7 @@ EN_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
 
     while ( std::getline( fstr, line ) )
     {
-        if ( line.find( "EN_DEFINE_NODE" ) != std::string::npos )
+        if ( line.find( "IRON_DEFINE_NODE" ) != std::string::npos )
         {
             type = new Type< Types_Node >();
 
@@ -236,7 +239,7 @@ EN_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
             blockEndChar   = ')';
         }
 
-        else if ( line.find( "EN_NODE_CLASS" ) != std::string::npos )
+        else if ( line.find( "IRON_NODE_CLASS" ) != std::string::npos )
         {
             blockType = 1;
             blockBeginChar = '{';
@@ -279,7 +282,7 @@ EN_INLINE void FTypeStoreType< Types_Node >::createTypes( std::string& file,
 //
 
 template< int T >
-EN_INLINE TypeStore< T >::TypeStore()
+IRON_INLINE TypeStore< T >::TypeStore()
     : m_types()
 {
 }
@@ -288,7 +291,7 @@ EN_INLINE TypeStore< T >::TypeStore()
 //
 
 template< int T >
-EN_INLINE TypeStore< T >::~TypeStore()
+IRON_INLINE TypeStore< T >::~TypeStore()
 {
     clear();
 }
@@ -297,7 +300,7 @@ EN_INLINE TypeStore< T >::~TypeStore()
 //
 
 template< int T >
-EN_INLINE TypeStore< T >& TypeStore< T >::get()
+IRON_INLINE TypeStore< T >& TypeStore< T >::get()
 {
     static TypeStore< T > obj;
 
@@ -316,7 +319,7 @@ EN_INLINE TypeStore< T >& TypeStore< T >::get()
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::reload()
+IRON_INLINE void TypeStore< T >::reload()
 {
     clear();
     init();
@@ -326,7 +329,7 @@ EN_INLINE void TypeStore< T >::reload()
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::clear()
+IRON_INLINE void TypeStore< T >::clear()
 {
     for ( auto it = m_types.begin(); it != m_types.end(); ++it )
     {
@@ -340,7 +343,7 @@ EN_INLINE void TypeStore< T >::clear()
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::init()
+IRON_INLINE void TypeStore< T >::init()
 {
     // Register types from environment
     //
@@ -351,7 +354,7 @@ EN_INLINE void TypeStore< T >::init()
 //
 
 template< int T >
-EN_INLINE Status TypeStore< T >::verifyType( Type< T >* type )
+IRON_INLINE Status TypeStore< T >::verifyType( Type< T >* type )
 {
     return FTypeStoreType< T >::verifyType( type );
 }
@@ -360,7 +363,7 @@ EN_INLINE Status TypeStore< T >::verifyType( Type< T >* type )
 //
 
 template< int T >
-EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
+IRON_INLINE Status TypeStore< T >::registerType( Type< T >* type )
 {
     assert( type );
     if ( !type ) return Error;
@@ -379,7 +382,7 @@ EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
     //
     if ( m_types.count( id ) )
     {
-        EN_DEBUG( "Failed to add type '%s'. Typestore already contains id.\n", type->name.c_str() );
+        IRON_DEBUG( "Failed to add type '%s'. Typestore already contains id.\n", type->name.c_str() );
 
         return Error;
     }
@@ -394,7 +397,7 @@ EN_INLINE Status TypeStore< T >::registerType( Type< T >* type )
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::registerTypes( const std::string& directory )
+IRON_INLINE void TypeStore< T >::registerTypes( const std::string& directory )
 {
     std::vector< std::string > files;
     if ( !listDirectory( directory, files, true ) ) { return; }
@@ -418,7 +421,7 @@ EN_INLINE void TypeStore< T >::registerTypes( const std::string& directory )
 //
 
 template< int T >
-EN_INLINE void TypeStore< T >::registerTypes( const std::vector< std::string >& directories )
+IRON_INLINE void TypeStore< T >::registerTypes( const std::vector< std::string >& directories )
 {
     for ( auto it = directories.begin();
             it != directories.end(); ++it )
@@ -431,7 +434,7 @@ EN_INLINE void TypeStore< T >::registerTypes( const std::vector< std::string >& 
 //
 
 template< int T >
-EN_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() const
+IRON_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() const
 {
     return m_types;
 }
@@ -440,7 +443,7 @@ EN_INLINE const typename TypeStore< T >::registry_t& TypeStore< T >::types() con
 //
 
 template< int T >
-EN_INLINE Type< T >* TypeStore< T >::type( const uint32_t& id )
+IRON_INLINE Type< T >* TypeStore< T >::type( const uint32_t& id )
 {
     if ( m_types.count( id ) == 0 )
     {
@@ -454,7 +457,7 @@ EN_INLINE Type< T >* TypeStore< T >::type( const uint32_t& id )
 //
 
 template< int T >
-EN_INLINE std::vector< std::string > TypeStore< T >::categories()
+IRON_INLINE std::vector< std::string > TypeStore< T >::categories()
 {
     std::vector< std::string > categories;
 
@@ -475,7 +478,7 @@ EN_INLINE std::vector< std::string > TypeStore< T >::categories()
 //
 
 template< int T >
-EN_INLINE std::vector< Type< T >* > TypeStore< T >::typesByName( const std::string& name )
+IRON_INLINE std::vector< Type< T >* > TypeStore< T >::typesByName( const std::string& name )
 {
     std::vector< Type< T >* > types;
 
@@ -494,7 +497,7 @@ EN_INLINE std::vector< Type< T >* > TypeStore< T >::typesByName( const std::stri
 //
 
 template< int T >
-EN_INLINE std::vector< Type< T >* > TypeStore< T >::typesByCategory( const std::string& category )
+IRON_INLINE std::vector< Type< T >* > TypeStore< T >::typesByCategory( const std::string& category )
 {
     std::vector< Type< T >* > types;
 

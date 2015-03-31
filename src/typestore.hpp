@@ -53,7 +53,7 @@ enum Types
 template< int T >
 struct TTypes
 {
-    static EN_INLINE const char* label() { return ""; }
+    static IRON_INLINE const char* label() { return ""; }
 };
 
 //------------------------------------------------------------------------------
@@ -80,8 +80,8 @@ struct Type
 //
 
 template< int T >
-EN_INLINE bool operator<( const Type< T >& lhs,
-                          const Type< T >& rhs );
+IRON_INLINE bool operator<( const Type< T >& lhs,
+                            const Type< T >& rhs );
 
 //------------------------------------------------------------------------------
 //
@@ -113,7 +113,7 @@ struct Type< Types_Node >
     : BType
 {
     std::vector< NodeTypeAttribute > attributes;
-    std::string classCode;
+    std::string evaluateCode;
 };
 
 //------------------------------------------------------------------------------
@@ -122,13 +122,13 @@ struct Type< Types_Node >
 template< int T >
 struct FTypeStoreType
 {
-    static EN_INLINE Status verifyType( Type< T >* type )
+    static IRON_INLINE Status verifyType( Type< T >* type )
     {
         return Success;
     }
 
-    static EN_INLINE void createTypes( std::string& file,
-                                       std::vector< Type< T >* >& types )
+    static IRON_INLINE void createTypes( std::string& file,
+                                         std::vector< Type< T >* >& types )
     {
     }
 };
@@ -141,13 +141,13 @@ struct FTypeStoreType< Types_Variable >
 {
     typedef Type< Types_Variable > type_t;
 
-    static EN_INLINE Status verifyType( type_t* type );
+    static IRON_INLINE Status verifyType( type_t* type );
 
-    static EN_INLINE Status parseTypeInfo( std::string& block,
-                                           type_t* type );
+    static IRON_INLINE Status parseTypeInfo( std::string& block,
+                                             type_t* type );
 
-    static EN_INLINE void createTypes( std::string& file,
-                                       std::vector< type_t* >& types );
+    static IRON_INLINE void createTypes( std::string& file,
+                                         std::vector< type_t* >& types );
 };
 
 //------------------------------------------------------------------------------
@@ -158,16 +158,16 @@ struct FTypeStoreType< Types_Node >
 {
     typedef Type< Types_Node > type_t;
 
-    static EN_INLINE Status verifyType( type_t* type );
+    static IRON_INLINE Status verifyType( type_t* type );
 
-    static EN_INLINE Status parseTypeInfo( std::string& block,
-                                           type_t* type );
+    static IRON_INLINE Status parseTypeInfo( std::string& block,
+                                             type_t* type );
 
-    static EN_INLINE Status parseTypeClass( std::string& block,
-                                            type_t* type );
+    static IRON_INLINE Status parseTypeClass( std::string& block,
+                                              type_t* type );
 
-    static EN_INLINE void createTypes( std::string& file,
-                                       std::vector< type_t* >& types );
+    static IRON_INLINE void createTypes( std::string& file,
+                                         std::vector< type_t* >& types );
 };
 
 //------------------------------------------------------------------------------
@@ -185,41 +185,41 @@ public:
     //----------
     //
 
-    static EN_INLINE TypeStore& get();
+    static IRON_INLINE TypeStore& get();
 
-    EN_INLINE void reload();
+    IRON_INLINE void reload();
 
-    EN_INLINE Status registerType( Type< T >* type );
+    IRON_INLINE Status registerType( Type< T >* type );
 
-    EN_INLINE void registerTypes( const std::string& directory );
+    IRON_INLINE void registerTypes( const std::string& directory );
 
-    EN_INLINE void registerTypes( const std::vector< std::string >& directories );
+    IRON_INLINE void registerTypes( const std::vector< std::string >& directories );
 
     //----------
     //
 
-    EN_INLINE const registry_t& types() const;
+    IRON_INLINE const registry_t& types() const;
 
-    EN_INLINE Type< T >* type( const uint32_t& id );
+    IRON_INLINE Type< T >* type( const uint32_t& id );
 
-    EN_INLINE std::vector< std::string > categories();
+    IRON_INLINE std::vector< std::string > categories();
 
-    EN_INLINE std::vector< Type< T >* > typesByName( const std::string& name );
+    IRON_INLINE std::vector< Type< T >* > typesByName( const std::string& name );
 
-    EN_INLINE std::vector< Type< T >* > typesByCategory( const std::string& category );
+    IRON_INLINE std::vector< Type< T >* > typesByCategory( const std::string& category );
 
 protected:
 
-    EN_INLINE TypeStore();
-    EN_INLINE ~TypeStore();
-    EN_INLINE TypeStore( const TypeStore& ) {}
-    EN_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
+    IRON_INLINE TypeStore();
+    IRON_INLINE ~TypeStore();
+    IRON_INLINE TypeStore( const TypeStore& ) {}
+    IRON_INLINE TypeStore& operator=( const TypeStore& ) { return *this; }
 
-    EN_INLINE void clear();
+    IRON_INLINE void clear();
 
-    EN_INLINE void init();
+    IRON_INLINE void init();
 
-    EN_INLINE Status verifyType( Type< T >* type );
+    IRON_INLINE Status verifyType( Type< T >* type );
 
     registry_t m_types;
 

@@ -27,7 +27,7 @@ namespace engine
 //
 
 template< class D >
-EN_INLINE Status sync( const D& src );
+IRON_INLINE Status sync( const D& src );
 
 } // engine
 

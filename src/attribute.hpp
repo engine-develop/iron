@@ -31,13 +31,13 @@
 //------------------------------------------------------------------------------
 //
 
-#define EN_DEFINE_ATTRIBUTE( CNAME, I, NAME, MODE, VARIABLE, DVALUE, PIN ) \
+#define IRON_DEFINE_ATTRIBUTE( CNAME, I, NAME, MODE, VARIABLE, DVALUE, PIN ) \
     template<> \
     struct TAttribute< CNAME, I > \
     { \
         static const bool valid = true; \
         static const uint8_t mode = MODE; \
-        static EN_INLINE const char* name() { return EN_STRINGIZE( NAME ); } \
+        static IRON_INLINE const char* name() { return IRON_STRINGIZE( NAME ); } \
         typedef VARIABLE variable_t; \
         typedef typename TVariable< variable_t >::type_t type_t; \
         static const type_t defaultValue = DVALUE; \
@@ -72,7 +72,7 @@ struct TAttribute
 {
     static const bool valid = false;
     static const uint8_t mode = Input;
-    static EN_INLINE const char* name() { return ""; }
+    static IRON_INLINE const char* name() { return ""; }
     typedef Int variable_t;
     typedef typename TVariable< variable_t >::type_t type_t;
     static const type_t defaultValue = 0;
@@ -162,7 +162,7 @@ template< class N, int AT >
 struct FSetAttribute
 {
     template< class T >
-    static EN_INLINE void eval( uint8_t* buffer,
+    static IRON_INLINE void eval( uint8_t* buffer,
                                 const T& value )
     {
         memcpy( buffer + FAttributeRange< N, AT >::begin,
@@ -178,7 +178,7 @@ template< class N, int AT >
 struct FGetAttribute
 {
     template< class T >
-    static EN_INLINE T eval( const uint8_t* buffer )
+    static IRON_INLINE T eval( const uint8_t* buffer )
     {
         T value = T();
         memcpy( &value,
@@ -195,7 +195,7 @@ struct FGetAttribute
 template< class N, int AT, bool E = true >
 struct IFAttributesSetDefaults
 {
-    static EN_INLINE void eval( uint8_t* buffer )
+    static IRON_INLINE void eval( uint8_t* buffer )
     {
     }
 };
@@ -203,7 +203,7 @@ struct IFAttributesSetDefaults
 template< class N, int AT >
 struct IFAttributesSetDefaults< N, AT, false >
 {
-    static EN_INLINE void eval( uint8_t* buffer )
+    static IRON_INLINE void eval( uint8_t* buffer )
     {
         typename TAttribute< N, AT >::type_t value( TAttribute< N, AT >::defaultValue );
         FSetAttribute< N, AT >::eval( buffer, value );
@@ -268,7 +268,7 @@ struct IsAttributePinGettable
 template< class N, int AT, bool IN = true >
 struct IFAttributeSetPinMode
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
     }
 };
@@ -276,7 +276,7 @@ struct IFAttributeSetPinMode
 template< class N, int AT >
 struct IFAttributeSetPinMode< N, AT, false >
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
         setMode< TAttribute< N, AT >::pin, TAttribute< N, AT >::mode >();
     }
@@ -285,7 +285,7 @@ struct IFAttributeSetPinMode< N, AT, false >
 template< class N, int AT, bool E = true >
 struct IFAttributesSetPinModes
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
     }
 };
@@ -293,7 +293,7 @@ struct IFAttributesSetPinModes
 template< class N, int AT >
 struct IFAttributesSetPinModes< N, AT, false >
 {
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
         IFAttributeSetPinMode< N, AT, TAttribute< N, AT >::mode == Internal
                                 || TAttribute< N, AT >::pin == None >::eval();
@@ -316,12 +316,12 @@ template< int N, bool AN, bool SET = false >
 struct IFAttributeSetPin
 {
     template< int V >
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
     }
 
     template< class T >
-    static EN_INLINE void eval( const T& value )
+    static IRON_INLINE void eval( const T& value )
     {
     }
 };
@@ -330,13 +330,13 @@ template< int N >
 struct IFAttributeSetPin< N, true, true >
 {
     template< int V >
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
         setAnalog< N >( int16_t( V ) );
     }
 
     template< class T >
-    static EN_INLINE void eval( const T& value )
+    static IRON_INLINE void eval( const T& value )
     {
         setAnalog< N >( value );
     }
@@ -346,13 +346,13 @@ template< int N >
 struct IFAttributeSetPin< N, false, true >
 {
     template< int V >
-    static EN_INLINE void eval()
+    static IRON_INLINE void eval()
     {
         setDigital< N, V >();
     }
 
     template< class T >
-    static EN_INLINE void eval( const T& value )
+    static IRON_INLINE void eval( const T& value )
     {
         setDigital< N >( value );
     }
@@ -374,7 +374,7 @@ template< class N, int AT, int P, bool AN, bool SET = false >
 struct IFAttributeGetPin
 {
     template< class T >
-    static EN_INLINE void eval( T& value, uint8_t* buffer )
+    static IRON_INLINE void eval( T& value, uint8_t* buffer )
     {
     }
 };
@@ -383,7 +383,7 @@ template< class N, int AT, int P >
 struct IFAttributeGetPin< N, AT, P, true, true >
 {
     template< class T >
-    static EN_INLINE void eval( T& value, uint8_t* buffer )
+    static IRON_INLINE void eval( T& value, uint8_t* buffer )
     {
         value = getAnalog< P >();
 
@@ -395,7 +395,7 @@ template< class N, int AT, int P >
 struct IFAttributeGetPin< N, AT, P, false, true >
 {
     template< class T >
-    static EN_INLINE void eval( T& value, uint8_t* buffer )
+    static IRON_INLINE void eval( T& value, uint8_t* buffer )
     {
         value = getDigital< P >();
 

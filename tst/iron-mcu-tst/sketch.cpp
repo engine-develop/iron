@@ -29,31 +29,31 @@ bool testNodeAttributes()
     uint8_t led = High;
 
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low );
+    IRON_ASSERT( shutter == Low );
 
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom != 0 );
+    IRON_ASSERT( zoom != 0 );
 
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 2389221 );
+    IRON_ASSERT( model == 2389221 );
 
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == true );
+    IRON_ASSERT( flash == true );
 
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low );
+    IRON_ASSERT( led == Low );
 
     // Test get 'shutter'
     //
     shutter = High;
     g_cam.get< 0 >( shutter );
-    EN_ASSERT( shutter == Low );
+    IRON_ASSERT( shutter == Low );
 
     // Test get 'zoom'
     //
     zoom = 0;
     g_cam.get< 1 >( zoom );
-    EN_ASSERT( zoom != 0 );
+    IRON_ASSERT( zoom != 0 );
 
     // Test set/get 'model'
     //
@@ -62,7 +62,7 @@ bool testNodeAttributes()
 
     model = 0;
     g_cam.get< 2 >( model );
-    EN_ASSERT( model == 1590123 );
+    IRON_ASSERT( model == 1590123 );
 
     // Test set/get 'flash'
     //
@@ -71,7 +71,7 @@ bool testNodeAttributes()
 
     flash = true;
     g_cam.get< 3 >( flash );
-    EN_ASSERT( flash == false );
+    IRON_ASSERT( flash == false );
 
     // Test set 'led'
     //
@@ -79,14 +79,14 @@ bool testNodeAttributes()
 
     led = Low;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == High );
+    IRON_ASSERT( led == High );
 
     delay_ms( 2000 );
     g_cam.set< 4, Low >();
 
     led = High;
     g_cam.get< 4 >( led );
-    EN_ASSERT( led == Low );
+    IRON_ASSERT( led == Low );
 
     return true;
 }
@@ -98,9 +98,7 @@ void setup()
 {
     Serial.begin( 9600 );
 
-    g_cam.setup();
-
-    EN_ASSERT( testNodeAttributes() );
+    IRON_ASSERT( testNodeAttributes() );
 }
 
 //------------------------------------------------------------------------------
@@ -108,5 +106,5 @@ void setup()
 
 void loop()
 {
-    g_cam.loop();
+    g_cam.evaluate();
 }

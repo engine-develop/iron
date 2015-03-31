@@ -37,34 +37,34 @@ class BBus
 
 public:
 
-    EN_INLINE BBus();
+    IRON_INLINE BBus();
 
-    EN_INLINE ~BBus();
+    IRON_INLINE ~BBus();
 
     //----------
     // Fields
     //
 
-    EN_INLINE void setPort( port_obj_t* port );
+    IRON_INLINE void setPort( port_obj_t* port );
 
-    EN_INLINE port_obj_t* port();
+    IRON_INLINE port_obj_t* port();
 
     //----------
     // Signals
     //
 
     template< class S >
-    EN_INLINE Status signal( port_obj_t* port );
+    IRON_INLINE Status signal( port_obj_t* port );
 
     template< class S >
-    EN_INLINE Status wait( port_obj_t* port,
-                           uint32_t timeout = uint32_t( -1 ) );
+    IRON_INLINE Status wait( port_obj_t* port,
+                             uint32_t timeout = uint32_t( -1 ) );
 
     template< class S >
-    EN_INLINE Status signal();
+    IRON_INLINE Status signal();
 
     template< class S >
-    EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
+    IRON_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
 
 protected:
 
@@ -85,13 +85,13 @@ class Bus
 //
 
 template< int A, class S >
-EN_INLINE Status signal();
+IRON_INLINE Status signal();
 
 //------------------------------------------------------------------------------
 //
 
 template< int A, class S >
-EN_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
+IRON_INLINE Status wait( uint32_t timeout = uint32_t( -1 ) );
 
 } // engine
 

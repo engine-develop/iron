@@ -7,7 +7,7 @@ namespace engine
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE BBus::BBus()
+IRON_INLINE BBus::BBus()
     : m_port( 0x0 )
 {
 }
@@ -15,14 +15,14 @@ EN_INLINE BBus::BBus()
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE BBus::~BBus()
+IRON_INLINE BBus::~BBus()
 {
 }
 
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE void BBus::setPort( port_obj_t* port )
+IRON_INLINE void BBus::setPort( port_obj_t* port )
 {
     m_port = port;
 }
@@ -30,7 +30,7 @@ EN_INLINE void BBus::setPort( port_obj_t* port )
 //------------------------------------------------------------------------------
 //
 
-EN_INLINE port_obj_t* BBus::port()
+IRON_INLINE port_obj_t* BBus::port()
 {
     return m_port;
 }
@@ -39,12 +39,12 @@ EN_INLINE port_obj_t* BBus::port()
 //
 
 template< class S >
-EN_INLINE Status BBus::signal( port_obj_t* port )
+IRON_INLINE Status BBus::signal( port_obj_t* port )
 {
     typedef TSignal< S > traits_t;
     static_assert( traits_t::valid, "signal type not defined" );
 
-    EN_ASSERT( port != 0x0 );
+    IRON_ASSERT( port != 0x0 );
 
     // Write signal id
     //
@@ -60,13 +60,13 @@ EN_INLINE Status BBus::signal( port_obj_t* port )
 //
 
 template< class S >
-EN_INLINE Status BBus::wait( port_obj_t* port,
-                             uint32_t timeout )
+IRON_INLINE Status BBus::wait( port_obj_t* port,
+                               uint32_t timeout )
 {
     typedef TSignal< S > traits_t;
     static_assert( traits_t::valid, "signal type not defined" );
 
-    EN_ASSERT( port != 0x0 );
+    IRON_ASSERT( port != 0x0 );
 
     static Timer tm( true );
 
@@ -96,7 +96,7 @@ EN_INLINE Status BBus::wait( port_obj_t* port,
 //
 
 template< class S >
-EN_INLINE Status BBus::signal()
+IRON_INLINE Status BBus::signal()
 {
     if ( !m_port ) { return Error; }
 
@@ -107,7 +107,7 @@ EN_INLINE Status BBus::signal()
 //
 
 template< class S >
-EN_INLINE Status BBus::wait( uint32_t timeout )
+IRON_INLINE Status BBus::wait( uint32_t timeout )
 {
     if ( !m_port ) { return Error; }
 
@@ -118,7 +118,7 @@ EN_INLINE Status BBus::wait( uint32_t timeout )
 //
 
 template< int A, class S >
-EN_INLINE Status signal()
+IRON_INLINE Status signal()
 {
     return Bus< A >::get().template signal< S >();
 }
@@ -127,7 +127,7 @@ EN_INLINE Status signal()
 //
 
 template< int A, class S >
-EN_INLINE Status wait( uint32_t timeout )
+IRON_INLINE Status wait( uint32_t timeout )
 {
     return Bus< A >::get().template wait< S >( timeout );
 }

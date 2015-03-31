@@ -8,7 +8,7 @@ namespace engine
 //
 
 template< class N >
-EN_INLINE BNode< N >::BNode()
+IRON_INLINE BNode< N >::BNode()
     : m_state( 0 )
 {
     setDefaults();
@@ -18,7 +18,7 @@ EN_INLINE BNode< N >::BNode()
 //
 
 template< class N >
-EN_INLINE BNode< N >::~BNode()
+IRON_INLINE BNode< N >::~BNode()
 {
 }
 
@@ -26,7 +26,16 @@ EN_INLINE BNode< N >::~BNode()
 //
 
 template< class N >
-EN_INLINE uint8_t& BNode< N >::state()
+IRON_INLINE void BNode< N >::setState( const uint8_t& state )
+{
+    m_state = state;
+}
+
+//------------------------------------------------------------------------------
+//
+
+template< class N >
+IRON_INLINE uint8_t& BNode< N >::state()
 {
     return m_state;
 }
@@ -35,20 +44,7 @@ EN_INLINE uint8_t& BNode< N >::state()
 //
 
 template< class N >
-EN_INLINE void BNode< N >::setup()
-{
-#ifdef __AVR__
-    // Set pin modes
-    //
-    FAttributesSetPinModes< N >::eval();
-#endif // __AVR__
-}
-
-//------------------------------------------------------------------------------
-//
-
-template< class N >
-EN_INLINE void BNode< N >::loop()
+IRON_INLINE void BNode< N >::evaluate()
 {
 }
 
@@ -57,7 +53,7 @@ EN_INLINE void BNode< N >::loop()
 
 template< class N >
     template< int AT >
-EN_INLINE void BNode< N >::setDefault()
+IRON_INLINE void BNode< N >::setDefault()
 {
     static_assert( AT >= 0 && AT < TNode< N >::numAttributes, "invalid attribute index" );
 
@@ -68,7 +64,7 @@ EN_INLINE void BNode< N >::setDefault()
 //
 
 template< class N >
-EN_INLINE void BNode< N >::setDefaults()
+IRON_INLINE void BNode< N >::setDefaults()
 {
     FAttributesSetDefaults< N >::eval( m_attributes );
 }
@@ -78,7 +74,7 @@ EN_INLINE void BNode< N >::setDefaults()
 
 template< class N >
     template< int AT, int V >
-EN_INLINE void BNode< N >::set()
+IRON_INLINE void BNode< N >::set()
 {
     static_assert( AT >= 0 && AT < TNode< N >::numAttributes, "invalid attribute index" );
 
@@ -95,7 +91,7 @@ EN_INLINE void BNode< N >::set()
 
 template< class N >
     template< int AT, class T >
-EN_INLINE void BNode< N >::set( const T& value )
+IRON_INLINE void BNode< N >::set( const T& value )
 {
     static_assert( AT >= 0 && AT < TNode< N >::numAttributes, "invalid attribute index" );
 
@@ -111,7 +107,7 @@ EN_INLINE void BNode< N >::set( const T& value )
 
 template< class N >
     template< int AT, class T >
-EN_INLINE void BNode< N >::get( T& value )
+IRON_INLINE void BNode< N >::get( T& value )
 {
     static_assert( AT >= 0 && AT < TNode< N >::numAttributes, "invalid attribute index" );
 
@@ -127,7 +123,7 @@ EN_INLINE void BNode< N >::get( T& value )
 
 template< class N >
     template< int AT, int V >
-EN_INLINE bool BNode< N >::is()
+IRON_INLINE bool BNode< N >::is()
 {
     typename TAttribute< N, AT >::type_t value;
     get< AT >( value );
@@ -140,7 +136,7 @@ EN_INLINE bool BNode< N >::is()
 
 template< class N >
     template< int AT, class T >
-EN_INLINE bool BNode< N >::is( const T& value )
+IRON_INLINE bool BNode< N >::is( const T& value )
 {
     typename TAttribute< N, AT >::type_t value_l;
     get< AT >( value_l );

@@ -42,35 +42,35 @@ public:
     //----------
     //
 
-    static EN_INLINE Bus& get();
+    static IRON_INLINE Bus& get();
 
     //----------
     // Fields
     //
 
-    EN_INLINE std::vector< port_obj_t* >& ports();
+    IRON_INLINE std::vector< port_obj_t* >& ports();
 
     //----------
     // Devices
     //
 
     template< class N >
-    EN_INLINE std::vector< N > scan();
+    IRON_INLINE std::vector< N > scan();
 
     template< class N >
-    EN_INLINE Status select( N& device );
+    IRON_INLINE Status select( N& device );
 
     template< class N >
-    EN_INLINE Status deselect( N& device );
+    IRON_INLINE Status deselect( N& device );
 
 protected:
 
-    EN_INLINE Bus();
-    EN_INLINE ~Bus();
-    EN_INLINE Bus( const Bus& ) {}
-    EN_INLINE Bus& operator=( const Bus& ) { return *this; }
+    IRON_INLINE Bus();
+    IRON_INLINE ~Bus();
+    IRON_INLINE Bus( const Bus& ) {}
+    IRON_INLINE Bus& operator=( const Bus& ) { return *this; }
 
-    EN_INLINE void release();
+    IRON_INLINE void release();
 
     std::vector< port_obj_t* > m_ports;
 
@@ -80,19 +80,19 @@ protected:
 //
 
 template< class N >
-EN_INLINE std::vector< N > scan();
+IRON_INLINE std::vector< N > scan();
 
 //------------------------------------------------------------------------------
 //
 
 template< class N >
-EN_INLINE Status select( N& device );
+IRON_INLINE Status select( N& device );
 
 //------------------------------------------------------------------------------
 //
 
 template< class N >
-EN_INLINE Status deselect( N& device );
+IRON_INLINE Status deselect( N& device );
 
 } // engine
 

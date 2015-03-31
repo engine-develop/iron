@@ -6,9 +6,11 @@
 namespace engine
 {
 
+#ifndef __AVR__
+
 //------------------------------------------------------------------------------
 //
-#ifndef __AVR__
+
 bool listDirectory( const std::string& path,
                     std::vector< std::string >& files,
                     const bool& recursive )
@@ -37,6 +39,7 @@ bool listDirectory( const std::string& path,
 
     return true;
 }
+
 #endif // __AVR__
 
 } // engine
